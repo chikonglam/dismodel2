@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="main/java/" kind="src" path="src"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dismodel"/>
+	<classpathentry kind="lib" path="/dismodel/lib/gdal.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dismodel/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/dismodel/lib/gluegen-rt.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dismodel/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/dismodel/lib/jogl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dismodel/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/dismodel/lib/junit-4.8.2.jar"/>
+	<classpathentry kind="lib" path="/dismodel/lib/net.masagroup.jzy3d-0.7.1.jar"/>
+	<classpathentry kind="lib" path="/dismodel/lib/ojalgo-28.jar"/>
+	<classpathentry kind="lib" path="/dismodel/lib/pcolt-0.9.jar"/>
+	<classpathentry kind="lib" path="/dismodel/lib/worldwind-0.6.762.14907.jar" sourcepath="/worldwind-0.6.762.14907"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
