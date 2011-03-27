@@ -3,7 +3,6 @@
 	<classpathentry excluding="main/java/" kind="src" path="src"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/dismodel"/>
 	<classpathentry kind="lib" path="/dismodel/lib/gdal.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dismodel/lib"/>
@@ -24,5 +23,6 @@
 	<classpathentry kind="lib" path="/dismodel/lib/ojalgo-28.jar"/>
 	<classpathentry kind="lib" path="/dismodel/lib/pcolt-0.9.jar"/>
 	<classpathentry kind="lib" path="/dismodel/lib/worldwind-0.6.762.14907.jar" sourcepath="/worldwind-0.6.762.14907"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dismodel"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

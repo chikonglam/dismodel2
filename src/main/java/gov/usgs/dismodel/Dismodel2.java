@@ -10,8 +10,8 @@ package gov.usgs.dismodel;
 import gov.nasa.worldwind.*;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
-import gov.nasa.worldwind.examples.LayerPanel;
 import gov.nasa.worldwind.util.StatusBar;
+import gov.usgs.dismodel.gui.ENUView.ENUPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,24 +52,30 @@ public class Dismodel2
                 this.add(statusBar, BorderLayout.PAGE_END);
                 statusBar.setEventSource(wwd);
             }
+            
+
+            
         }
     }
 
     private static class AppFrame extends JFrame
     {
-        private Dimension canvasSize = new Dimension(800, 600); // the desired WorldWindow size
-
+        private Dimension wwjSize = new Dimension(512, 768); // the desired WorldWindow size
+        private Dimension enuSize = new Dimension(512, 768); // the desired ENU Panel size
+        final AppPanel wwjPanel;
+        final ENUPanel enuPanel;
+        
         public AppFrame()
         {
             // Create the WorldWindow.
-            final AppPanel wwjPanel = new AppPanel(this.canvasSize, true);
-            LayerPanel layerPanel = new LayerPanel(wwjPanel.wwd);
+            wwjPanel = new AppPanel(this.wwjSize, true);
+            enuPanel = new ENUPanel(enuSize);
 
             // Create a horizontal split pane containing the layer panel and the WorldWindow panel.
             JSplitPane horizontalSplitPane = new JSplitPane();
             horizontalSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
             horizontalSplitPane.setLeftComponent(wwjPanel);
-            horizontalSplitPane.setRightComponent(layerPanel);
+            horizontalSplitPane.setRightComponent(enuPanel);
             horizontalSplitPane.setOneTouchExpandable(true);
             horizontalSplitPane.setContinuousLayout(true); // prevents the pane's being obscured when expanding right
 
