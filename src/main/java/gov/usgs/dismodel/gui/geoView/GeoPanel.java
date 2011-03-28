@@ -5,6 +5,8 @@ import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.util.StatusBar;
+import gov.usgs.dismodel.state.DisplayStateStore;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -15,11 +17,16 @@ import javax.swing.JPanel;
 	 	private JPanel toolbar;
         private WorldWindowGLCanvas wwd;
         private StatusBar statusBar;
-
+        private SimulationDataModel simModel;
+        private DisplayStateStore displaySettings;
+        
         // Constructs a JPanel to hold the WorldWindow
-        public GeoPanel(Dimension canvasSize, boolean includeStatusBar)
+        public GeoPanel(Dimension canvasSize, boolean includeStatusBar, SimulationDataModel simModel, DisplayStateStore displaySettings)
         {
             super(new BorderLayout());
+            //state vars
+            this.simModel = simModel;
+            this.displaySettings = displaySettings;
             
             // Create the toolbar
             this.toolbar = new JPanel();

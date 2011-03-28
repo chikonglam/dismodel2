@@ -10,6 +10,8 @@ package gov.usgs.dismodel;
 import gov.nasa.worldwind.*;
 import gov.usgs.dismodel.gui.ENUView.ENUPanel;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
+import gov.usgs.dismodel.state.DisplayStateStore;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,16 +19,22 @@ import java.awt.*;
 
 public class Dismodel2 extends JFrame
     {
+		//the interface vars
         private Dimension wwjSize = new Dimension(512, 768); // the desired WorldWindow size
         private Dimension enuSize = new Dimension(512, 768); // the desired ENU Panel size
         private final GeoPanel wwjPanel;
         private final ENUPanel enuPanel;
         
+        //the state vars
+        private DisplayStateStore displaySettings = new DisplayStateStore();
+        private SimulationDataModel simModel = new SimulationDataModel();
+        
+        
         public Dismodel2()
         {
             // Create the WorldWindow.
-            wwjPanel = new GeoPanel(this.wwjSize, true);
-            enuPanel = new ENUPanel(enuSize);
+            wwjPanel = new GeoPanel(this.wwjSize, true, simModel, displaySettings);
+            enuPanel = new ENUPanel(enuSize, simModel, displaySettings);
 
             // Create a horizontal split pane containing the layer panel and the WorldWindow panel.
             JSplitPane horizontalSplitPane = new JSplitPane();
