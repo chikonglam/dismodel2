@@ -8,67 +8,24 @@ All Rights Reserved.
 package gov.usgs.dismodel;
 
 import gov.nasa.worldwind.*;
-import gov.nasa.worldwind.avlist.AVKey;
-import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
-import gov.nasa.worldwind.util.StatusBar;
 import gov.usgs.dismodel.gui.ENUView.ENUPanel;
+import gov.usgs.dismodel.gui.geoView.GeoPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
 
-public class Dismodel2
-{
-    public static class AppPanel extends JPanel
-    {
-        private WorldWindowGLCanvas wwd;
-
-        // Constructs a JPanel to hold the WorldWindow
-        public AppPanel(Dimension canvasSize, boolean includeStatusBar)
-        {
-            super(new BorderLayout());
-
-            // Create the WorldWindow and set its preferred size.
-            this.wwd = new WorldWindowGLCanvas();
-            this.wwd.setPreferredSize(canvasSize);
-
-            // THIS IS THE TRICK: Set the panel's minimum size to (0,0);
-            this.setMinimumSize(new Dimension(0, 0));
-
-            // Create the default model as described in the current worldwind properties.
-            Model m = (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
-            this.wwd.setModel(m);
-
-            //  Check the code below for click event handling
-            //this.wwd.addSelectListener(new ClickAndGoSelectListener(this.wwd, WorldMapLayer.class));
-
-            // Add the WorldWindow to this JPanel.
-            this.add(this.wwd, BorderLayout.CENTER);
-
-            // Add the status bar if desired.
-            if (includeStatusBar)
-            {
-                StatusBar statusBar = new StatusBar();
-                this.add(statusBar, BorderLayout.PAGE_END);
-                statusBar.setEventSource(wwd);
-            }
-            
-
-            
-        }
-    }
-
-    private static class AppFrame extends JFrame
+public class Dismodel2 extends JFrame
     {
         private Dimension wwjSize = new Dimension(512, 768); // the desired WorldWindow size
         private Dimension enuSize = new Dimension(512, 768); // the desired ENU Panel size
-        final AppPanel wwjPanel;
-        final ENUPanel enuPanel;
+        private final GeoPanel wwjPanel;
+        private final ENUPanel enuPanel;
         
-        public AppFrame()
+        public Dismodel2()
         {
             // Create the WorldWindow.
-            wwjPanel = new AppPanel(this.wwjSize, true);
+            wwjPanel = new GeoPanel(this.wwjSize, true);
             enuPanel = new ENUPanel(enuSize);
 
             // Create a horizontal split pane containing the layer panel and the WorldWindow panel.
@@ -93,7 +50,7 @@ public class Dismodel2
             this.setLocation(x, y);
             this.setResizable(true);
         }
-    }
+    
 
     public static void main(String[] args)
     {
@@ -109,7 +66,7 @@ public class Dismodel2
 
         try
         {
-            final AppFrame frame = new AppFrame();
+            final Dismodel2 frame = new Dismodel2();
             frame.setTitle(appName);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             java.awt.EventQueue.invokeLater(new Runnable()
