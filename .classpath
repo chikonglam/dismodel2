@@ -22,7 +22,7 @@
 	<classpathentry kind="lib" path="/dismodel/lib/net.masagroup.jzy3d-0.7.1.jar"/>
 	<classpathentry kind="lib" path="/dismodel/lib/ojalgo-28.jar"/>
 	<classpathentry kind="lib" path="/dismodel/lib/pcolt-0.9.jar"/>
-	<classpathentry kind="lib" path="/dismodel/lib/worldwind-0.6.762.14907.jar"/>
+	<classpathentry kind="lib" path="/dismodel/lib/worldwind-0.6.762.14907.jar" sourcepath="/home/chi/eclipseHelWksp/worldwind-0.6.776.15123.zip"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dismodel"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

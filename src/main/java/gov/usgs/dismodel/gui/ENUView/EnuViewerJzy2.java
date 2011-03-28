@@ -1,8 +1,12 @@
 package gov.usgs.dismodel.gui.ENUView;
 
 
-import gov.usgs.dismodel.geom.Earth;
-import gov.usgs.dismodel.geom.overlays.jzy.DecimalTickRenderer;
+
+import java.util.EventListener;
+
+import gov.usgs.dismodel.geom.overlays.jzy.AutoKmTicker;
+import gov.usgs.dismodel.gui.events.ZoomEventFirer;
+import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.gui.jzy3dOverrides.JzyMouseListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
 import gov.usgs.dismodel.state.SimulationDataModel;
@@ -14,7 +18,7 @@ import net.masagroup.jzy3d.maths.BoundingBox3d;
 import net.masagroup.jzy3d.plot3d.primitives.axes.AxeBox;
 import net.masagroup.jzy3d.plot3d.rendering.canvas.Quality;
 
-public class EnuViewerJzy2 {
+public class EnuViewerJzy2 implements ZoomEventListener, ZoomEventFirer{
 	//state vars
     private SimulationDataModel simModel;
     private DisplayStateStore displaySettings;
@@ -22,12 +26,12 @@ public class EnuViewerJzy2 {
 	
 	//chart vars
 	private Chart chart;
-	private ChartMouseController mouseController;
+	private JzyMouseListener mouseController;
 	private BoundingBox3d chartBounds;
 	private AxeBox axesBounds;
+	private AutoKmTicker kmTicker = new AutoKmTicker();
 	
-	
-  
+	//Constructor
     public EnuViewerJzy2(SimulationDataModel simModel, DisplayStateStore displaySettings) {
         //state stuff
         this.simModel = simModel;
@@ -35,7 +39,8 @@ public class EnuViewerJzy2 {
         
         //chart stuff
         this.chart = new Chart(Quality.Nicest, "swing");
-        mouseController = new JzyMouseListener(this);
+        mouseController = new JzyMouseListener(displaySettings);
+        mouseController.addZoomListener(this);
         chart.addController(mouseController);
         
         setAxesFromDisplaySettings();
@@ -45,7 +50,7 @@ public class EnuViewerJzy2 {
         return ((JComponent) chart.getCanvas());
     }
     
-    public void setAxesFromDisplaySettings(){
+    private void setAxesFromDisplaySettings(){
     	double centerX = this.displaySettings.getxCenter();
     	double centerY = this.displaySettings.getyCenter();
     	double graphSpan = this.displaySettings.getChartSpan();
@@ -69,20 +74,40 @@ public class EnuViewerJzy2 {
         chart.getView().setBoundManual(chartBounds);
         chart.getView().setAxe(axesBounds);
         
-        chart.getAxeLayout().setYAxeLabel("Northing (km)");
-        chart.getAxeLayout().setXAxeLabel("Easting (km)");
+        chart.getAxeLayout().setYAxeLabel("Northing(km)");
+        chart.getAxeLayout().setXAxeLabel("Easting(km)");
 
-        chart.getAxeLayout().setZTickRenderer( new DecimalTickRenderer(9) );
-        chart.getAxeLayout().setXTickRenderer( new DecimalTickRenderer(9) );
-        chart.getAxeLayout().setYTickRenderer( new DecimalTickRenderer(9) );
+        chart.getAxeLayout().setZTickRenderer( kmTicker );
+        chart.getAxeLayout().setXTickRenderer( kmTicker );
+        chart.getAxeLayout().setYTickRenderer( kmTicker );
 
         chart.getView().updateBounds();
     }
 
-	public void zoomBy(float factor) {
-		double newSpan = factor * this.displaySettings.getChartSpan();
-		this.displaySettings.setChartSpan(newSpan);
-		setAxesFromDisplaySettings();
+
+    //zoom event handler: to handle zoomings requests from everywhere
+	@Override
+	public void updateZoomLevel(DisplayStateStore displaySettings) {
+    	double centerX = displaySettings.getxCenter();
+    	double centerY = displaySettings.getyCenter();
+    	double axisSpan = displaySettings.getChartSpan();
+    	
+    	setAxes(centerX, centerY, axisSpan);
+    	
 	}
+	
+	//Zoom event firer: to make WW zoom changes
+	@Override
+	public void addZoomListener(EventListener listener) {
+		mouseController.addZoomListener(listener);
+	}
+
+	@Override
+	public void removeZoomListener(EventListener listener) {
+		mouseController.removeZoomListener(listener);
+	}
+
+
+
     
 }
