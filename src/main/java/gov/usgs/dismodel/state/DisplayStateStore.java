@@ -8,10 +8,13 @@ public class DisplayStateStore {
 	private Color modeledDisplacementVectorColor  = Color.RED;
 	private int displacementVectorScale = 20000;
 	
-	//
+	//ENU display bounds
 	private double xCenter = 0;
 	private double yCenter = 0;
 	private double chartSpan = 40000;
+	
+	
+	
 	
 	//getters and setters
 	public Color getRealDisplacementVectorColor() {
