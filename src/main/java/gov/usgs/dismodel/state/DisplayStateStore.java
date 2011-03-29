@@ -1,17 +1,27 @@
 package gov.usgs.dismodel.state;
 
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.LatLon;
 import java.awt.Color;
 
 public class DisplayStateStore {
+	//constants
+	public static final double DEFAULT_ZOOM_FACTOR = 1.2d;
+	
+	//geo vars
+	LatLon centerOfMap = new LatLon(Angle.fromDegrees(37.4125), Angle.fromDegrees(-102.4285));
+	
+	//ENU display bounds
+	private double xCenter = 0;
+	private double yCenter = 0;
+	private double chartSpan = 1e7d;
+	
 	//vector variables
 	private Color realDisplacementVectorColor = new Color(219, 176, 4); // deep yellow
 	private Color modeledDisplacementVectorColor  = Color.RED;
 	private int displacementVectorScale = 20000;
 	
-	//ENU display bounds
-	private double xCenter = 0;
-	private double yCenter = 0;
-	private double chartSpan = 40000;
+
 	
 	
 	
@@ -53,6 +63,12 @@ public class DisplayStateStore {
 	}
 	public void setChartSpan(double chartSpan) {
 		this.chartSpan = chartSpan;
+	}
+	public LatLon getCenterOfMap() {
+		return centerOfMap;
+	}
+	public void setCenterOfMap(LatLon centerOfMap) {
+		this.centerOfMap = centerOfMap;
 	}
 	
 	

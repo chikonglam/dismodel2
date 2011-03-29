@@ -14,14 +14,16 @@ import gov.usgs.dismodel.state.DisplayStateStore;
 import gov.usgs.dismodel.state.SimulationDataModel;
 
 import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+
 import java.awt.*;
 
 
 public class Dismodel2 extends JFrame
     {
 		//the interface vars
-        private Dimension wwjSize = new Dimension(512, 768); // the desired WorldWindow size
-        private Dimension enuSize = new Dimension(512, 768); // the desired ENU Panel size
+        final private static Dimension wwjSize = new Dimension(512, 768); // the desired WorldWindow size
+        final private static Dimension enuSize = new Dimension(512, 768); // the desired ENU Panel size
         private final GeoPanel wwjPanel;
         private final ENUPanel enuPanel;
         
@@ -33,7 +35,7 @@ public class Dismodel2 extends JFrame
         public Dismodel2()
         {
             // Create the WorldWindow.
-            wwjPanel = new GeoPanel(this.wwjSize, true, simModel, displaySettings);
+            wwjPanel = new GeoPanel(wwjSize, true, simModel, displaySettings);
             enuPanel = new ENUPanel(enuSize, simModel, displaySettings);
 
             // Create a horizontal split pane containing the layer panel and the WorldWindow panel.
@@ -57,6 +59,13 @@ public class Dismodel2 extends JFrame
             int y = parentLocation.y + (parentSize.height - prefSize.height) / 2;
             this.setLocation(x, y);
             this.setResizable(true);
+            
+            //Setting the Nimbus Look and Feel 
+            setLAF();
+            
+            //tying the zoom events of both sides
+            wwjPanel.addZoomListener(enuPanel);
+            enuPanel.addZoomListener(wwjPanel);
         }
     
 
@@ -87,6 +96,20 @@ public class Dismodel2 extends JFrame
         }
         catch (Exception e)
         {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void setLAF() {
+        try { 
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(e);
             e.printStackTrace();
         }
     }

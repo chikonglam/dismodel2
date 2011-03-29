@@ -5,6 +5,6 @@ import gov.usgs.dismodel.state.DisplayStateStore;
 import java.util.EventListener;
 
 public interface ZoomEventListener extends EventListener {
-	public abstract void updateZoomLevel(DisplayStateStore displaySettings);
+	public abstract void updateZoomLevelAfterSettingsChanged(DisplayStateStore displaySettings);
 	
 }

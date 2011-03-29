@@ -1,5 +1,6 @@
 package gov.usgs.dismodel.state;
 
+import gov.nasa.worldwind.geom.Angle;
 import gov.usgs.dismodel.ModelSolution;
 import gov.usgs.dismodel.RestorableSourceDialog;
 import gov.usgs.dismodel.SmoothingDialog;
@@ -36,34 +37,43 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement
 @XmlType(propOrder = { "sourceModels", "sourceLowerbound", "sourceUpperbound", "fittedModels"})
 public class SimulationDataModel implements ModelSolution {
-    //TODO make sure all vars are here
-
+	//stations and geo vars
+	//--------------------
+    private ArrayList<Label> stations = new ArrayList<Label>();
+    private double refH;
+    private int refStation;
+    private LLH origin= new LLH(37.4125, -102.4285, 0d);
+    
+	
+	//sources
+	//----------
     private ArrayList<DisplacementSolver> sourceModels = new ArrayList<DisplacementSolver>();
     private ArrayList<RestorableSourceDialog> sourceDialogs = new ArrayList<RestorableSourceDialog>();
     private ArrayList<DisplacementSolver> fittedModels = new ArrayList<DisplacementSolver>();
     private ArrayList<DisplacementSolver> sourceLowerbound = new ArrayList<DisplacementSolver>();
     private ArrayList<DisplacementSolver> sourceUpperbound = new ArrayList<DisplacementSolver>();
-    private DistributedSlipsBatchGreensIO distributedSlipBatchIoProcessor = 
-        new DistributedSlipsBatchGreensIO();
-    
-        
-    private List<Label> stations = new ArrayList<Label>();
-    private CovarianceWeighter covarWeighter = new CovarianceWeighter();
-    private List<VectorXyz> measuredUnrefdDispVectors = new ArrayList<VectorXyz>();
 
     
+    //data and covars
+    //----------------
+    private List<VectorXyz> measuredUnrefdDispVectors = new ArrayList<VectorXyz>();
     /*
      * Displacement vectors, with the reference-station's displacements
      * subtracted. This is kept separate from, and somewhat duplicate of,
      * CovarianceWeighter.dSubtracted and dOrig, for various reasons. */
     private List<VectorXyz> measuredRefdDispVectors = new ArrayList<VectorXyz>();
-    
+    private CovarianceWeighter covarWeighter = new CovarianceWeighter();
     private List<XyzDisplacement> modeledDisplacements = new ArrayList<XyzDisplacement>();
-    private double refH;
+
     
+    
+    
+    //results
+    //-------
     private double chi2;
     
     //distributed slip stuff
+    //-----------------
     private boolean nonNeg;
     private double monentConstraint = Double.NaN;
     private ConstraintType monentConType;
@@ -71,6 +81,12 @@ public class SimulationDataModel implements ModelSolution {
     private SmoothingDialog.Params smoothingParams = 
         new SmoothingDialog.Params();
     private CrossValResults cvResults;
+    
+    //other
+    //-----
+    DistributedSlipsBatchGreensIO distributedSlipBatchIoProcessor;
+    
+
     
     public SimulationDataModel() {
         // empty
@@ -240,7 +256,7 @@ public class SimulationDataModel implements ModelSolution {
                 + modeledDisplacements + "]";
     }
 
-    public void setStations(List<Label> stations) {
+    public void setStations(ArrayList<Label> stations) {
         this.stations = stations;
     }
 
