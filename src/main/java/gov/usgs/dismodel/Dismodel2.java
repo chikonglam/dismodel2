@@ -9,6 +9,7 @@ package gov.usgs.dismodel;
 
 import gov.nasa.worldwind.*;
 import gov.usgs.dismodel.gui.ENUView.ENUPanel;
+import gov.usgs.dismodel.gui.components.MainMenu;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
 import gov.usgs.dismodel.state.DisplayStateStore;
 import gov.usgs.dismodel.state.SimulationDataModel;
@@ -26,6 +27,7 @@ public class Dismodel2 extends JFrame
         final private static Dimension enuSize = new Dimension(512, 768); // the desired ENU Panel size
         private final GeoPanel wwjPanel;
         private final ENUPanel enuPanel;
+        private final MainMenu menubar;
         
         //the state vars
         private DisplayStateStore displaySettings = new DisplayStateStore();
@@ -34,6 +36,10 @@ public class Dismodel2 extends JFrame
         
         public Dismodel2()
         {
+        	//set menubar
+        	menubar = new MainMenu();
+        	this.setJMenuBar( menubar );
+        	
             // Create the WorldWindow.
             wwjPanel = new GeoPanel(wwjSize, true, simModel, displaySettings);
             enuPanel = new ENUPanel(enuSize, simModel, displaySettings);
