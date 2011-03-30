@@ -10,10 +10,10 @@ package gov.usgs.dismodel;
 import gov.nasa.worldwind.Configuration;
 import gov.usgs.dismodel.gui.ENUView.ENUPanel;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
-import gov.usgs.dismodel.gui.components.MainMenu;
 import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
+import gov.usgs.dismodel.gui.menubar.MainMenu;
 import gov.usgs.dismodel.state.DisplayStateStore;
 import gov.usgs.dismodel.state.SimulationDataModel;
 

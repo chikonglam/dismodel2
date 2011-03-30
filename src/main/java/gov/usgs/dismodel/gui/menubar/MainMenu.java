@@ -1,10 +1,11 @@
-package gov.usgs.dismodel.gui.components;
+package gov.usgs.dismodel.gui.menubar;
 
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.usgs.dismodel.SaveAndLoad;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.overlays.Label;
+import gov.usgs.dismodel.gui.components.AllGUIVars;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,34 +17,32 @@ import javax.swing.JMenuItem;
 
 
 public class MainMenu extends JMenuBar {
-	//Menu Actions (must be first, or else menu won't work!)
-	//------------
-	final private ActionListener loadStationAction = new ActionListener(){
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			List<Label> stations = SaveAndLoad.loadStationsFile(allGuiVars.mainFrame);
-			if (stations != null && stations.size() > 0){
-				LLH centerOfStations = Label.centroidLLH(stations);
-				
-				//center map at the center of the stations
-				allGuiVars.displaySettings.setCenterOfMap(  new LatLon( 
-						Angle.fromDegrees(centerOfStations.getLatitude().toDeg()), 
-						Angle.fromDegrees(centerOfStations.getLongitude().toDeg()) ) );
-				//TODO fire display state change event
-				
-				//defaults the origin at the center of the stations
-				allGuiVars.simModel.setOrigin(centerOfStations);
-				//TODO fire data state change event
-				
-				//TODO fire gui state change event
-			}
-			
-		}
-		
-	};
+//	//Menu Actions (must be first, or else menu won't work!)
+//	//------------
+//	final private ActionListener loadStationAction = new ActionListener(){
+//		@Override
+//		public void actionPerformed(ActionEvent e) {
+//			List<Label> stations = SaveAndLoad.loadStationsFile(allGuiVars.mainFrame);
+//			if (stations != null && stations.size() > 0){
+//				LLH centerOfStations = Label.centroidLLH(stations);
+//				
+//				//center map at the center of the stations
+//				allGuiVars.displaySettings.setCenterOfMap(  new LatLon( 
+//						Angle.fromDegrees(centerOfStations.getLatitude().toDeg()), 
+//						Angle.fromDegrees(centerOfStations.getLongitude().toDeg()) ) );
+//				//TODO fire display state change event
+//				
+//				//defaults the origin at the center of the stations
+//				allGuiVars.simModel.setOrigin(centerOfStations);
+//				//TODO fire data state change event
+//				
+//				//TODO fire gui state change event
+//			}
+//			
+//		}
+//		
+//	};
 	
-	private static final long serialVersionUID = -2200844778578234292L;
-    AllGUIVars allGuiVars;
 	
   //top level (0) menu items
   //------------------------
@@ -53,6 +52,10 @@ public class MainMenu extends JMenuBar {
 	final JMenu sourceMenu = new JMenu("Source");
 	final JMenu inversionMenu = new JMenu("Inversion");
 	final JMenu helpMenu = new JMenu("Help");
+
+	//other vars
+	private static final long serialVersionUID = -2200844778578234292L;
+    AllGUIVars allGuiVars;
 
     
 	public MainMenu(AllGUIVars allGuiVars) {
@@ -80,8 +83,10 @@ public class MainMenu extends JMenuBar {
 	//---------------------
 	// Data
 	private class DataMenu extends JMenu{
-		private static final long serialVersionUID = -7955614673694946018L;
 		final Data_GpsMenu gps = new Data_GpsMenu("GPS");
+
+		//other vars
+		private static final long serialVersionUID = -7955614673694946018L;
 
 		
 		public DataMenu(String title) {
@@ -95,16 +100,15 @@ public class MainMenu extends JMenuBar {
 	//-------------------
 	// Data / GPS
 	private class Data_GpsMenu extends JMenu{
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 4161855026549914886L;
-		final MenuItemWithActionNFirer loadStation = new MenuItemWithActionNFirer("Load Station Locations & Names...", loadStationAction);
+		//final MenuItemWithActionNFirer loadStation = new MenuItemWithActionNFirer("Load Station Locations & Names...", loadStationAction);
 		final JMenuItem loadDisp = new JMenuItem("Load Displacements...");
-		
+
+		//other vars
+		private static final long serialVersionUID = 4161855026549914886L;
+
 		public Data_GpsMenu(String title) {
 			super(title);
-			this.add(loadStation);
+			//this.add(loadStation);
 			loadDisp.addActionListener(loadDispAction);
 			this.add(loadDisp);
 
