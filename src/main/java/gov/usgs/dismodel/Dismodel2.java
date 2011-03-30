@@ -7,20 +7,27 @@ All Rights Reserved.
 
 package gov.usgs.dismodel;
 
-import gov.nasa.worldwind.*;
+import gov.nasa.worldwind.Configuration;
 import gov.usgs.dismodel.gui.ENUView.ENUPanel;
+import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.components.MainMenu;
+import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
+import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
 import gov.usgs.dismodel.state.DisplayStateStore;
 import gov.usgs.dismodel.state.SimulationDataModel;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
+import javax.swing.JFrame;
+import javax.swing.JSplitPane;
+import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import java.awt.*;
 
-
-public class Dismodel2 extends JFrame
+public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier
     {
 		//the interface vars
         final private static Dimension wwjSize = new Dimension(512, 768); // the desired WorldWindow size
@@ -29,17 +36,17 @@ public class Dismodel2 extends JFrame
         private final ENUPanel enuPanel;
         private final MainMenu menubar;
         
+        
         //the state vars
         private DisplayStateStore displaySettings = new DisplayStateStore();
         private SimulationDataModel simModel = new SimulationDataModel();
         
+        //EventListeners
+        
+        
         
         public Dismodel2()
         {
-        	//set menubar
-        	menubar = new MainMenu();
-        	this.setJMenuBar( menubar );
-        	
             // Create the WorldWindow.
             wwjPanel = new GeoPanel(wwjSize, true, simModel, displaySettings);
             enuPanel = new ENUPanel(enuSize, simModel, displaySettings);
@@ -69,13 +76,22 @@ public class Dismodel2 extends JFrame
             //Setting the Nimbus Look and Feel 
             setLAF();
             
+        	//set menubar
+            this.menubar = new MainMenu(new AllGUIVars(this, wwjPanel, enuPanel, displaySettings, simModel));
+            //populateMenuBar();
+            this.setJMenuBar(menubar);
+            
+            
             //tying the zoom events of both sides
             wwjPanel.addZoomListener(enuPanel);
             enuPanel.addZoomListener(wwjPanel);
+            
         }
     
 
-    public static void main(String[] args)
+
+
+	public static void main(String[] args)
     {
         start("USGS Dismodel");
     }
@@ -119,4 +135,34 @@ public class Dismodel2 extends JFrame
             e.printStackTrace();
         }
     }
+
+
+
+
+	@Override
+	public void updateAfterDataChange(
+			gov.usgs.dismodel.SimulationDataModel simModel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void addDataChangeEventListener(DataChangeEventListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void removeDataChangeEventListener(DataChangeEventListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+    
+    
 }

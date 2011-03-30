@@ -1,45 +1,132 @@
 package gov.usgs.dismodel.gui.components;
 
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.usgs.dismodel.SaveAndLoad;
+import gov.usgs.dismodel.geom.LLH;
+import gov.usgs.dismodel.geom.overlays.Label;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 
 public class MainMenu extends JMenuBar {
+	//Menu Actions (must be first, or else menu won't work!)
+	//------------
+	final private ActionListener loadStationAction = new ActionListener(){
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			List<Label> stations = SaveAndLoad.loadStationsFile(allGuiVars.mainFrame);
+			if (stations != null && stations.size() > 0){
+				LLH centerOfStations = Label.centroidLLH(stations);
+				
+				//center map at the center of the stations
+				allGuiVars.displaySettings.setCenterOfMap(  new LatLon( 
+						Angle.fromDegrees(centerOfStations.getLatitude().toDeg()), 
+						Angle.fromDegrees(centerOfStations.getLongitude().toDeg()) ) );
+				//TODO fire display state change event
+				
+				//defaults the origin at the center of the stations
+				allGuiVars.simModel.setOrigin(centerOfStations);
+				//TODO fire data state change event
+				
+				//TODO fire gui state change event
+			}
+			
+		}
+		
+	};
+	
+	private static final long serialVersionUID = -2200844778578234292L;
+    AllGUIVars allGuiVars;
+	
+  //top level (0) menu items
+  //------------------------
+	final JMenu fileMenu = new JMenu("File");
+	final JMenu mapMenu = new JMenu("Map");
+	final DataMenu dataMenu = new DataMenu("Data");
+	final JMenu sourceMenu = new JMenu("Source");
+	final JMenu inversionMenu = new JMenu("Inversion");
+	final JMenu helpMenu = new JMenu("Help");
 
-	public MainMenu() {
+    
+	public MainMenu(AllGUIVars allGuiVars) {
 		//Main Menu
 		super();
-		this.setName("menuBar");
+		this.allGuiVars = allGuiVars;
 		
-		//File Menu
-        JMenu fileMenu = new JMenu("File");
+		this.setName("menuBar");
         fileMenu.setName("fileMenu");
         this.add(fileMenu);
-        
-        //Map Menu
-        JMenu mapMenu = new JMenu("Map");
         mapMenu.setName("mapMenu");
         this.add(mapMenu);
-        
-        //Data Menu
-        JMenu dataMenu = new JMenu("Data");
         dataMenu.setName("dataMenu");
         this.add(dataMenu);
-        
-        //Source Menu
-        JMenu sourceMenu = new JMenu("Source");
         sourceMenu.setName("sourceMenu");
         this.add(sourceMenu);
-        
-        //Inversion Menu
-        JMenu inversionMenu = new JMenu("Inversion");
         inversionMenu.setName("inversionMenu");
         this.add(inversionMenu);
-        
-        //Help Menu
-        JMenu helpMenu = new JMenu("Help");
         helpMenu.setName("helpMenu");
         this.add(helpMenu);
+        
+	}
+
+	//level 1 menu items
+	//---------------------
+	// Data
+	private class DataMenu extends JMenu{
+		private static final long serialVersionUID = -7955614673694946018L;
+		final Data_GpsMenu gps = new Data_GpsMenu("GPS");
+
+		
+		public DataMenu(String title) {
+			super(title);
+			this.add(gps);
+		}
+	}
+	
+	
+	//Level 2 menu items
+	//-------------------
+	// Data / GPS
+	private class Data_GpsMenu extends JMenu{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4161855026549914886L;
+		final MenuItemWithActionNFirer loadStation = new MenuItemWithActionNFirer("Load Station Locations & Names...", loadStationAction);
+		final JMenuItem loadDisp = new JMenuItem("Load Displacements...");
+		
+		public Data_GpsMenu(String title) {
+			super(title);
+			this.add(loadStation);
+			loadDisp.addActionListener(loadDispAction);
+			this.add(loadDisp);
+
+		}
+
+		
+		
 	}
 	
 
+	
+	final private ActionListener loadDispAction = new ActionListener(){
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+		}
+		
+	};
+	
+	
+	
+
 }
+
+

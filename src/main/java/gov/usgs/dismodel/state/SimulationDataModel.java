@@ -425,5 +425,23 @@ public class SimulationDataModel implements ModelSolution {
 	public void setSmoothingParams(SmoothingDialog.Params smoothingParams) {
 		this.smoothingParams = smoothingParams;
 	}
+
+	public int getRefStation() {
+		return refStation;
+	}
+
+	public void setRefStation(int refStation) {
+		this.refStation = refStation;
+	}
+
+	public LLH getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(LLH origin) {
+		this.origin = origin;
+	}
+	
+	
     
 }
