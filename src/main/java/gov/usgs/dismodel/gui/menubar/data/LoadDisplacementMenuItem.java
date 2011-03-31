@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import gov.usgs.dismodel.SaveAndLoad;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
@@ -28,9 +29,17 @@ public class LoadDisplacementMenuItem extends DataChangingMenuItem implements Gu
 
 	@Override
 	public void guiUpdateAfterStateChange() {
-		List<Label> loadedStations = allGuiVars.getSimModel().getStations();
-		this.setEnabled( loadedStations != null && loadedStations.size() > 0  );
+		SwingUtilities.invokeLater(updateEnabled);
 	}
+
+	private final Runnable updateEnabled = new Runnable() {
+		@Override
+		public void run() {
+			List<Label> loadedStations = allGuiVars.getSimModel().getStations();
+			LoadDisplacementMenuItem.this.setEnabled( loadedStations != null && loadedStations.size() > 0  );
+		}
+	};
+	
 
 	@Override
 	public void menuItemClickAction(ActionEvent e) {

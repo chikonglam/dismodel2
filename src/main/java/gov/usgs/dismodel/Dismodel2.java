@@ -31,6 +31,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier
     {
+	private static final long serialVersionUID = -4141752858923619028L;
 		//the interface vars
         final private static Dimension wwjSize = new Dimension(512, 768); // the desired WorldWindow size
         final private static Dimension enuSize = new Dimension(512, 768); // the desired ENU Panel size
@@ -129,7 +130,7 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
-                    break;
+                    return;
                 }
             }
         } catch (Exception e) {

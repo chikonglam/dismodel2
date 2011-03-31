@@ -6,8 +6,10 @@ import gov.usgs.dismodel.SaveAndLoad;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.overlays.Label;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
+import gov.usgs.dismodel.gui.menubar.data.LoadCovMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadDisplacementMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadStationMenuItem;
+import gov.usgs.dismodel.gui.menubar.data.ProcessGreensFilesMenuItem;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,13 +21,10 @@ import javax.swing.JMenuItem;
 
 
 public class MainMenu extends JMenuBar {
-
-
 	//other vars
 	private static final long serialVersionUID = -2200844778578234292L;
     AllGUIVars allGuiVars;
 
-    
 	public MainMenu(AllGUIVars allGuiVars) {
 		//Main Menu
 		super();
@@ -33,46 +32,40 @@ public class MainMenu extends JMenuBar {
 		
 	  //top level (0) menu items
 	  //------------------------
-		final JMenu fileMenu = new JMenu("File");
-		final JMenu mapMenu = new JMenu("Map");
-		final DataMenu dataMenu = new DataMenu("Data");
-		final JMenu sourceMenu = new JMenu("Source");
-		final JMenu inversionMenu = new JMenu("Inversion");
-		final JMenu helpMenu = new JMenu("Help");
-		
-
-		//plumbing
-		//---------
-		this.setName("menuBar");
-        fileMenu.setName("fileMenu");
-        this.add(fileMenu);
-        mapMenu.setName("mapMenu");
-        this.add(mapMenu);
-        dataMenu.setName("dataMenu");
-        this.add(dataMenu);
-        sourceMenu.setName("sourceMenu");
-        this.add(sourceMenu);
-        inversionMenu.setName("inversionMenu");
-        this.add(inversionMenu);
-        helpMenu.setName("helpMenu");
-        this.add(helpMenu);
-        
+		this.add( new JMenu			("File") );
+		this.add( new JMenu			("Map") );
+		this.add( new DataMenu		("Data") );
+		this.add( new SourceMenu	("Source") );
+		this.add( new JMenu			("Inversion") );
+		this.add( new JMenu			("Help") );
 	}
 
 	//level 1 menu items
 	//---------------------
 	// Data
 	private class DataMenu extends JMenu{
-		private static final long serialVersionUID = -7955614673694946018L;
-		
 		public DataMenu(String title) {
 			super(title);
-			final Data_GpsMenu gps = new Data_GpsMenu("GPS");
 			
-			//plumbing
-			//--------
-			this.add(gps);
+			this.add( new Data_GpsMenu		("GPS") );
+			this.add( new Data_BatchMenu	("Batch Process") );
 		}
+		
+		private static final long serialVersionUID = -7955614673694946018L;
+	}
+
+	// Source
+	private class SourceMenu extends JMenu{
+		public SourceMenu(String title) {
+			super(title);
+			
+			this.add( new JMenuItem				("Edit / view sources...") );
+			this.add( new JMenuItem				("Add Dislocation...") );
+			this.add( new JMenuItem				("Add Mogi...") );
+			this.add( new JMenuItem				("Add Spherical...") );
+		}
+
+		private static final long serialVersionUID = -1827521201927405646L;
 	}
 	
 	
@@ -80,20 +73,26 @@ public class MainMenu extends JMenuBar {
 	//-------------------
 	// Data / GPS
 	private class Data_GpsMenu extends JMenu{
-		private static final long serialVersionUID = 4161855026549914886L;
-
 		public Data_GpsMenu(String title) {
 			super(title);
-			final LoadStationMenuItem loadStationsMenu = new LoadStationMenuItem		("Load Station Locations & Names...", allGuiVars);
-			final LoadDisplacementMenuItem loadDispMenu = new LoadDisplacementMenuItem		("Load Displacements...", allGuiVars);
-
-			//plumbing
-			this.add(loadStationsMenu);
-			this.add(loadDispMenu);
+			
+			this.add( new LoadStationMenuItem			("Load Station Locations & Names...", allGuiVars) );
+			this.add( new LoadDisplacementMenuItem		("Load Displacements...", allGuiVars) );
+			this.add( new LoadCovMenuItem				("Load Covariance Matrix...", allGuiVars) );
 		}
 
+		private static final long serialVersionUID = 4161855026549914886L;
+	}
+	
+	// Data / Batch Process
+	private class Data_BatchMenu extends JMenu{
+		public Data_BatchMenu(String title) {
+			super(title);
+			
+			this.add( new ProcessGreensFilesMenuItem("Green's function file(s)...", allGuiVars) );
+		}
 		
-		
+		private static final long serialVersionUID = -3577880343506143989L;
 	}
 	
 

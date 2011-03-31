@@ -10,27 +10,17 @@ import java.util.ArrayList;
 
 import javax.swing.JMenuItem;
 
-public abstract class DataChangingMenuItem extends JMenuItem implements DataChangeEventFrier{
+public abstract class DataChangingMenuItem extends ActionMenuItem implements DataChangeEventFrier{
 	private static final long serialVersionUID = 376779782775180460L;
-	ArrayList<DataChangeEventListener> dataChgListeners = new ArrayList<DataChangeEventListener>();
-	protected AllGUIVars allGuiVars;
-	ActionListener action = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			menuItemClickAction(e);
-		}
-	};
+	protected ArrayList<DataChangeEventListener> dataChgListeners = new ArrayList<DataChangeEventListener>();
 	
 	public DataChangingMenuItem(String title, AllGUIVars allGuiVars) {
-		super(title);
-		this.allGuiVars = allGuiVars;
-		this.addActionListener(action);
+		super(title, allGuiVars);
 	}
 
 	@Override
 	public void addDataChangeEventListener(DataChangeEventListener listener) {
 		dataChgListeners.add(listener);
-		
 	}
 
 	@Override
@@ -45,6 +35,6 @@ public abstract class DataChangingMenuItem extends JMenuItem implements DataChan
 	}
 	
 	
-	public abstract void menuItemClickAction(ActionEvent e);
+	
 	
 }
