@@ -12,6 +12,8 @@ import gov.usgs.dismodel.gui.ENUView.ENUPanel;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
+import gov.usgs.dismodel.gui.events.GuiUpdateRequestFrier;
+import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
 import gov.usgs.dismodel.gui.menubar.MainMenu;
 import gov.usgs.dismodel.state.DisplayStateStore;
@@ -27,7 +29,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 
-public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier
+public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier
     {
 		//the interface vars
         final private static Dimension wwjSize = new Dimension(512, 768); // the desired WorldWindow size
@@ -140,16 +142,6 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
 
 
 	@Override
-	public void updateAfterDataChange(
-			gov.usgs.dismodel.SimulationDataModel simModel) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-	@Override
 	public void addDataChangeEventListener(DataChangeEventListener listener) {
 		// TODO Auto-generated method stub
 		
@@ -160,6 +152,32 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
 
 	@Override
 	public void removeDataChangeEventListener(DataChangeEventListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void updateAfterDataChange() {
+		System.out.println("Data update event received");
+	}
+
+
+
+
+	@Override
+	public void addGuiUpdateRequestListener(GuiUpdateRequestListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void removeGuiUpdateRequestListener(GuiUpdateRequestListener listener) {
 		// TODO Auto-generated method stub
 		
 	}
