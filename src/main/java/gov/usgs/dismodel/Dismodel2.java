@@ -25,11 +25,20 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
+import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier {
+    static
+    {
+        // Ensure that menus and tooltips interact successfully with the WWJ window.
+        ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
+        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+    }
+
     private static final long serialVersionUID = -4141752858923619028L;
     // the interface vars
     final private static Dimension wwjSize = new Dimension(512, 768); // the
@@ -95,8 +104,12 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
         wwjPanel.addZoomListener(enuPanel);
         enuPanel.addZoomListener(wwjPanel);
         
-        
-        updateAfterDataChange();  //fire the event to update the gui and the data views
+        // register the two panels to listen to this
+        this.addDataChangeEventListener(wwjPanel);
+        this.addDataChangeEventListener(enuPanel);
+
+        updateAfterDataChange(); // fire the event to update the gui and the
+                                 // data views
     }
 
     public static void main(String[] args) {
@@ -148,9 +161,17 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
 
     @Override
     public void updateAfterDataChange() {
-        //TODO first pass events to the two graphical interfaces
-        
-        for (GuiUpdateRequestListener listener : this.guiChgListeners){         //pass the event to Gui Update Listeners
+        for (DataChangeEventListener listener : this.dataChgListeners){        // first pass events to the two graphical interfaces
+            listener.updateAfterDataChange();
+        }
+
+        for (GuiUpdateRequestListener listener : this.guiChgListeners) { // pass
+                                                                         // the
+                                                                         // event
+                                                                         // to
+                                                                         // Gui
+                                                                         // Update
+                                                                         // Listeners
             listener.guiUpdateAfterStateChange();
         }
     }

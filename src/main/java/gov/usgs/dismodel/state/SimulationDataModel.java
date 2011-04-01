@@ -4,6 +4,7 @@ import gov.usgs.dismodel.ModelSolution;
 import gov.usgs.dismodel.RestorableSourceDialog;
 import gov.usgs.dismodel.SmoothingDialog;
 import gov.usgs.dismodel.calc.SolverException;
+import gov.usgs.dismodel.calc.batchInversion.DistributedSlipsBatchGreensIO;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.DistributedFault;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
@@ -32,7 +33,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import dismodel.calc.batchInversion.DistributedSlipsBatchGreensIO;
 
 @XmlRootElement
 @XmlType(propOrder = { "sourceModels", "sourceLowerbound", "sourceUpperbound", "fittedModels" })

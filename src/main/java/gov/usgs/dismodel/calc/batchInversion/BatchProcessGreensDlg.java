@@ -1,4 +1,4 @@
-package dismodel.calc.batchInversion;
+package gov.usgs.dismodel.calc.batchInversion;
 
 import gov.usgs.dismodel.OkayDialog;
 import gov.usgs.dismodel.SaveAndLoad;
