@@ -84,6 +84,7 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
 
         // THIS IS THE TRICK: Set the panel's minimum size to (0,0);
         this.setMinimumSize(new Dimension(0, 0));
+        this.setPreferredSize(canvasSize);
 
         // Create the default model as described in the current worldwind
         // properties.
@@ -95,7 +96,7 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
         // WorldMapLayer.class));
 
         // Add the WorldWindow to this JPanel.
-        this.add(this.wwd, BorderLayout.CENTER);
+        this.add(wwd, BorderLayout.CENTER);
 
         // Add the status bar if desired.
         if (includeStatusBar) {
