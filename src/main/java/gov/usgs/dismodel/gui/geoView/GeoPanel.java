@@ -222,10 +222,11 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
     };
 
     private void addStations() {
+        stationLayer.removeAllRenderables();
+        stationNameLayer.removeAllAnnotations();
+
         List<Label> stations = simModel.getStations();
         if (stations != null && stations.size() > 0) {
-            stationLayer.removeAllRenderables();
-            stationNameLayer.removeAllAnnotations();
 
             AnnotationAttributes stationLabAttr = new AnnotationAttributes(); // TODO
                                                                               // change
