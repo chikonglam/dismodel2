@@ -6,6 +6,7 @@ import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
+import gov.nasa.worldwind.event.InputHandler;
 import gov.nasa.worldwind.event.RenderingEvent;
 import gov.nasa.worldwind.event.RenderingListener;
 import gov.nasa.worldwind.geom.Angle;
@@ -27,6 +28,8 @@ import gov.usgs.dismodel.geom.overlays.VectorXyz;
 import gov.usgs.dismodel.geom.overlays.WWVector;
 import gov.usgs.dismodel.geom.overlays.WWVectorLayer;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
+import gov.usgs.dismodel.gui.events.GeoPosClickFrier;
+import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
@@ -36,13 +39,17 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListener, DataChangeEventListener {
+public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListener, DataChangeEventListener, GeoPosClickFrier {
     // constants
     // -----
     private static final double ZOOM_REFRESH_THRESHOLD = 0.10;
@@ -53,6 +60,7 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
     private StatusBar statusBar;
     private SimulationDataModel simModel;
     private DisplayStateStore displaySettings;
+    private WWClickRedirector wwClickRedirector;
 
     // layers
     // --------
@@ -107,7 +115,7 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
 
         // making sure the right side zooms too
         wwView.setFieldOfView(Angle.fromDegrees(45));
-        wwd.addRenderingListener(zoomLevelEventFirer);
+        wwView.addPropertyChangeListener(changeListener);
 
         // setting up the layers
         insertBeforeCompass(this.wwd, stationLayer);
@@ -118,22 +126,32 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
         // setting the map at the default location, and default zoom level
         updateMapCenterAfterSettingsChanged(displaySettings);
         updateZoomLevelAfterSettingsChanged(displaySettings);
+        
+        // mouse click listener to serve location info, and remove one click rotation
+        wwClickRedirector = new WWClickRedirector(wwd, simModel);
+        wwd.getInputHandler().addMouseListener(wwClickRedirector);
+        
 
     }
-
-    private RenderingListener zoomLevelEventFirer = new RenderingListener() {
-        @Override
-        public void stageChanged(RenderingEvent event) {
-            SwingUtilities.invokeLater(threadedZoomLevelFirer);
-        }
-    };
+    
+   
+    
+    
+    private PropertyChangeListener changeListener = new PropertyChangeListener() {
+		
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			SwingUtilities.invokeLater(threadedZoomLevelFirer);
+		}
+	};
 
     private Runnable threadedZoomLevelFirer = new Runnable() {
-        public void run() {
-            final double wwAxisSpan = wwView.getEyePosition().getElevation();
+
+    	public void run() {
+            final double wwAxisSpan = wwView.getEyePosition().getAltitude();
             final double expectedAxisSpan = displaySettings.getChartSpan();
 
-            if (Math.abs((wwAxisSpan - expectedAxisSpan) / expectedAxisSpan) > ZOOM_REFRESH_THRESHOLD) {
+            if ( wwAxisSpan != 0.0d && Math.abs((wwAxisSpan - expectedAxisSpan) / expectedAxisSpan) > ZOOM_REFRESH_THRESHOLD) {
                 displaySettings.setChartSpan(wwAxisSpan);
                 for (ZoomEventListener listener : zoomListeners) {
                     listener.updateZoomLevelAfterSettingsChanged(displaySettings);
@@ -162,6 +180,8 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
             if (wwView.isAnimating()) {
                 wwView.stopAnimations();
             }
+
+            
             Position pos = ((BasicOrbitView) wwView).getCenterPosition();
 
             Position tmpPos = Position.fromRadians(pos.getLatitude().radians, pos.getLongitude().radians,
@@ -192,11 +212,17 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
     private Runnable threadedUpdateMapCenter = new Runnable() {
         @Override
         public void run() {
-            LatLon centerLL = displaySettings.getCenterOfMap();
-            Position center = new Position(centerLL, 0);
-            double elevation = displaySettings.getChartSpan();
-            wwView.goTo(center, elevation);
-            wwView.setFieldOfView(Angle.fromDegrees(45));
+//            LatLon centerLL = displaySettings.getCenterOfMap();
+//            Position center = new Position(centerLL, 0);
+            double expectedAxisSpan = displaySettings.getChartSpan();
+            
+            Position pos = ((BasicOrbitView) wwView).getCenterPosition();
+
+            Position tmpPos = Position.fromRadians(pos.getLatitude().radians, pos.getLongitude().radians,
+                    expectedAxisSpan);
+            wwView.setEyePosition(tmpPos);
+
+            wwd.redraw();
 
             wwd.redraw();
         }
@@ -296,5 +322,16 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
                 .getLongitude().toDeg());
         return new Position(ll, llh.getHeight());
     }
+
+	@Override
+	public void addGeoPosClickListener(GeoPosClickListener listener) {
+		this.wwClickRedirector.addGeoPosClickListener(listener);
+		
+	}
+
+	@Override
+	public void removeGeoPosClickListener(GeoPosClickListener listener) {
+		this.wwClickRedirector.removeGeoPosClickListener(listener);
+	}
 
 }

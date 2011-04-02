@@ -12,6 +12,8 @@ import gov.usgs.dismodel.gui.ENUView.ENUPanel;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
+import gov.usgs.dismodel.gui.events.GeoPosClickFrier;
+import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.GuiUpdateRequestFrier;
 import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
@@ -31,7 +33,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier {
+public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier, GeoPosClickFrier {
     static
     {
         // Ensure that menus and tooltips interact successfully with the WWJ window.
@@ -185,5 +187,18 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
     public void removeGuiUpdateRequestListener(GuiUpdateRequestListener listener) {
         this.guiChgListeners.remove(listener);
     }
+
+	@Override
+	public void addGeoPosClickListener(GeoPosClickListener listener) {
+		wwjPanel.addGeoPosClickListener(listener);
+		//TODO add the ENU Panel too
+	}
+
+	@Override
+	public void removeGeoPosClickListener(GeoPosClickListener listener) {
+		wwjPanel.removeGeoPosClickListener(listener);
+		//TODO add the ENU Panel too
+		
+	}
 
 }

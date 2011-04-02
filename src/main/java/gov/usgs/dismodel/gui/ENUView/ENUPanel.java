@@ -5,15 +5,16 @@ import gov.usgs.dismodel.geom.overlays.Label;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
 import gov.usgs.dismodel.geom.overlays.jzy.AutoKmTicker;
 import gov.usgs.dismodel.geom.overlays.jzy.Marker;
+import gov.usgs.dismodel.geom.overlays.jzy.ScreenToGraphMap;
 import gov.usgs.dismodel.geom.overlays.jzy.Vector3D;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
-import gov.usgs.dismodel.gui.jzy3dOverrides.JzyMouseListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
 import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import javax.swing.SwingUtilities;
 
 import net.masagroup.jzy3d.chart.Chart;
 import net.masagroup.jzy3d.colors.Color;
+import net.masagroup.jzy3d.global.Settings;
 import net.masagroup.jzy3d.maths.BoundingBox3d;
 import net.masagroup.jzy3d.plot3d.primitives.axes.AxeBox;
 import net.masagroup.jzy3d.plot3d.rendering.canvas.Quality;
@@ -37,10 +39,10 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
 
     // Chart stuff
     private Chart chart;
-    private JzyMouseListener mouseController;
     private BoundingBox3d chartBounds;
     private AxeBox axesBounds;
     private AutoKmTicker kmTicker = new AutoKmTicker();
+    private JzyMouseListener mouseController;
     
     //plotted stuff
     private List<Marker> stations = new ArrayList<Marker>();
@@ -49,6 +51,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
 
     public ENUPanel(Dimension canvasSize, SimulationDataModel simModel, DisplayStateStore displaySettings) {
         super(new BorderLayout());
+
         // state stuff
         this.simModel = simModel;
         this.displaySettings = displaySettings;
@@ -62,21 +65,26 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
 
         // chart stuff
         this.chart = new Chart(Quality.Nicest, "swing");
-        this.mouseController = new JzyMouseListener(displaySettings);
-        mouseController.addZoomListener(this);
+        this.mouseController = new JzyMouseListener(this, displaySettings, simModel);
         chart.addController(mouseController);
 
-        setAxesFromDisplaySettings();
-
+        
         // enuChart = new EnuViewerJzy2(simModel, displaySettings);
         panel3d = new JPanel();
         panel3d.setLayout(new BorderLayout());
-        panel3d.add((JComponent) chart.getCanvas(), BorderLayout.CENTER);
+        panel3d.add((Component) chart.getCanvas(), BorderLayout.CENTER);
 
         this.add(panel3d, BorderLayout.CENTER);
+        
+        //init the graph
+        setAxesFromDisplaySettings();
+        //panel3d.repaint();
+        
+        
+
     }
 
-    private void setAxesFromDisplaySettings() {
+    public void setAxesFromDisplaySettings() {
         double centerX = this.displaySettings.getxCenter();
         double centerY = this.displaySettings.getyCenter();
         double graphSpan = this.displaySettings.getChartSpan();
@@ -85,9 +93,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     }
 
     public void setAxes(final double centerX, final double centerY, final double graphSpan) {
-        Runnable threadedsetAxes = new Runnable() {
-            @Override
-            public void run() {
+
                 final double halfSpan = graphSpan / 2.0;
 
                 chartBounds = new BoundingBox3d();
@@ -111,12 +117,9 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
                 chart.getAxeLayout().setYTickRenderer(kmTicker);
 
                 chart.getView().updateBounds();
+     }
+    
 
-            }
-        };
-        SwingUtilities.invokeLater(threadedsetAxes);
-
-    }
 
     // zoom event handler: to handle zoomings requests from everywhere
     @Override
@@ -197,9 +200,14 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     }
     
     
-    
     protected static net.masagroup.jzy3d.colors.Color fromAWT(java.awt.Color color) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
+
+	public Chart getChart() {
+		return chart;
+	}
+    
+    
 
 }
