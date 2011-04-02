@@ -52,6 +52,9 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     public ENUPanel(Dimension canvasSize, SimulationDataModel simModel, DisplayStateStore displaySettings) {
         super(new BorderLayout());
 
+        //set Jzy to use hardware
+        Settings.getInstance().setHardwareAccelerated(true);    //TODO check if this works everywhere
+
         // state stuff
         this.simModel = simModel;
         this.displaySettings = displaySettings;
