@@ -127,7 +127,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
         double centerX = displaySettings.getxCenter();
         double centerY = displaySettings.getyCenter();
         double axisSpan = displaySettings.getChartSpan();
-
+        System.out.println("Jzy received a request to zoom to span=" + axisSpan);
         setAxes(centerX, centerY, axisSpan);
     }
 

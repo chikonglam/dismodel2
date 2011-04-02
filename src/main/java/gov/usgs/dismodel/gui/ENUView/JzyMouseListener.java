@@ -49,6 +49,7 @@ import gov.usgs.dismodel.state.SimulationDataModel;
     	public void mousePressed(MouseEvent e) {
 			if (MouseUtilities.isDoubleClick(e)){
 				dragXy = !dragXy;					//TODO remove this after the GUI is ready
+				System.out.println("Drag mode on:" + dragXy);
 			} else if(MouseUtilities.isLeftDown(e)){
     			int mouseX = e.getX();
     			int mouseY = e.getY();

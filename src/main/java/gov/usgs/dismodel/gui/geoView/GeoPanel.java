@@ -49,10 +49,13 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import net.masagroup.jzy3d.global.Settings;
+
 public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListener, DataChangeEventListener, GeoPosClickFrier {
     // constants
     // -----
-    private static final double ZOOM_REFRESH_THRESHOLD = 0.10;
+    private static final double ZOOM_REFRESH_THRESHOLD = 0.08;
+    private static final double ZOOM_MIN_SPAN = 10d;
 
     private static final long serialVersionUID = -7898383357800550284L;
     private JPanel toolbar;
@@ -77,6 +80,9 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
     public GeoPanel(Dimension canvasSize, boolean includeStatusBar, SimulationDataModel simModel,
             DisplayStateStore displaySettings) {
         super(new BorderLayout());
+        //set Jzy to use hardware
+        Settings.getInstance().setHardwareAccelerated(true);    //TODO check if this works everywhere
+        
         // state vars
         this.simModel = simModel;
         this.displaySettings = displaySettings;
@@ -151,7 +157,7 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
             final double wwAxisSpan = wwView.getEyePosition().getAltitude();
             final double expectedAxisSpan = displaySettings.getChartSpan();
 
-            if ( wwAxisSpan != 0.0d && Math.abs((wwAxisSpan - expectedAxisSpan) / expectedAxisSpan) > ZOOM_REFRESH_THRESHOLD) {
+            if ( wwAxisSpan > ZOOM_MIN_SPAN && Math.abs((wwAxisSpan - expectedAxisSpan) / expectedAxisSpan) > ZOOM_REFRESH_THRESHOLD) {
                 displaySettings.setChartSpan(wwAxisSpan);
                 for (ZoomEventListener listener : zoomListeners) {
                     listener.updateZoomLevelAfterSettingsChanged(displaySettings);
@@ -172,6 +178,8 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
         @Override
         public void run() {
             double expectedAxisSpan = displaySettings.getChartSpan();
+            System.out.println("WW received a request to zoom to span=" + expectedAxisSpan);
+
             final double wwAxisSpan = wwView.getEyePosition().getElevation();
             if (Math.abs((wwAxisSpan - expectedAxisSpan) / expectedAxisSpan) < ZOOM_REFRESH_THRESHOLD) {
                 return;
@@ -186,7 +194,6 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
 
             Position tmpPos = Position.fromRadians(pos.getLatitude().radians, pos.getLongitude().radians,
                     expectedAxisSpan);
-            System.out.println("Zooming to axis span=" + expectedAxisSpan); // //debug
             wwView.setEyePosition(tmpPos);
 
             wwd.redraw();
@@ -212,8 +219,7 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
     private Runnable threadedUpdateMapCenter = new Runnable() {
         @Override
         public void run() {
-//            LatLon centerLL = displaySettings.getCenterOfMap();
-//            Position center = new Position(centerLL, 0);
+
             double expectedAxisSpan = displaySettings.getChartSpan();
             
             Position pos = ((BasicOrbitView) wwView).getCenterPosition();
@@ -224,8 +230,7 @@ public class GeoPanel extends JPanel implements ZoomEventFirer, ZoomEventListene
 
             wwd.redraw();
 
-            wwd.redraw();
-        }
+         }
     };
 
     @Override
