@@ -23,12 +23,12 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import net.masagroup.jzy3d.chart.Chart;
-import net.masagroup.jzy3d.colors.Color;
-import net.masagroup.jzy3d.global.Settings;
-import net.masagroup.jzy3d.maths.BoundingBox3d;
-import net.masagroup.jzy3d.plot3d.primitives.axes.AxeBox;
-import net.masagroup.jzy3d.plot3d.rendering.canvas.Quality;
+import org.jzy3d.chart.Chart;
+import org.jzy3d.colors.Color;
+import org.jzy3d.global.Settings;
+import org.jzy3d.maths.BoundingBox3d;
+import org.jzy3d.plot3d.primitives.axes.AxeBox;
+import org.jzy3d.plot3d.rendering.canvas.Quality;
 
 public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFirer, DataChangeEventListener {
     private JPanel toolbar;
@@ -203,7 +203,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     }
     
     
-    protected static net.masagroup.jzy3d.colors.Color fromAWT(java.awt.Color color) {
+    protected static org.jzy3d.colors.Color fromAWT(java.awt.Color color) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 

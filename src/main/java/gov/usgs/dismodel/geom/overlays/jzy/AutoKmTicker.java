@@ -1,6 +1,6 @@
 package gov.usgs.dismodel.geom.overlays.jzy;
 
-import net.masagroup.jzy3d.plot3d.primitives.axes.layout.renderers.ITickRenderer;
+import org.jzy3d.plot3d.primitives.axes.layout.renderers.ITickRenderer;
 
 public class AutoKmTicker implements ITickRenderer {
 	String formatString;

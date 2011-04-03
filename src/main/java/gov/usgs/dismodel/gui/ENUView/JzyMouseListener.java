@@ -1,27 +1,27 @@
 package gov.usgs.dismodel.gui.ENUView;
 
-import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
-import javax.media.opengl.glu.GLU;
-
-import net.masagroup.jzy3d.chart.Chart;
-import net.masagroup.jzy3d.chart.ChartView;
-import net.masagroup.jzy3d.chart.controllers.mouse.ChartMouseController;
-import net.masagroup.jzy3d.chart.controllers.mouse.MouseUtilities;
-import net.masagroup.jzy3d.maths.Coord2d;
-import net.masagroup.jzy3d.maths.Coord3d;
-import net.masagroup.jzy3d.plot3d.rendering.view.Camera;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
-import gov.usgs.dismodel.geom.overlays.jzy.ScreenToGraphMap;
 import gov.usgs.dismodel.gui.events.GeoPosClickFrier;
 import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
 import gov.usgs.dismodel.state.SimulationDataModel;
+
+import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
+import javax.media.opengl.glu.GLU;
+
+import org.jzy3d.chart.Chart;
+import org.jzy3d.chart.ChartView;
+import org.jzy3d.chart.controllers.mouse.ChartMouseController;
+import org.jzy3d.chart.controllers.mouse.MouseUtilities;
+import org.jzy3d.maths.Coord2d;
+import org.jzy3d.maths.Coord3d;
+import org.jzy3d.plot3d.rendering.view.Camera;
 
     public class JzyMouseListener extends ChartMouseController implements ZoomEventFirer, GeoPosClickFrier{
     	private final ENUPanel enuPanel;
