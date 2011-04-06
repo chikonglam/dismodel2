@@ -5,6 +5,7 @@ import gov.usgs.dismodel.gui.menubar.data.LoadCovMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadDisplacementMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadStationMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.ProcessGreensFilesMenuItem;
+import gov.usgs.dismodel.gui.menubar.source.MogiMenuItem;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -51,7 +52,7 @@ public class MainMenu extends JMenuBar {
 
 			this.add(new JMenuItem("Edit / view sources..."));
 			this.add(new JMenuItem("Add Dislocation..."));
-			this.add(new JMenuItem("Add Mogi..."));
+			this.add(new MogiMenuItem("Add Mogi...", allGuiVars));
 			this.add(new JMenuItem("Add Spherical..."));
 		}
 
