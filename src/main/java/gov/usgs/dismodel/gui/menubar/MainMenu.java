@@ -5,6 +5,7 @@ import gov.usgs.dismodel.gui.menubar.data.LoadCovMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadDisplacementMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadStationMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.ProcessGreensFilesMenuItem;
+import gov.usgs.dismodel.gui.menubar.inversion.SolveMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.MogiMenuItem;
 
 import javax.swing.JMenu;
@@ -27,7 +28,7 @@ public class MainMenu extends JMenuBar {
 		this.add(new JMenu("Map"));
 		this.add(new DataMenu("Data"));
 		this.add(new SourceMenu("Source"));
-		this.add(new JMenu("Inversion"));
+		this.add(new InversionMenu("Inversion"));
 		this.add(new JMenu("Help"));
 	}
 
@@ -58,6 +59,20 @@ public class MainMenu extends JMenuBar {
 
 		private static final long serialVersionUID = -1827521201927405646L;
 	}
+	
+	//Inversion
+	private class InversionMenu extends JMenu {
+	    public InversionMenu(String title) {
+                super(title);
+
+                this.add(new JMenuItem("Smoothing..."));
+                this.add(new JMenuItem("Dist Slip Constraints..."));
+                this.add(new JMenuItem("Forward Model"));
+                this.add(new SolveMenuItem("Solve", allGuiVars));
+        }
+
+	}
+	
 
 	// Level 2 menu items
 	// -------------------

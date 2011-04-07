@@ -252,15 +252,8 @@ public class GeoPanel extends Panel implements ZoomEventFirer,
 		List<Label> stations = simModel.getStations();
 		if (stations != null && stations.size() > 0) {
 
-			AnnotationAttributes stationLabAttr = new AnnotationAttributes(); // TODO
-																				// change
-																				// this
-																				// to
-																				// a
-																				// more
-																				// efficient,
-																				// modular
-																				// way
+			AnnotationAttributes stationLabAttr = new AnnotationAttributes(); // TODO: move this out to a seperate class
+
 			stationLabAttr.setFrameShape(FrameFactory.SHAPE_NONE);
 			stationLabAttr.setTextAlign(AVKey.CENTER);
 			stationLabAttr.setDrawOffset(new Point(0, 5));

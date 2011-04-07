@@ -68,8 +68,8 @@ import org.jzy3d.plot3d.rendering.view.Camera;
         	Camera camera = view.getCamera();
         	Coord3d screenXY = new Coord3d(mouseX, mouseY, 0d);
         	Coord3d modelCoord = camera.screenToModel(view.getCurrentGL(), new GLU(), screenXY);
-        	double modelX = (double)modelCoord.x;
-        	double modelY = (double)(-modelCoord.y);
+        	double modelX = (double)modelCoord.x ;
+        	double modelY = 2.0* displaySettings.getyCenter() - ((double) modelCoord.y) ;
 
         	LLH origin = simModel.getOrigin();
         	LocalENU pointClicked = new LocalENU( modelX, modelY, 0d, origin );

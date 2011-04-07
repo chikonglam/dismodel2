@@ -21,10 +21,12 @@ public class DisplayStateStore {
     private double chartSpan = 1e7d;
 
     // vector variables
-    private Color realDisplacementVectorColor = new Color(219, 176, 4); // deep
-                                                                        // yellow
-    private Color modeledDisplacementVectorColor = Color.RED;
+    private Color realDisplacementVectorColor = new Color(219, 176, 4, 128);    // deep yellow
+    private Color modeledDisplacementVectorColor = new Color(255, 0, 0, 128);
     private int displacementVectorScale = 20000;
+    
+    //source color
+    private Color sourceColor = Color.RED;
 
     // getters and setters
     public Color getRealDisplacementVectorColor() {
@@ -90,5 +92,15 @@ public class DisplayStateStore {
     public void setStationColor(Color stationColor) {
         this.stationColor = stationColor;
     }
+
+    public Color getSourceColor() {
+        return sourceColor;
+    }
+
+    public void setSourceColor(Color sourceColor) {
+        this.sourceColor = sourceColor;
+    }
+    
+    
 
 }
