@@ -1,10 +1,6 @@
 package gov.usgs.dismodel.calc.greens;
 
 import gov.nasa.worldwind.render.Renderable;
-import gov.usgs.dismodel.SimulationDataModel;
-import gov.usgs.dismodel.WWPanel;
-import gov.usgs.dismodel.DisModel.ENUPanel;
-import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.state.DisplayStateStore;
@@ -22,7 +18,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.jzy3d.colors.Color;
+import gov.usgs.dismodel.state.SimulationDataModel;
+
 import org.jzy3d.plot3d.primitives.AbstractDrawable;
 import org.ojalgo.matrix.jama.JamaMatrix;
 
@@ -255,7 +252,7 @@ public abstract class DisplacementSolver
     
     abstract public AbstractDrawable toAbstractDrawable(DisplayStateStore displaySettings);
     
-    abstract public Renderable toWWJRenderable(double minAxis , LLH origin, java.awt.Color color);
+    abstract public Renderable toWWJRenderable(SimulationDataModel simModel, DisplayStateStore displaySettings);
 
     abstract public void offsetLocation(double east, double north, double up);
 

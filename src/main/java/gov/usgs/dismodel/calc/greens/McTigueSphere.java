@@ -6,13 +6,16 @@ import gov.nasa.worldwind.render.Material;
 import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.render.ShapeAttributes;
 import gov.nasa.worldwind.render.SurfaceCircle;
+import gov.nasa.worldwind.render.SurfaceIcon;
 import gov.usgs.dismodel.DisModel.ENUPanel;
-import gov.usgs.dismodel.SimulationDataModel;
+import gov.usgs.dismodel.state.SimulationDataModel;
 import gov.usgs.dismodel.WWPanel;
 import gov.usgs.dismodel.calc.greens.dialogs.SphericalSourceDialog2;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.jzy.CrossHair;
+import gov.usgs.dismodel.gui.components.AllGUIVars;
+import gov.usgs.dismodel.state.DisplayStateStore;
 
 import java.awt.Window;
 import java.util.ArrayList;
@@ -205,8 +208,8 @@ public class McTigueSphere extends DisplacementSolver{
     }
 
     @Override
-    public AbstractDrawable toAbstractDrawable(float minAxis, Color color) {
-        return new CrossHair(new Coord3d(msp[EAST_LOC_IDX], msp[NORTH_LOC_IDX], msp[UP_LOC_IDX]), (float) Math.max(radius, minAxis/40d), color, getName());
+    public AbstractDrawable toAbstractDrawable(DisplayStateStore displaySettings) {
+        return new CrossHair( new Coord3d(msp[EAST_LOC_IDX], msp[NORTH_LOC_IDX], msp[UP_LOC_IDX]), (float)radius, getName(), displaySettings ) ;
     }
 
     @Override
@@ -222,30 +225,31 @@ public class McTigueSphere extends DisplacementSolver{
     }
 
     @Override
-    public Renderable toWWJRenderable(double minAxis, LLH origin, java.awt.Color color) {
+    public Renderable toWWJRenderable(SimulationDataModel simModel, DisplayStateStore displaySettings) {
         final double east = msp[EAST_LOC_IDX];
         final double north = msp[NORTH_LOC_IDX];
         final double up = msp[UP_LOC_IDX];
         
-    
+        LLH origin = simModel.getOrigin();
+        
+        final String mogiIcon = "gov/usgs/dismodel/resources/plus.png";
+        
         final LLH centerLLH = new LocalENU(east, north, up, origin).toLLH();
+        
         final LatLon centerLatLon = LatLon.fromDegrees(centerLLH.getLatitude().toDeg(), centerLLH.getLongitude().toDeg()); 
+        SurfaceIcon icon = new SurfaceIcon(mogiIcon, centerLatLon);
+        java.awt.Color color = displaySettings.getSourceColor();
+        icon.setOpacity(color.getAlpha()/255);
+        icon.setScale(3);
+        icon.setMaxSize(50e3);
+        icon.setMinSize(radius*2);
         
-        SurfaceCircle circle = new SurfaceCircle(centerLatLon, 200d);  //TODO:  Change the radius, it's in meters, obtain an axis, then do it, or do an icon
-        
-        ShapeAttributes attrs = new BasicShapeAttributes();
-        Material pureColorMat = new Material(color);
-        attrs.setOutlineMaterial(pureColorMat);
-        attrs.setInteriorMaterial(pureColorMat);
-        circle.setAttributes(attrs);
-        
-        return circle; 
+        return icon;
     }
 
 	@Override
-	public JDialog toJDialog(Window owner, String title, SimulationDataModel simModel, int modelIndex, WWPanel wwjPanel,
-			ENUPanel enuPanel) {
-		return new SphericalSourceDialog2(owner, title, simModel, modelIndex, wwjPanel, enuPanel);
+	public JDialog toJDialog(Window owner, String title,  int modelIndex, AllGUIVars allGuiVars)  {
+		return new SphericalSourceDialog2(owner, title, modelIndex, allGuiVars);
 	}
     
     

@@ -4,7 +4,7 @@ import gov.usgs.dismodel.Dismodel2;
 import gov.usgs.dismodel.RestorableSourceDialog;
 import gov.usgs.dismodel.SourceDialogUtils;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
-import gov.usgs.dismodel.calc.greens.MogiPoint;
+import gov.usgs.dismodel.calc.greens.McTigueSphere;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
@@ -19,24 +19,23 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-public class MogiSourceDialog2 extends MogiSourceDialogBase implements RestorableSourceDialog, GeoPosClickListener,
-        DataChangeEventFrier {
+public class SphericalSourceDialog2 extends SphericalSourceDialogBase implements RestorableSourceDialog,
+        GeoPosClickListener, DataChangeEventFrier {
 
+    /**
+	 * 
+	 */
+    private static final long serialVersionUID = -336068134974255797L;
     private boolean createNew = true;
     private int modelIndex = -1;
     private boolean unitsAreXY = true;
     private javax.swing.JTextField filledXField = null;
     private javax.swing.JTextField filledYField = null;
     private AllGUIVars allGuiVars;
-    private SimulationDataModel simModel;
+    private SimulationDataModel simModel = null;
     private ArrayList<DataChangeEventListener> dataChgListeners = new ArrayList<DataChangeEventListener>();
 
-    /**
-	 * 
-	 */
-    private static final long serialVersionUID = -188080137648952347L;
-
-    public MogiSourceDialog2(Window owner, String title, AllGUIVars allGuiVars) {
+    public SphericalSourceDialog2(Window owner, String title, AllGUIVars allGuiVars) {
         super(owner, title);
         this.allGuiVars = allGuiVars;
 
@@ -48,25 +47,26 @@ public class MogiSourceDialog2 extends MogiSourceDialogBase implements Restorabl
 
     }
 
-    public MogiSourceDialog2(Window owner, String title, int modelIndex, AllGUIVars allGuiVars) {
+    public SphericalSourceDialog2(Window owner, String title, int modelIndex, AllGUIVars allGuiVars) {
         this(owner, title, allGuiVars);
         this.modelIndex = modelIndex;
         this.createNew = false;
 
-        MogiPoint curMogi = (MogiPoint) simModel.getSourceModels().get(modelIndex);
-        MogiPoint curLB = (MogiPoint) simModel.getSourceLowerbound().get(modelIndex);
-        MogiPoint curUB = (MogiPoint) simModel.getSourceUpperbound().get(modelIndex);
+        McTigueSphere curSphere = (McTigueSphere) simModel.getSourceModels().get(modelIndex);
+        McTigueSphere curLB = (McTigueSphere) simModel.getSourceLowerbound().get(modelIndex);
+        McTigueSphere curUB = (McTigueSphere) simModel.getSourceUpperbound().get(modelIndex);
 
-        SourceDialogUtils.parseValsIntoUIBoxes(curMogi.getEast(), curLB.getEast(), curUB.getEast(), CBFixX, txtValX,
+        SourceDialogUtils.parseValsIntoUIBoxes(curSphere.getEast(), curLB.getEast(), curUB.getEast(), CBFixX, txtValX,
                 txtLBX, txtUBX);
-        SourceDialogUtils.parseValsIntoUIBoxes(curMogi.getNorth(), curLB.getNorth(), curUB.getNorth(), CBFixY, txtValY,
-                txtLBY, txtUBY);
-        SourceDialogUtils.parseValsIntoUIBoxes(-curMogi.getUp(), -curUB.getUp(), -curLB.getUp(), CBFixC, txtValC,
+        SourceDialogUtils.parseValsIntoUIBoxes(curSphere.getNorth(), curLB.getNorth(), curUB.getNorth(), CBFixY,
+                txtValY, txtLBY, txtUBY);
+        SourceDialogUtils.parseValsIntoUIBoxes(-curSphere.getUp(), -curUB.getUp(), -curLB.getUp(), CBFixC, txtValC,
                 txtLBC, txtUBC);
 
-        txtVolChg.setText(String.format("%.2f", curMogi.getVolumeChange()));
+        txtRadius.setText(String.format("%.2f", curSphere.getRadius()));
+        txtVolChg.setText(String.format("%.2f", curSphere.getVolumeChange()));
 
-        String name = curMogi.getName();
+        String name = curSphere.getName();
         if (name != null && !name.isEmpty()) {
             txtName.setText(name);
         }
@@ -77,31 +77,33 @@ public class MogiSourceDialog2 extends MogiSourceDialogBase implements Restorabl
         return true;
     }
 
-    public MogiPoint getSource() {
+    public McTigueSphere getSphericalSource() {
         NumberWithRange east;
         NumberWithRange north;
         NumberWithRange depth;
         double volChange; // Change this line for UB and LB
+        double radius; // Change this line for UB and LB
 
         east = parseChkNTxtBoxes(CBFixX, txtValX, txtLBX, txtUBX);
         north = parseChkNTxtBoxes(CBFixY, txtValY, txtLBY, txtUBY);
         depth = parseChkNTxtBoxes(CBFixC, txtValC, txtLBC, txtUBC);
+        radius = parseJTextField(txtRadius);
         volChange = parseJTextField(txtVolChg); // Change this line for UB and
                                                 // LB
         if (Double.isNaN(volChange))
             volChange = 0d;
 
-        MogiPoint sourceRtn = new MogiPoint(east.number, north.number, -depth.number, volChange); // Change
-                                                                                                  // this
-                                                                                                  // line
-                                                                                                  // for
-                                                                                                  // UB
-                                                                                                  // and
-                                                                                                  // LB
+        McTigueSphere sourceRtn = new McTigueSphere(east.number, north.number, -depth.number, volChange, radius); // Change
+                                                                                                                  // this
+                                                                                                                  // line
+                                                                                                                  // for
+                                                                                                                  // UB
+                                                                                                                  // and
+                                                                                                                  // LB
         return sourceRtn;
     }
 
-    public MogiPoint getUpperBound() {
+    public McTigueSphere getUpperBound() {
         NumberWithRange east;
         NumberWithRange north;
         NumberWithRange depth;
@@ -110,17 +112,17 @@ public class MogiSourceDialog2 extends MogiSourceDialogBase implements Restorabl
         north = parseChkNTxtBoxes(CBFixY, txtValY, txtLBY, txtUBY);
         depth = parseChkNTxtBoxes(CBFixC, txtValC, txtLBC, txtUBC);
 
-        MogiPoint sourceRtn = new MogiPoint(east.ub, north.ub, -depth.lb, Double.MAX_VALUE); // Change
-                                                                                             // this
-                                                                                             // line
-                                                                                             // for
-                                                                                             // UB
-                                                                                             // and
-                                                                                             // LB
+        McTigueSphere sourceRtn = new McTigueSphere(east.ub, north.ub, -depth.lb, Double.MAX_VALUE, Double.NaN); // Change
+                                                                                                                 // this
+                                                                                                                 // line
+                                                                                                                 // for
+                                                                                                                 // UB
+                                                                                                                 // and
+                                                                                                                 // LB
         return sourceRtn;
     }
 
-    public MogiPoint getLowerBound() {
+    public McTigueSphere getLowerBound() {
         NumberWithRange east;
         NumberWithRange north;
         NumberWithRange depth;
@@ -129,36 +131,37 @@ public class MogiSourceDialog2 extends MogiSourceDialogBase implements Restorabl
         north = parseChkNTxtBoxes(CBFixY, txtValY, txtLBY, txtUBY);
         depth = parseChkNTxtBoxes(CBFixC, txtValC, txtLBC, txtUBC);
 
-        MogiPoint sourceRtn = new MogiPoint(east.lb, north.lb, -depth.ub, -Double.MAX_VALUE); // Change
-                                                                                              // this
-                                                                                              // line
-                                                                                              // for
-                                                                                              // UB
-                                                                                              // and
-                                                                                              // LB
+        McTigueSphere sourceRtn = new McTigueSphere(east.lb, north.lb, -depth.ub, -Double.MAX_VALUE, Double.NaN); // Change
+                                                                                                                  // this
+                                                                                                                  // line
+                                                                                                                  // for
+                                                                                                                  // UB
+                                                                                                                  // and
+                                                                                                                  // LB
         return sourceRtn;
     }
 
-    // TODO: really make bounds work
-    public void showSource(DisplacementSolver sourceIn, int indexInSimModel, DisplacementSolver sourceLB,
+    // TODO really make bounds work
+    public void showSource(DisplacementSolver sourceIn, int modelIndex, DisplacementSolver sourceLB,
             DisplacementSolver sourceUB) {
         // TODO improve this
         if (sourceIn == null)
             return;
 
-        this.modelIndex = indexInSimModel;
+        this.modelIndex = modelIndex;
         this.createNew = false;
 
-        MogiPoint curMogi = (MogiPoint) sourceIn;
+        McTigueSphere curSphere = (McTigueSphere) sourceIn;
 
         // now put the stuff in, and leave the bounds alone
-        this.txtValX.setText(String.format("%.2f", curMogi.getEast()));
-        this.txtValY.setText(String.format("%.2f", curMogi.getNorth()));
-        this.txtValC.setText(String.format("%.2f", -curMogi.getUp()));
-        this.txtVolChg.setText(String.format("%.2f", curMogi.getVolumeChange()));
+        this.txtValX.setText(String.format("%.2f", curSphere.getEast()));
+        this.txtValY.setText(String.format("%.2f", curSphere.getNorth()));
+        this.txtValC.setText(String.format("%.2f", -curSphere.getUp()));
+        this.txtVolChg.setText(String.format("%.2f", curSphere.getVolumeChange()));
+        this.txtRadius.setText(String.format("%.2f", curSphere.getRadius()));
 
         getButtonOkay().setText("Save");
-        setTitle("Edit a Mogi source");
+        setTitle("Edit a spherical source");
 
         this.setVisible(true);
     }
@@ -195,36 +198,40 @@ public class MogiSourceDialog2 extends MogiSourceDialogBase implements Restorabl
 
     // GUI functions
     // ----------------
+    @Override
     protected void btnOKActionPerformed(java.awt.event.ActionEvent evt) {
         if (boundsAreValid()) {
-            MogiPoint ms = getSource();
-            MogiPoint lb = getLowerBound();
-            MogiPoint ub = getUpperBound();
+            McTigueSphere ss = getSphericalSource();
+            McTigueSphere lb = getLowerBound();
+            McTigueSphere ub = getUpperBound();
+
             String name = txtName.getText();
             if (name != null && !name.isEmpty()) {
-                ms.setName(name);
+                ss.setName(name);
             }
 
             if (isCreateNew()) {
-                System.out.println("Source Added: " + ms);
+                System.out.println("Source Added: " + ss);
                 System.out.println("   LB: " + lb);
                 System.out.println("   UB: " + ub);
-                simModel.getSourceModels().add(ms);
+                simModel.getSourceModels().add(ss);
                 simModel.getSourceLowerbound().add(lb);
                 simModel.getSourceUpperbound().add(ub);
             } else {
-                simModel.getSourceModels().set(modelIndex, ms);
+                simModel.getSourceModels().set(modelIndex, ss);
                 simModel.getSourceLowerbound().set(modelIndex, lb);
                 simModel.getSourceUpperbound().set(modelIndex, ub);
             }
-            fireDataChangeEvent();
             dispose();
+
         } else {
             JOptionPane.showMessageDialog(this, "Invalid bounds and guesses.  Please doublecheck.", "Invalid bounds",
                     JOptionPane.ERROR_MESSAGE);
         }
+
     }
 
+    @Override
     protected void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {
         dispose();
     }
@@ -257,78 +264,36 @@ public class MogiSourceDialog2 extends MogiSourceDialogBase implements Restorabl
     }
 
     @Override
+    protected void noFillsFocusGained(java.awt.event.FocusEvent evt) {
+        filledXField = null;
+        filledYField = null;
+    }
+
+    @Override
+    protected void valFocusGained(java.awt.event.FocusEvent evt) {
+        filledXField = txtValX;
+        filledYField = txtValY;
+    }
+
+    @Override
+    protected void lbFocusGained(java.awt.event.FocusEvent evt) {
+        filledXField = txtLBX;
+        filledYField = txtLBY;
+    }
+
+    @Override
+    protected void ubFocusGained(java.awt.event.FocusEvent evt) {
+        filledXField = txtUBX;
+        filledYField = txtUBY;
+    }
+
+    @Override
     protected void cbxUnitActionPerformed(java.awt.event.ActionEvent evt) {
         if (cbxUnit.getSelectedIndex() == 0) {
             unitsAreXY = true;
         } else {
             unitsAreXY = false;
         }
-    }
-
-    @Override
-    protected void txtValXFocusGained(java.awt.event.FocusEvent evt) {
-        filledXField = txtValX;
-        filledYField = txtValY;
-    }
-
-    @Override
-    protected void txtValYFocusGained(java.awt.event.FocusEvent evt) {
-        filledXField = txtValX;
-        filledYField = txtValY;
-    }
-
-    @Override
-    protected void txtLBXFocusGained(java.awt.event.FocusEvent evt) {
-        filledXField = txtLBX;
-        filledYField = txtLBY;
-    }
-
-    @Override
-    protected void txtLBYFocusGained(java.awt.event.FocusEvent evt) {
-        filledXField = txtLBX;
-        filledYField = txtLBY;
-    }
-
-    @Override
-    protected void txtUBXFocusGained(java.awt.event.FocusEvent evt) {
-        filledXField = txtUBX;
-        filledYField = txtUBY;
-    }
-
-    @Override
-    protected void txtUBYFocusGained(java.awt.event.FocusEvent evt) {
-        filledXField = txtUBX;
-        filledYField = txtUBY;
-    }
-
-    protected void noMouseClickFills() {
-        filledXField = null;
-        filledYField = null;
-    }
-
-    @Override
-    protected void txtValCFocusGained(java.awt.event.FocusEvent evt) {
-        noMouseClickFills();
-    }
-
-    @Override
-    protected void txtUBCFocusGained(java.awt.event.FocusEvent evt) {
-        noMouseClickFills();
-    }
-
-    @Override
-    protected void txtLBCFocusGained(java.awt.event.FocusEvent evt) {
-        noMouseClickFills();
-    }
-
-    @Override
-    protected void txtVolChgFocusGained(java.awt.event.FocusEvent evt) {
-        noMouseClickFills();
-    }
-
-    @Override
-    protected void nofillFocusGain(java.awt.event.FocusEvent evt) {
-        noMouseClickFills();
     }
 
     protected void adjustTxtBoxesWithChkbox(javax.swing.JCheckBox fixedChkBox, javax.swing.JTextField valTxt,
@@ -385,8 +350,17 @@ public class MogiSourceDialog2 extends MogiSourceDialogBase implements Restorabl
 
     }
 
-    // Event handlers
-    // --------------
+    @Override
+    public void addDataChangeEventListener(DataChangeEventListener listener) {
+        dataChgListeners.add(listener);
+
+    }
+
+    @Override
+    public void removeDataChangeEventListener(DataChangeEventListener listener) {
+        dataChgListeners.remove(listener);
+
+    }
 
     @Override
     public void latLonClicked(LLH location) {
@@ -413,22 +387,6 @@ public class MogiSourceDialog2 extends MogiSourceDialogBase implements Restorabl
             filledXField.setText(x);
         if (filledYField != null && filledYField.isEnabled())
             filledYField.setText(y);
-    }
-
-    @Override
-    public void addDataChangeEventListener(DataChangeEventListener listener) {
-        dataChgListeners.add(listener);
-    }
-
-    @Override
-    public void removeDataChangeEventListener(DataChangeEventListener listener) {
-        dataChgListeners.remove(listener);
-    }
-
-    private void fireDataChangeEvent() {
-        for (DataChangeEventListener listener : dataChgListeners) {
-            listener.updateAfterDataChange();
-        }
     }
 
 }

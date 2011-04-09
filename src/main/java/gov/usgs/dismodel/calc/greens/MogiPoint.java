@@ -6,9 +6,8 @@ import gov.nasa.worldwind.render.Material;
 import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.render.ShapeAttributes;
 import gov.nasa.worldwind.render.SurfaceCircle;
-import gov.usgs.dismodel.DisModel.ENUPanel;
-import gov.usgs.dismodel.SimulationDataModel;
-import gov.usgs.dismodel.WWPanel;
+import gov.nasa.worldwind.render.SurfaceIcon;
+import gov.usgs.dismodel.state.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.dialogs.MogiSourceDialog2;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
@@ -159,23 +158,25 @@ public class MogiPoint extends DisplacementSolver {
     }
 
     @Override
-    public Renderable toWWJRenderable(double minAxis, LLH origin, java.awt.Color color) {
+    public Renderable toWWJRenderable(SimulationDataModel simModel, DisplayStateStore displaySettings) {
         final double east = msp[MODEL_EASTING_IDX];
         final double north = msp[MODEL_NORTHING_IDX];
         final double up = msp[MODEL_ELEVATION_IDX];
         
+        LLH origin = simModel.getOrigin();
+        
+        final String mogiIcon = "gov/usgs/dismodel/resources/center.png";
+        
         final LLH centerLLH = new LocalENU(east, north, up, origin).toLLH();
+        
         final LatLon centerLatLon = LatLon.fromDegrees(centerLLH.getLatitude().toDeg(), centerLLH.getLongitude().toDeg()); 
+        SurfaceIcon icon = new SurfaceIcon(mogiIcon, centerLatLon);
+        java.awt.Color color = displaySettings.getSourceColor();
+        icon.setOpacity(color.getAlpha()/255);
+        icon.setScale(3);
+        icon.setMaxSize(50e3);
         
-        SurfaceCircle circle = new SurfaceCircle(centerLatLon, 200d);  //TODO:  Change the radius, it's in meters, obtain an axis, then do it, or do an icon
-        
-        ShapeAttributes attrs = new BasicShapeAttributes();
-        Material pureColorMat = new Material(color);
-        attrs.setOutlineMaterial(pureColorMat);
-        attrs.setInteriorMaterial(pureColorMat);
-        circle.setAttributes(attrs);
-        
-        return circle; 
+        return icon; 
     }
     
     //getters
@@ -204,10 +205,6 @@ public class MogiPoint extends DisplacementSolver {
     }
 
 
-
-
-
-    
   
 
 }

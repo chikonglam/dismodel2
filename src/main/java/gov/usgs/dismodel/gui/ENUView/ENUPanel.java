@@ -157,6 +157,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
         public void run() {
             refreshAllStations();
             refreshMeasuredDisps();
+            refreshVectorScaleBar();
             refreshSources();
             refreshModeledDisps();
             
@@ -187,6 +188,11 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
             stations.add(marker);
             chart.getScene().add(marker, false);
         }
+    }
+
+    protected void refreshVectorScaleBar() {
+        // TODO Auto-generated method stub
+        
     }
 
     private void refreshMeasuredDisps() {
@@ -228,7 +234,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     }
     
     private void refreshModeledDisps() {
-        List<VectorXyz> vectors = simModel.getMeasuredRefdDispVectors();
+        List<VectorXyz> vectors = simModel.getModeledDispVectors();
         double scale = displaySettings.getDisplacementVectorScale();
         Color color = fromAWT(displaySettings.getModeledDisplacementVectorColor());
         LLH origin = simModel.getOrigin();
