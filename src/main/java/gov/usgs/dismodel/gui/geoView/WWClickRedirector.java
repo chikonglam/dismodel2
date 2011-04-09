@@ -6,7 +6,7 @@ import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.gui.events.GeoPosClickFrier;
 import gov.usgs.dismodel.gui.events.GeoPosClickListener;
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

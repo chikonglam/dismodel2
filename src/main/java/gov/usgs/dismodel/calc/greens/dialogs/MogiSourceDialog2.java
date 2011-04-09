@@ -11,7 +11,7 @@ import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.GeoPosClickListener;
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 
 import java.awt.Window;
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ public class MogiSourceDialog2 extends MogiSourceDialogBase implements Restorabl
 
     public MogiSourceDialog2(Window owner, String title, AllGUIVars allGuiVars) {
         super(owner, title);
+        setTitle(title);
         this.allGuiVars = allGuiVars;
 
         this.simModel = allGuiVars.getSimModel();

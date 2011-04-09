@@ -4,7 +4,7 @@ package gov.usgs.dismodel.gui.components;
 import gov.usgs.dismodel.Dismodel2;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
 import gov.usgs.dismodel.state.DisplayStateStore;
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.gui.ENUView.ENUPanel;
 
 public class AllGUIVars {

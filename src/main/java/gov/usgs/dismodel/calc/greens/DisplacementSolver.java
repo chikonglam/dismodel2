@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 
 import org.jzy3d.plot3d.primitives.AbstractDrawable;
 import org.ojalgo.matrix.jama.JamaMatrix;

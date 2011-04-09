@@ -2,6 +2,7 @@ package gov.usgs.dismodel.calc.greens;
 
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.jzy.DistributedFaultViewable;
+import gov.usgs.dismodel.state.DisplayStateStore;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -227,7 +228,7 @@ public class DistributedFault extends OkadaFault3 {
     }
 
     @Override
-    public AbstractDrawable toAbstractDrawable(final float minAxis, final Color color) {
+    public AbstractDrawable toAbstractDrawable(DisplayStateStore displaySettings) {
         return new DistributedFaultViewable(this, null, this.getName());
     }
     

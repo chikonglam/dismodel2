@@ -8,7 +8,7 @@ import gov.nasa.worldwind.render.ShapeAttributes;
 import gov.nasa.worldwind.render.SurfaceCircle;
 import gov.nasa.worldwind.render.SurfaceIcon;
 import gov.usgs.dismodel.DisModel.ENUPanel;
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.WWPanel;
 import gov.usgs.dismodel.calc.greens.dialogs.SphericalSourceDialog2;
 import gov.usgs.dismodel.geom.LLH;

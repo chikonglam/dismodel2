@@ -7,7 +7,7 @@ import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.render.ShapeAttributes;
 import gov.nasa.worldwind.render.SurfaceCircle;
 import gov.nasa.worldwind.render.SurfaceIcon;
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.dialogs.MogiSourceDialog2;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;

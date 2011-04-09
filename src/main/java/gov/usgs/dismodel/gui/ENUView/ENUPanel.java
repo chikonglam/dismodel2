@@ -1,18 +1,20 @@
 package gov.usgs.dismodel.gui.ENUView;
 
+import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
-import gov.usgs.dismodel.calc.greens.DistributedFault;
+import gov.usgs.dismodel.calc.greens.OkadaFault3;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.overlays.Label;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
 import gov.usgs.dismodel.geom.overlays.jzy.AutoKmTicker;
+import gov.usgs.dismodel.geom.overlays.jzy.ColorStrip;
+import gov.usgs.dismodel.geom.overlays.jzy.DistributedFaultViewable;
 import gov.usgs.dismodel.geom.overlays.jzy.Marker;
 import gov.usgs.dismodel.geom.overlays.jzy.Vector3D;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
-import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -33,7 +35,7 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
 
 public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFirer, DataChangeEventListener {
     private static final long serialVersionUID = -1463458221429777048L;
-    
+
     private JPanel toolbar;
     private JPanel panel3d;
     // private EnuViewerJzy2 enuChart;
@@ -52,7 +54,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     private List<Vector3D> measedVectors = new ArrayList<Vector3D>();
     private List<AbstractDrawable> sourceModels = new ArrayList<AbstractDrawable>();
     private List<Vector3D> modeledVectors = new ArrayList<Vector3D>();
-    
+    private ColorStrip colorBar;
 
     public ENUPanel(Dimension canvasSize, SimulationDataModel simModel, DisplayStateStore displaySettings) {
         super(new BorderLayout());
@@ -160,14 +162,11 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
             refreshVectorScaleBar();
             refreshSources();
             refreshModeledDisps();
-            
 
             chart.getView().updateBounds();
         }
 
     };
-    
-
 
     private void refreshAllStations() {
         List<Label> newStations = simModel.getStations();
@@ -192,7 +191,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
 
     protected void refreshVectorScaleBar() {
         // TODO Auto-generated method stub
-        
+
     }
 
     private void refreshMeasuredDisps() {
@@ -213,26 +212,78 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
         }
 
     }
-    
-    private void refreshSources(){
+
+    private void refreshSources() {
         List<DisplacementSolver> modelArray = simModel.getFittedModels();
-        
-        for(AbstractDrawable src: sourceModels){
+
+        for (AbstractDrawable src : sourceModels) {
             chart.getScene().remove(src, false);
         }
         sourceModels = new ArrayList<AbstractDrawable>(modelArray.size());
-        
-        if (modelArray == null || modelArray.size() < 1) return;
-        
+
+        if (modelArray == null || modelArray.size() < 1)
+            return;
+
         for (DisplacementSolver model : modelArray) {
             AbstractDrawable modelDrawable = model.toAbstractDrawable(displaySettings);
             chart.getScene().add(modelDrawable, true);
             this.sourceModels.add(modelDrawable);
         }
-        
-        //TODO remember to deal with distributed fault problems (See recolorDistributedFaults in EnuViewerJzy.java)
+
+        if (simModel.isDistributedFaultProblem()) {
+            recolorDistributedFaults();
+        }
+
+        // TODO remember to deal with distributed fault problems (See
+        // recolorDistributedFaults in EnuViewerJzy.java)
     }
-    
+
+    private void recolorDistributedFaults() {
+
+        double maxSlip = 0;
+        double minSlip = Double.MAX_VALUE;
+
+        // find abs max and min among segments
+        for (AbstractDrawable model : sourceModels) {
+            if (model instanceof DistributedFaultViewable) {
+                DistributedFaultViewable curFaultSeg = (DistributedFaultViewable) model;
+                double curSegMax = curFaultSeg.getMaxMag();
+                double curSegMin = curFaultSeg.getMinMag();
+                if (curSegMax > maxSlip)
+                    maxSlip = curSegMax;
+                if (curSegMin < minSlip)
+                    minSlip = curSegMin;
+            }
+        }
+
+        // Display the colorbar spectrum on the jzy panel.
+        if (colorBar != null) {
+            chart.removeRenderer(colorBar);
+        }
+        colorBar = new ColorStrip((float) minSlip, (float) maxSlip);
+        chart.addRenderer(colorBar);
+
+        // now update the color
+        for (AbstractDrawable model : sourceModels) {
+            if (model instanceof DistributedFaultViewable) {
+                DistributedFaultViewable curFaultSeg = (DistributedFaultViewable) model;
+                int rowCt = curFaultSeg.getRowCt();
+                int colCt = curFaultSeg.getColCt();
+                OkadaFault3[][] subfaults = curFaultSeg.getSubfaults();
+
+                for (int rowIter = 0; rowIter < rowCt; rowIter++) {
+                    for (int colIter = 0; colIter < colCt; colIter++) {
+                        double curMag = subfaults[rowIter][colIter].getMagnitude();
+                        Color subFaultColor = colorBar.getColor((float) curMag);
+                        subFaultColor.alphaSelf(0.75f);
+                        curFaultSeg.setsubFaultColor(rowIter, colIter, subFaultColor);
+                    }
+                }
+
+            }
+        }
+    }
+
     private void refreshModeledDisps() {
         List<VectorXyz> vectors = simModel.getModeledDispVectors();
         double scale = displaySettings.getDisplacementVectorScale();

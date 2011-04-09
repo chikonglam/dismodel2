@@ -7,7 +7,7 @@ import gov.usgs.dismodel.calc.inversion.ConstrainedLinearLeastSquaresSolver;
 import gov.usgs.dismodel.calc.inversion.CrossVal;
 import gov.usgs.dismodel.calc.inversion.CrossValToMatlabOutputer;
 import gov.usgs.dismodel.calc.inversion.EqualityAndBoundsSlipSolver;
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 
 import java.io.BufferedReader;
 import java.io.File;

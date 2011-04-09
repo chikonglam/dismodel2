@@ -1,4 +1,4 @@
-package gov.usgs.dismodel.state;
+package gov.usgs.dismodel;                //TODO move this back to gov.usgs.dismodel.state when ready
 
 import gov.usgs.dismodel.ModelSolution;
 import gov.usgs.dismodel.RestorableSourceDialog;

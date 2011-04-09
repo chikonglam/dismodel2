@@ -7,7 +7,7 @@ import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;

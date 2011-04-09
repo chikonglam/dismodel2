@@ -11,7 +11,7 @@ import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.GeoPosClickListener;
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 
 import java.awt.Window;
 import java.util.ArrayList;
@@ -222,6 +222,7 @@ public class SphericalSourceDialog2 extends SphericalSourceDialogBase implements
                 simModel.getSourceLowerbound().set(modelIndex, lb);
                 simModel.getSourceUpperbound().set(modelIndex, ub);
             }
+            fireDataChangeEvent();
             dispose();
 
         } else {
@@ -387,6 +388,12 @@ public class SphericalSourceDialog2 extends SphericalSourceDialogBase implements
             filledXField.setText(x);
         if (filledYField != null && filledYField.isEnabled())
             filledYField.setText(y);
+    }
+    
+    private void fireDataChangeEvent() {
+        for (DataChangeEventListener listener : dataChgListeners) {
+            listener.updateAfterDataChange();
+        }
     }
 
 }

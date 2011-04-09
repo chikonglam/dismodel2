@@ -22,11 +22,11 @@ public class DisplayStateStore {
 
     // vector variables
     private Color realDisplacementVectorColor = new Color(219, 176, 4, 128);    // deep yellow
-    private Color modeledDisplacementVectorColor = new Color(255, 0, 0, 128);
+    private Color modeledDisplacementVectorColor = new Color(255, 100, 100, 128);
     private int displacementVectorScale = 20000;
     
     //source color
-    private Color sourceColor = Color.RED;
+    private Color sourceColor = new Color(255, 0, 0, 128);
 
     // getters and setters
     public Color getRealDisplacementVectorColor() {

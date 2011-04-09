@@ -13,7 +13,6 @@ import gov.nasa.worldwind.layers.AnnotationLayer;
 import gov.nasa.worldwind.layers.CompassLayer;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
-import gov.nasa.worldwind.layers.MarkerLayer;
 import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.render.AnnotationAttributes;
 import gov.nasa.worldwind.render.FrameFactory;
@@ -24,7 +23,6 @@ import gov.nasa.worldwind.util.StatusBar;
 import gov.nasa.worldwind.view.orbit.BasicOrbitView;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.geom.LLH;
-import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.Label;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
 import gov.usgs.dismodel.geom.overlays.WWVector;
@@ -35,7 +33,7 @@ import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
-import gov.usgs.dismodel.state.SimulationDataModel;
+import gov.usgs.dismodel.SimulationDataModel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -48,8 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
-
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener, DataChangeEventListener,
         GeoPosClickFrier {
@@ -133,7 +129,6 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
         insertBeforeCompass(this.wwd, sourcesLayer);
         modeledVectorLayer.initLayer(wwd);
 
-        
         // setting the map at the default location, and default zoom level
         updateMapCenterAfterSettingsChanged(displaySettings);
         updateZoomLevelAfterSettingsChanged(displaySettings);
@@ -294,16 +289,17 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
 
     protected void addOrigin() {
         originLayer.removeAllRenderables();
-        
+
         LLH origin = simModel.getOrigin();
-        if (origin == null) return;
+        if (origin == null)
+            return;
         final String originIconLoc = "gov/usgs/dismodel/resources/center.png";
-        final LatLon originLatLon = LatLon.fromDegrees(origin.getLatitude().toDeg(), origin.getLongitude().toDeg()); 
+        final LatLon originLatLon = LatLon.fromDegrees(origin.getLatitude().toDeg(), origin.getLongitude().toDeg());
         SurfaceIcon icon = new SurfaceIcon(originIconLoc, originLatLon);
         icon.setScale(1);
         icon.setMaxSize(1000e3);
         originLayer.addRenderable(icon);
-        
+
     }
 
     protected void addModeledDisp() {
@@ -338,10 +334,10 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
         List<DisplacementSolver> modelArray = simModel.getFittedModels();
         for (DisplacementSolver displacementSolver : modelArray) {
             Renderable curRend = displacementSolver.toWWJRenderable(simModel, displaySettings);
-            if (curRend !=null)
+            if (curRend != null)
                 sourcesLayer.addRenderable(curRend);
         }
-        
+
     }
 
     private void addMeasuredDispAndEllipses() {

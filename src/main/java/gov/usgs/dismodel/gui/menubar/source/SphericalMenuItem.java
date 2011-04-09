@@ -14,7 +14,7 @@ public class SphericalMenuItem extends ActionMenuItem {
 
     @Override
     public void menuItemClickAction(ActionEvent e) {
-        SphericalSourceDialog2 dialog = new SphericalSourceDialog2(allGuiVars.getMainFrame(), "Add a Mogi", allGuiVars);
+        SphericalSourceDialog2 dialog = new SphericalSourceDialog2(allGuiVars.getMainFrame(), "Add a Spherical Source", allGuiVars);
         dialog.setVisible(true);
     }
 }
