@@ -1,10 +1,9 @@
-package gov.usgs.dismodel.gui.menubar.inversion;
+package gov.usgs.dismodel.calc.inversion;
 
 import gov.usgs.dismodel.FaultConnectionSpecDialog;
 import gov.usgs.dismodel.InversionProgress;
 import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
-import gov.usgs.dismodel.calc.inversion.DistributedSlipSolver;
 import gov.usgs.dismodel.calc.inversion.InversionProgressStats;
 import gov.usgs.dismodel.calc.inversion.InversionResults;
 import gov.usgs.dismodel.calc.inversion.SimuAnnealCervelli;

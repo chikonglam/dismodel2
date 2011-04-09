@@ -1,4 +1,4 @@
-package gov.usgs.dismodel.gui.menubar.inversion;
+package gov.usgs.dismodel.calc.inversion;
 
 import gov.usgs.dismodel.InversionProgress;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;

@@ -14,6 +14,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import gov.usgs.dismodel.gui.menubar.inversion.SmoothingMenuItem;
+
 public class MainMenu extends JMenuBar {
     // other vars
     private static final long serialVersionUID = -2200844778578234292L;
@@ -67,7 +69,7 @@ public class MainMenu extends JMenuBar {
         public InversionMenu(String title) {
             super(title);
 
-            this.add(new JMenuItem("Smoothing..."));
+            this.add(new SmoothingMenuItem("Smoothing...", allGuiVars));
             this.add(new JMenuItem("Dist Slip Constraints..."));
             this.add(new JMenuItem("Forward Model"));
             this.add(new SolveMenuItem("Solve", allGuiVars));
