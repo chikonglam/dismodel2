@@ -79,7 +79,7 @@ public class SimulationDataModel implements ModelSolution {
 
     // other
     // -----
-    private DistributedSlipsBatchGreensIO distributedSlipBatchIoProcessor = new DistributedSlipsBatchGreensIO();
+    private DistributedSlipsBatchGreensIO distributedSlipBatchIoProcessor = null; //new DistributedSlipsBatchGreensIO();        //TODO reenable this
 
     public SimulationDataModel() {
         // empty

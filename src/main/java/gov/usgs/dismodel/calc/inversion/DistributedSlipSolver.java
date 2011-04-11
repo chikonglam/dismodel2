@@ -8,7 +8,6 @@ import java.util.List;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.jama.JamaMatrix;
 
-import gov.usgs.dismodel.EnuViewerJzy;
 import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.DistributedFault;

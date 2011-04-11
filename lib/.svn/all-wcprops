@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/1312/ehz_gps/trunk/modeling/dismodel/lib
+END
+pcolt-0.9.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/1149/ehz_gps/trunk/modeling/dismodel/lib/pcolt-0.9.jar
+END
+gdal.jar
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/1243/ehz_gps/trunk/modeling/dismodel/lib/gdal.jar
+END
+gluegen-rt.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/196/ehz_gps/trunk/modeling/dismodel/lib/gluegen-rt.jar
+END
+worldwind-0.6.762.14907.jar
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/1243/ehz_gps/trunk/modeling/dismodel/lib/worldwind-0.6.762.14907.jar
+END
+jogl.jar
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/196/ehz_gps/trunk/modeling/dismodel/lib/jogl.jar
+END
+org.jzy3d-0.8.3.jar
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/1312/ehz_gps/trunk/modeling/dismodel/lib/org.jzy3d-0.8.3.jar
+END
+junit-4.8.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/220/ehz_gps/trunk/modeling/dismodel/lib/junit-4.8.2.jar
+END
+beansbinding-1.2.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/1289/ehz_gps/trunk/modeling/dismodel/lib/beansbinding-1.2.1.jar
+END
+ojalgo-28.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/196/ehz_gps/trunk/modeling/dismodel/lib/ojalgo-28.jar
+END

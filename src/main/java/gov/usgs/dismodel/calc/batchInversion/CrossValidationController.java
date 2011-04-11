@@ -3,11 +3,9 @@ package gov.usgs.dismodel.calc.batchInversion;
 import javax.swing.JFrame;
 
 import gov.usgs.dismodel.CrossValidationProgressDlg;
-import gov.usgs.dismodel.DisModel;
-import gov.usgs.dismodel.EnuViewerJzy;
-import gov.usgs.dismodel.state.SimulationDataModel;
+
+import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.SmoothingDialog;
-import gov.usgs.dismodel.DisModel.AppFrame;
 import gov.usgs.dismodel.calc.SolverException;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
 import gov.usgs.dismodel.calc.inversion.ConstrainedLinearLeastSquaresSolver;

@@ -1,6 +1,6 @@
 package gov.usgs.dismodel.calc.batchInversion;
 
-import gov.usgs.dismodel.DisModel;
+
 import gov.usgs.dismodel.SaveAndLoad;
 import gov.usgs.dismodel.calc.SolverException;
 import gov.usgs.dismodel.calc.inversion.ConstrainedLinearLeastSquaresSolver;

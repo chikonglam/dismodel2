@@ -1,15 +1,9 @@
 package gov.usgs.dismodel.calc.greens;
 
 import gov.nasa.worldwind.geom.LatLon;
-import gov.nasa.worldwind.render.BasicShapeAttributes;
-import gov.nasa.worldwind.render.Material;
 import gov.nasa.worldwind.render.Renderable;
-import gov.nasa.worldwind.render.ShapeAttributes;
-import gov.nasa.worldwind.render.SurfaceCircle;
 import gov.nasa.worldwind.render.SurfaceIcon;
-import gov.usgs.dismodel.DisModel.ENUPanel;
 import gov.usgs.dismodel.SimulationDataModel;
-import gov.usgs.dismodel.WWPanel;
 import gov.usgs.dismodel.calc.greens.dialogs.SphericalSourceDialog2;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
@@ -25,7 +19,6 @@ import javax.swing.JDialog;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.jzy3d.colors.Color;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.AbstractDrawable;
 

@@ -3,26 +3,29 @@
 	<classpathentry excluding="main/java/" kind="src" path="src"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/dismodel/lib/gdal.jar">
+	<classpathentry kind="lib" path="lib/pcolt-0.9/arpack-combo.jar"/>
+	<classpathentry kind="lib" path="lib/pcolt-0.9/csparsej.jar"/>
+	<classpathentry kind="lib" path="lib/pcolt-0.9/jplasma.jar"/>
+	<classpathentry kind="lib" path="lib/pcolt-0.9/jtransforms.jar"/>
+	<classpathentry kind="lib" path="lib/pcolt-0.9/junit.jar"/>
+	<classpathentry kind="lib" path="lib/pcolt-0.9/netlib-java.jar"/>
+	<classpathentry kind="lib" path="lib/pcolt-0.9/optimization.jar"/>
+	<classpathentry kind="lib" path="lib/beansbinding-1.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/gdal.jar"/>
+	<classpathentry kind="lib" path="lib/gluegen-rt.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dismodel/lib"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dismodel2/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/dismodel/lib/gluegen-rt.jar">
+	<classpathentry kind="lib" path="lib/jogl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dismodel/lib"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dismodel2/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/dismodel/lib/jogl.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dismodel/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/dismodel/lib/junit-4.8.2.jar"/>
-	<classpathentry kind="lib" path="/dismodel/lib/ojalgo-28.jar"/>
-	<classpathentry kind="lib" path="/dismodel/lib/pcolt-0.9.jar"/>
-	<classpathentry kind="lib" path="/dismodel/lib/worldwind-0.6.762.14907.jar" sourcepath="/home/chi/eclipseHelWksp/worldwind-0.6.776.15123.zip"/>
-	<classpathentry kind="lib" path="/dismodel/lib/org.jzy3d-0.8.3.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/dismodel"/>
+	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
+	<classpathentry kind="lib" path="lib/ojalgo-28.jar"/>
+	<classpathentry kind="lib" path="lib/org.jzy3d-0.8.3.jar"/>
+	<classpathentry kind="lib" path="lib/pcolt-0.9.jar"/>
+	<classpathentry kind="lib" path="lib/worldwind-0.6.762.14907.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
