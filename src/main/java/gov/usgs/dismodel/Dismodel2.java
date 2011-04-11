@@ -19,13 +19,13 @@ import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
 import gov.usgs.dismodel.gui.menubar.MainMenu;
 import gov.usgs.dismodel.state.DisplayStateStore;
-import gov.usgs.dismodel.SimulationDataModel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
@@ -65,9 +65,12 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
     private ArrayList<GuiUpdateRequestListener> guiChgListeners = new ArrayList<GuiUpdateRequestListener>();
 
     public Dismodel2() {
+        //set the icon
+        setIconImage( (new ImageIcon (Dismodel2.class.getResource("/gov/usgs/dismodel/resources/equals.png"))).getImage() );
+        
         // Create the WorldWindow.
-        wwjPanel = new GeoPanel(wwjSize, true, simModel, displaySettings);
-        enuPanel = new ENUPanel(enuSize, simModel, displaySettings);
+        wwjPanel = new GeoPanel(wwjSize, true, simModel, displaySettings, this);
+        enuPanel = new ENUPanel(enuSize, simModel, displaySettings, this);
 
         // Create a horizontal split pane containing the layer panel and the
         // WorldWindow panel.

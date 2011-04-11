@@ -1,5 +1,6 @@
 package gov.usgs.dismodel.gui.ENUView;
 
+import gov.usgs.dismodel.Dismodel2;
 import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.OkadaFault3;
@@ -11,6 +12,7 @@ import gov.usgs.dismodel.geom.overlays.jzy.ColorStrip;
 import gov.usgs.dismodel.geom.overlays.jzy.DistributedFaultViewable;
 import gov.usgs.dismodel.geom.overlays.jzy.Marker;
 import gov.usgs.dismodel.geom.overlays.jzy.Vector3D;
+import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
@@ -36,11 +38,12 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
 public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFirer, DataChangeEventListener {
     private static final long serialVersionUID = -1463458221429777048L;
 
-    private JPanel toolbar;
+    private ENUToolBar toolbar;
     private JPanel panel3d;
     // private EnuViewerJzy2 enuChart;
     private SimulationDataModel simModel;
     private DisplayStateStore displaySettings;
+    private Dismodel2 mainFrame;
 
     // Chart stuff
     private Chart chart;
@@ -56,7 +59,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     private List<Vector3D> modeledVectors = new ArrayList<Vector3D>();
     private ColorStrip colorBar;
 
-    public ENUPanel(Dimension canvasSize, SimulationDataModel simModel, DisplayStateStore displaySettings) {
+    public ENUPanel(Dimension canvasSize, SimulationDataModel simModel, DisplayStateStore displaySettings, Dismodel2 mainFrame) {
         super(new BorderLayout());
 
         // set Jzy to use hardware
@@ -67,12 +70,13 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
         // state stuff
         this.simModel = simModel;
         this.displaySettings = displaySettings;
+        this.mainFrame = mainFrame;
 
         // GUI stuff
         this.setPreferredSize(canvasSize);
 
         // tool bar
-        toolbar = new JPanel();
+        toolbar = new ENUToolBar(new AllGUIVars(mainFrame, null, this, displaySettings, simModel));
         this.add(toolbar, BorderLayout.NORTH);
 
         // chart stuff

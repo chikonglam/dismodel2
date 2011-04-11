@@ -27,12 +27,14 @@ import gov.usgs.dismodel.geom.overlays.Label;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
 import gov.usgs.dismodel.geom.overlays.WWVector;
 import gov.usgs.dismodel.geom.overlays.WWVectorLayer;
+import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.GeoPosClickFrier;
 import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
+import gov.usgs.dismodel.Dismodel2;
 import gov.usgs.dismodel.SimulationDataModel;
 
 import java.awt.BorderLayout;
@@ -55,12 +57,13 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
     private static final double ZOOM_MIN_SPAN = 10d;
 
     private static final long serialVersionUID = -7898383357800550284L;
-    private Panel toolbar;
+    private WorldWindToolBar toolbar;
     final private WorldWindowGLCanvas wwd;
     private StatusBar statusBar;
     private SimulationDataModel simModel;
     private DisplayStateStore displaySettings;
     private WWClickRedirector wwClickRedirector;
+    private Dismodel2 mainFrame;
 
     // layers
     // --------
@@ -78,15 +81,16 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
 
     // Constructs a JPanel to hold the WorldWindow
     public GeoPanel(Dimension canvasSize, boolean includeStatusBar, SimulationDataModel simModel,
-            DisplayStateStore displaySettings) {
+            DisplayStateStore displaySettings, Dismodel2 mainFrame) {
         super(new BorderLayout());
 
         // state vars
         this.simModel = simModel;
         this.displaySettings = displaySettings;
+        this.mainFrame = mainFrame;
 
         // Create the toolbar
-        this.toolbar = new Panel();
+        toolbar = new WorldWindToolBar(new AllGUIVars(mainFrame, this, null, displaySettings, simModel));
         this.add(toolbar, BorderLayout.NORTH);
 
         // Create the WorldWindow and set its preferred size.
