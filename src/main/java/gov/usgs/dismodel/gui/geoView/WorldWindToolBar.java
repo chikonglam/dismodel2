@@ -26,7 +26,8 @@ public class WorldWindToolBar extends JToolBar{
         }
         @Override
         protected void buttonClicked() {
-            
+        	OriginSetter originSetter = new OriginSetter(allGuiVars);
+        	originSetter.setVisible(true);
         }
         
     }

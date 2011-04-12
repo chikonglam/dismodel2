@@ -165,7 +165,7 @@ public class MogiPoint extends DisplacementSolver {
         
         LLH origin = simModel.getOrigin();
         
-        final String mogiIcon = "gov/usgs/dismodel/resources/center.png";
+        final String mogiIcon = "gov/usgs/dismodel/resources/plus.png";
         
         final LLH centerLLH = new LocalENU(east, north, up, origin).toLLH();
         
