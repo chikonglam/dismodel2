@@ -31,6 +31,7 @@ import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.GeoPosClickFrier;
 import gov.usgs.dismodel.gui.events.GeoPosClickListener;
+import gov.usgs.dismodel.gui.events.RecenterEventListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
@@ -50,7 +51,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener, DataChangeEventListener,
-        GeoPosClickFrier {
+        GeoPosClickFrier, RecenterEventListener {
     // constants
     // -----
     private static final double ZOOM_REFRESH_THRESHOLD = 0.08;
@@ -134,13 +135,14 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
         modeledVectorLayer.initLayer(wwd);
 
         // setting the map at the default location, and default zoom level
-        updateMapCenterAfterSettingsChanged(displaySettings);
+        initCenter(displaySettings);
         updateZoomLevelAfterSettingsChanged(displaySettings);
 
         // mouse click listener to serve location info, and remove one click
         // rotation
         wwClickRedirector = new WWClickRedirector(wwd, simModel);
         wwd.getInputHandler().addMouseListener(wwClickRedirector);
+        
 
     }
 
@@ -213,7 +215,24 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
         zoomListeners.remove(listener);
     }
 
-    public void updateMapCenterAfterSettingsChanged(DisplayStateStore displaySettings) {
+
+    @Override
+    public void recenterAfterChange(DisplayStateStore displaySettings) {
+    	 SwingUtilities.invokeLater(threadedRecenter);
+    }
+    
+    private Runnable threadedRecenter = new Runnable() {
+		
+		@Override
+		public void run() {
+	    	Position center = new Position( displaySettings.getCenterOfMap() ,0);
+	    	wwView.goTo(center, displaySettings.getChartSpan());
+		}
+	};
+    
+    
+    
+    public void initCenter(DisplayStateStore displaySettings) {
         SwingUtilities.invokeLater(threadedUpdateMapCenter);
     }
 
@@ -402,5 +421,14 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
     public void removeGeoPosClickListener(GeoPosClickListener listener) {
         this.wwClickRedirector.removeGeoPosClickListener(listener);
     }
+
+	public WorldWindowGLCanvas getWorldWind() {
+		return wwd;
+	}
+    
+    
+
+
+
 
 }

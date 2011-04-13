@@ -16,6 +16,8 @@ import gov.usgs.dismodel.gui.events.GeoPosClickFrier;
 import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.GuiUpdateRequestFrier;
 import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
+import gov.usgs.dismodel.gui.events.RecenterEventListener;
+import gov.usgs.dismodel.gui.events.RecenterEventRedirector;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
 import gov.usgs.dismodel.gui.menubar.MainMenu;
 import gov.usgs.dismodel.state.DisplayStateStore;
@@ -33,7 +35,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier, GeoPosClickFrier {
+public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier, GeoPosClickFrier, RecenterEventRedirector{
     static
     {
         // Ensure that menus and tooltips interact successfully with the WWJ window.
@@ -63,7 +65,9 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
     // EventListeners
     private ArrayList<DataChangeEventListener> dataChgListeners = new ArrayList<DataChangeEventListener>();
     private ArrayList<GuiUpdateRequestListener> guiChgListeners = new ArrayList<GuiUpdateRequestListener>();
-
+    private ArrayList<RecenterEventListener> recenterListeners = new ArrayList<RecenterEventListener>();
+    
+    
     public Dismodel2() {
         //set the icon
         setIconImage( (new ImageIcon (Dismodel2.class.getResource("/gov/usgs/dismodel/resources/equals.png"))).getImage() );
@@ -112,6 +116,9 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
         // register the two panels to listen to this
         this.addDataChangeEventListener(wwjPanel);
         this.addDataChangeEventListener(enuPanel);
+        
+        //set up the recenter listener, add the ENU panel too if needed
+        this.addRecenterEventListener(wwjPanel);
 
         updateAfterDataChange(); // fire the event to update the gui and the
                                  // data views
@@ -201,6 +208,24 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
 	public void removeGeoPosClickListener(GeoPosClickListener listener) {
 		wwjPanel.removeGeoPosClickListener(listener);
 		//TODO add the ENU Panel too
+		
+	}
+
+	@Override
+	public void addRecenterEventListener(RecenterEventListener listener) {
+		this.recenterListeners.add(listener);
+	}
+
+	@Override
+	public void removeRecenterEventListener(RecenterEventListener listener) {
+		this.recenterListeners.remove(listener);
+	}
+
+	@Override
+	public void recenterAfterChange(DisplayStateStore displaySettings) {
+		for (RecenterEventListener listener : recenterListeners) {
+			listener.recenterAfterChange(displaySettings);
+		}
 		
 	}
 

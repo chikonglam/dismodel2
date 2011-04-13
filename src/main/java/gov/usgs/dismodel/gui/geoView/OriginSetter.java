@@ -2,24 +2,32 @@ package gov.usgs.dismodel.gui.geoView;
 
 import java.util.ArrayList;
 
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.LatLon;
 import gov.usgs.dismodel.Dismodel2;
 import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.geom.LLH;
+
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.GeoPosClickListener;
+import gov.usgs.dismodel.gui.events.RecenterEventFirer;
+import gov.usgs.dismodel.gui.events.RecenterEventListener;
+import gov.usgs.dismodel.state.DisplayStateStore;
 
-public class OriginSetter extends OriginSetterBase implements DataChangeEventFrier, GeoPosClickListener{
+public class OriginSetter extends OriginSetterBase implements DataChangeEventFrier, GeoPosClickListener, RecenterEventFirer{
 	//TODO implement center on orgin
 	
 	private static final long serialVersionUID = -4902931096521845266L;
 	final private AllGUIVars allGuiVars;
 	final private SimulationDataModel simModel;
+	final private DisplayStateStore displaySettings;
 	final private Dismodel2 mainFrame;
 	
 	ArrayList<DataChangeEventListener> changeListeners = new ArrayList<DataChangeEventListener>();  
+	ArrayList<RecenterEventListener> recenterListeners = new ArrayList<RecenterEventListener>();
 	
 	public OriginSetter(AllGUIVars allGuiVars) {
 		super(allGuiVars.getMainFrame());
@@ -27,9 +35,18 @@ public class OriginSetter extends OriginSetterBase implements DataChangeEventFri
 		this.simModel = allGuiVars.getSimModel();
 		this.mainFrame = allGuiVars.getMainFrame();
 		this.addDataChangeEventListener(mainFrame);
+		this.displaySettings = allGuiVars.getDisplaySettings();
 		mainFrame.addGeoPosClickListener(this);
+		this.addRecenterEventListener(mainFrame);
 		
 		latLonClicked(simModel.getOrigin());
+	}
+	
+	@Override
+	public void dispose(){
+		mainFrame.removeGeoPosClickListener(this);
+		
+		super.dispose();
 	}
 	
 	@Override
@@ -46,9 +63,24 @@ public class OriginSetter extends OriginSetterBase implements DataChangeEventFri
 		simModel.setOrigin(newOrigin);
 		
 		fireDataChangeEvent();
+		
+		if (chkCenterAtOrigin.isSelected()){
+			displaySettings.setCenterOfMap(
+					new LatLon( Angle.fromDegrees(newOrigin.getLatitude().toDeg()),
+							Angle.fromDegrees(newOrigin.getLongitude().toDeg()))) ;
+			fireRecenterEvent();
+		}
+		
 		dispose();
     }
 	
+	private void fireRecenterEvent() {
+		for (RecenterEventListener listener : recenterListeners) {
+			listener.recenterAfterChange(displaySettings);
+		}
+		
+	}
+
 	private void fireDataChangeEvent(){
 		for(DataChangeEventListener listener : changeListeners){
 			listener.updateAfterDataChange();
@@ -79,6 +111,16 @@ public class OriginSetter extends OriginSetterBase implements DataChangeEventFri
 	@Override
 	public void removeDataChangeEventListener(DataChangeEventListener listener) {
 		changeListeners.remove(listener);
+	}
+
+	@Override
+	public void addRecenterEventListener(RecenterEventListener listener) {
+		this.recenterListeners.add(listener);
+	}
+
+	@Override
+	public void removeRecenterEventListener(RecenterEventListener listener) {
+		this.recenterListeners.remove(listener);
 	}
 
 }
