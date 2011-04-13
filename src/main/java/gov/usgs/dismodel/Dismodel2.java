@@ -18,6 +18,7 @@ import gov.usgs.dismodel.gui.events.GuiUpdateRequestFrier;
 import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
 import gov.usgs.dismodel.gui.events.RecenterEventListener;
 import gov.usgs.dismodel.gui.events.RecenterEventRedirector;
+import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
 import gov.usgs.dismodel.gui.menubar.MainMenu;
 import gov.usgs.dismodel.state.DisplayStateStore;
@@ -35,7 +36,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier, GeoPosClickFrier, RecenterEventRedirector{
+public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier, GeoPosClickFrier, RecenterEventRedirector, ZoomEventListener{
     static
     {
         // Ensure that menus and tooltips interact successfully with the WWJ window.
@@ -227,6 +228,13 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
 			listener.recenterAfterChange(displaySettings);
 		}
 		
+	}
+
+	@Override
+	public void updateZoomLevelAfterSettingsChanged(
+			DisplayStateStore displaySettings) {
+		wwjPanel.updateZoomLevelAfterSettingsChanged(displaySettings);
+		enuPanel.updateZoomLevelAfterSettingsChanged(displaySettings);
 	}
 
 }
