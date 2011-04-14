@@ -122,7 +122,7 @@ public class WorldWindToolBar extends JToolBar {
 
 			addPropertyChangeListener(SectorSelector.SECTOR_PROPERTY,
 					sectorChangeListener);
-			addMouseListener(sectorMouseListener);
+			
 		}
 
 		private PropertyChangeListener sectorChangeListener = new PropertyChangeListener() {
@@ -163,39 +163,17 @@ public class WorldWindToolBar extends JToolBar {
 
 		};
 		
-		private MouseListener sectorMouseListener = new MouseListener() {
 
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println(arg0);
-			}
-
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-			}
-
-			@Override
-			public void mouseExited(MouseEvent arg0) {
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-			}
-		};
 		
 		private void fireZoomNRecenter(){
 			DisplayStateStore displaySettings = allGuiVars.getDisplaySettings();
-			for (RecenterEventListener listener : recenterListeners) {
-				listener.recenterAfterChange(displaySettings);
-			}
 			for (ZoomEventListener listener : zoomListeners) {
 				listener.updateZoomLevelAfterSettingsChanged(displaySettings);
 			}
+			for (RecenterEventListener listener : recenterListeners) {
+			    listener.recenterAfterChange(displaySettings);
+			}
+
 		}
 
 		@Override
