@@ -15,6 +15,8 @@ import gov.usgs.dismodel.geom.overlays.jzy.ScreenToGraphMap;
 import gov.usgs.dismodel.geom.overlays.jzy.Vector3D;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
+import gov.usgs.dismodel.gui.events.GeoPosClickFrier;
+import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
@@ -39,7 +41,7 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.jzy3d.plot3d.rendering.view.Camera;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 
-public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFirer, DataChangeEventListener {
+public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFirer, DataChangeEventListener, GeoPosClickFrier {
     private static final long serialVersionUID = -1463458221429777048L;
 
     private ENUToolBar toolbar;
@@ -68,9 +70,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
         super(new BorderLayout());
 
         // set Jzy to use hardware
-        Settings.getInstance().setHardwareAccelerated(true); // TODO check if
-                                                             // this works
-                                                             // everywhere
+        Settings.getInstance().setHardwareAccelerated(true); 
 
         // state stuff
         this.simModel = simModel;
@@ -248,8 +248,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
             recolorDistributedFaults();
         }
 
-        // TODO remember to deal with distributed fault problems (See
-        // recolorDistributedFaults in EnuViewerJzy.java)
+
     }
 
     private void recolorDistributedFaults() {
@@ -349,6 +348,17 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
         } else {
             dragModeOn();
         }
+    }
+
+    @Override
+    public void addGeoPosClickListener(GeoPosClickListener listener) {
+        this.mouseController.addGeoPosClickListener(listener);
+        
+    }
+
+    @Override
+    public void removeGeoPosClickListener(GeoPosClickListener listener) {
+        this.mouseController.removeGeoPosClickListener(listener);        
     }
 
 }

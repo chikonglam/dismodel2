@@ -36,10 +36,11 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier, GeoPosClickFrier, RecenterEventRedirector, ZoomEventListener{
-    static
-    {
-        // Ensure that menus and tooltips interact successfully with the WWJ window.
+public class Dismodel2 extends JFrame implements DataChangeEventListener, DataChangeEventFrier, GuiUpdateRequestFrier,
+        GeoPosClickFrier, RecenterEventRedirector, ZoomEventListener {
+    static {
+        // Ensure that menus and tooltips interact successfully with the WWJ
+        // window.
         ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);
     }
@@ -67,12 +68,11 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
     private ArrayList<DataChangeEventListener> dataChgListeners = new ArrayList<DataChangeEventListener>();
     private ArrayList<GuiUpdateRequestListener> guiChgListeners = new ArrayList<GuiUpdateRequestListener>();
     private ArrayList<RecenterEventListener> recenterListeners = new ArrayList<RecenterEventListener>();
-    
-    
+
     public Dismodel2() {
-        //set the icon
-        setIconImage( (new ImageIcon (Dismodel2.class.getResource("/gov/usgs/dismodel/resources/equals.png"))).getImage() );
-        
+        // set the icon
+        setIconImage((new ImageIcon(Dismodel2.class.getResource("/gov/usgs/dismodel/resources/equals.png"))).getImage());
+
         // Create the WorldWindow.
         wwjPanel = new GeoPanel(wwjSize, true, simModel, displaySettings, this);
         enuPanel = new ENUPanel(enuSize, simModel, displaySettings, this);
@@ -113,12 +113,12 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
         // tying the zoom events of both sides
         wwjPanel.addZoomListener(enuPanel);
         enuPanel.addZoomListener(wwjPanel);
-        
+
         // register the two panels to listen to this
         this.addDataChangeEventListener(wwjPanel);
         this.addDataChangeEventListener(enuPanel);
-        
-        //set up the recenter listener, add the ENU panel too if needed
+
+        // set up the recenter listener, add the ENU panel too if needed
         this.addRecenterEventListener(wwjPanel);
 
         updateAfterDataChange(); // fire the event to update the gui and the
@@ -174,7 +174,14 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
 
     @Override
     public void updateAfterDataChange() {
-        for (DataChangeEventListener listener : this.dataChgListeners){        // first pass events to the two graphical interfaces
+        for (DataChangeEventListener listener : this.dataChgListeners) { // first
+                                                                         // pass
+                                                                         // events
+                                                                         // to
+                                                                         // the
+                                                                         // two
+                                                                         // graphical
+                                                                         // interfaces
             listener.updateAfterDataChange();
         }
 
@@ -199,42 +206,40 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
         this.guiChgListeners.remove(listener);
     }
 
-	@Override
-	public void addGeoPosClickListener(GeoPosClickListener listener) {
-		wwjPanel.addGeoPosClickListener(listener);
-		//TODO add the ENU Panel too
-	}
+    @Override
+    public void addGeoPosClickListener(GeoPosClickListener listener) {
+        wwjPanel.addGeoPosClickListener(listener);
+        enuPanel.addGeoPosClickListener(listener);
+    }
 
-	@Override
-	public void removeGeoPosClickListener(GeoPosClickListener listener) {
-		wwjPanel.removeGeoPosClickListener(listener);
-		//TODO add the ENU Panel too
-		
-	}
+    @Override
+    public void removeGeoPosClickListener(GeoPosClickListener listener) {
+        wwjPanel.removeGeoPosClickListener(listener);
+        enuPanel.removeGeoPosClickListener(listener);
+    }
 
-	@Override
-	public void addRecenterEventListener(RecenterEventListener listener) {
-		this.recenterListeners.add(listener);
-	}
+    @Override
+    public void addRecenterEventListener(RecenterEventListener listener) {
+        this.recenterListeners.add(listener);
+    }
 
-	@Override
-	public void removeRecenterEventListener(RecenterEventListener listener) {
-		this.recenterListeners.remove(listener);
-	}
+    @Override
+    public void removeRecenterEventListener(RecenterEventListener listener) {
+        this.recenterListeners.remove(listener);
+    }
 
-	@Override
-	public void recenterAfterChange(DisplayStateStore displaySettings) {
-		for (RecenterEventListener listener : recenterListeners) {
-			listener.recenterAfterChange(displaySettings);
-		}
-		
-	}
+    @Override
+    public void recenterAfterChange(DisplayStateStore displaySettings) {
+        for (RecenterEventListener listener : recenterListeners) {
+            listener.recenterAfterChange(displaySettings);
+        }
 
-	@Override
-	public void updateZoomLevelAfterSettingsChanged(
-			DisplayStateStore displaySettings) {
-		wwjPanel.updateZoomLevelAfterSettingsChanged(displaySettings);
-		enuPanel.updateZoomLevelAfterSettingsChanged(displaySettings);
-	}
+    }
+
+    @Override
+    public void updateZoomLevelAfterSettingsChanged(DisplayStateStore displaySettings) {
+        wwjPanel.updateZoomLevelAfterSettingsChanged(displaySettings);
+        enuPanel.updateZoomLevelAfterSettingsChanged(displaySettings);
+    }
 
 }
