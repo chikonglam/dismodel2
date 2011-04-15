@@ -5,6 +5,7 @@ import gov.usgs.dismodel.gui.menubar.data.LoadCovMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadDisplacementMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadStationMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.ProcessGreensFilesMenuItem;
+import gov.usgs.dismodel.gui.menubar.inversion.ForwardModelMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.SolveMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.DislocationMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.MogiMenuItem;
@@ -71,7 +72,7 @@ public class MainMenu extends JMenuBar {
 
             this.add(new SmoothingMenuItem("Smoothing...", allGuiVars));
             this.add(new JMenuItem("Dist Slip Constraints..."));
-            this.add(new JMenuItem("Forward Model"));
+            this.add(new ForwardModelMenuItem("Forward Model", allGuiVars));
             this.add(new SolveMenuItem("Solve", allGuiVars));
         }
 

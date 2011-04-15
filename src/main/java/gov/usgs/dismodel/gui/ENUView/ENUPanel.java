@@ -237,9 +237,11 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
             return;
 
         for (DisplacementSolver model : modelArray) {
-            AbstractDrawable modelDrawable = model.toAbstractDrawable(displaySettings);
-            chart.getScene().add(modelDrawable, true);
-            this.sourceModels.add(modelDrawable);
+            if (model != null){
+                AbstractDrawable modelDrawable = model.toAbstractDrawable(displaySettings);
+                chart.getScene().add(modelDrawable, true);
+                this.sourceModels.add(modelDrawable);
+            }
         }
 
         if (simModel.isDistributedFaultProblem()) {

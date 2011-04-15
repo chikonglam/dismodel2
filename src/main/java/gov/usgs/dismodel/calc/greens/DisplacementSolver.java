@@ -272,6 +272,32 @@ public abstract class DisplacementSolver
             return classCount;
     }
     
+    public static boolean areAllVarsFixed(DisplacementSolver value, DisplacementSolver lb, DisplacementSolver ub){
+        
+        double[] valMSP = value.getMsp();
+        double[] lbMSP = lb.getMsp();
+        double[] ubMSP = ub.getMsp();
+        ArrayList<Integer> linVars = value.getLinearParameterIndices();
+        
+        int numOfVars = valMSP.length;
+        for (int varIter = 0; varIter < numOfVars; varIter++){
+            double curVal = valMSP[varIter];
+            double curLB = lbMSP[varIter];
+            double curUB = ubMSP[varIter];
+            
+            if (!Double.isNaN(curVal)) {
+                if ( (!(Double.isNaN(curLB) && Double.isNaN(curUB))) &&
+                        (!(curVal == curLB && curVal == curUB)) &&
+                        (!(curLB  == 0d && curUB == 0d)) && 
+                        (!linVars.contains(varIter))){
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
     
     
     

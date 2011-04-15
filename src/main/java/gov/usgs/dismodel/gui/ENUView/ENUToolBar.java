@@ -1,20 +1,22 @@
 package gov.usgs.dismodel.gui.ENUView;
 
 import gov.usgs.dismodel.SimulationDataModel;
+import gov.usgs.dismodel.calc.ForwardModel;
 import gov.usgs.dismodel.calc.inversion.CrossValidator2;
 import gov.usgs.dismodel.calc.inversion.DistSlipSolveWorker;
 import gov.usgs.dismodel.calc.inversion.SASolveWorker;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.components.IconButton;
+import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
+import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
+
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
-import org.jzy3d.maths.Coord3d;
-import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
-
-public class ENUToolBar extends JToolBar{
+public class ENUToolBar extends JToolBar {
     protected AllGUIVars allGuiVars;
     protected SimulationDataModel simModel;
 
@@ -22,17 +24,17 @@ public class ENUToolBar extends JToolBar{
         super();
         this.allGuiVars = allGuiVars;
         this.simModel = allGuiVars.getSimModel();
-        
-        this.add( new SnapToXyButton("Snap to X Y", "/gov/usgs/dismodel/resources/cartesian.png") );
-        this.add( new DragXyButton("Drag X Y space", "/gov/usgs/dismodel/resources/hand.png") );
+
+        this.add(new SnapToXyButton("Snap to X Y", "/gov/usgs/dismodel/resources/cartesian.png"));
+        this.add(new DragXyButton("Toggle 'drag XY mode' ", "/gov/usgs/dismodel/resources/hand.png"));
         this.addSeparator();
-        this.add( new ForwardModelButton("Forward model", "/gov/usgs/dismodel/resources/forward.png") );
-        this.add( new SolveButton("Solve", "/gov/usgs/dismodel/resources/equals.png") );
-        this.add( new CrossValButton("Cross validate", "/gov/usgs/dismodel/resources/cross_val.png"));
-        
+        this.add(new ForwardModelButton("Forward model", "/gov/usgs/dismodel/resources/forward.png"));
+        this.add(new SolveButton("Solve", "/gov/usgs/dismodel/resources/equals.png"));
+        this.add(new CrossValButton("Cross validate", "/gov/usgs/dismodel/resources/cross_val.png"));
+
     }
-    
-    private class SnapToXyButton extends IconButton{
+
+    private class SnapToXyButton extends IconButton {
 
         public SnapToXyButton(String toolTip, String IconLocation) {
             super(toolTip, IconLocation);
@@ -42,39 +44,66 @@ public class ENUToolBar extends JToolBar{
         protected void buttonClicked() {
             allGuiVars.getEnuPanel().snapToXy();
         }
-        
+
     }
-    
-    private class DragXyButton extends IconButton{
+
+    private class DragXyButton extends IconButton {
 
         public DragXyButton(String toolTip, String IconLocation) {
             super(toolTip, IconLocation);
-            // TODO Auto-generated constructor stub
         }
 
         @Override
         protected void buttonClicked() {
             allGuiVars.getEnuPanel().toggleDragMode();
         }
-        
+
     }
-    
-    private class ForwardModelButton extends IconButton{
+
+    private class ForwardModelButton extends IconButton implements DataChangeEventFrier {
+        private ArrayList<DataChangeEventListener> dataChangeListeners = new ArrayList<DataChangeEventListener>();
 
         public ForwardModelButton(String toolTip, String IconLocation) {
             super(toolTip, IconLocation);
-            // TODO Auto-generated constructor stub
+            this.addDataChangeEventListener(allGuiVars.getMainFrame());
         }
 
         @Override
         protected void buttonClicked() {
-            // TODO Auto-generated method stub
+            boolean allFixed = ForwardModel.forwardAllFixedSrcs(simModel);
+            fireDataChangeEvent();
+            
+            if (!allFixed) {
+                JOptionPane.showMessageDialog(allGuiVars.getMainFrame(),
+                        "Some sources are not fixed; only fixed sources will be modeled.", "Not all sources are fixed",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+
             
         }
-        
+
+        private void fireDataChangeEvent() {
+            for (DataChangeEventListener listener : dataChangeListeners) {
+                listener.updateAfterDataChange();
+            }
+
+        }
+
+        @Override
+        public void addDataChangeEventListener(DataChangeEventListener listener) {
+            dataChangeListeners.add(listener);
+
+        }
+
+        @Override
+        public void removeDataChangeEventListener(DataChangeEventListener listener) {
+            dataChangeListeners.remove(listener);
+
+        }
+
     }
-    
-    private class SolveButton extends IconButton{
+
+    private class SolveButton extends IconButton {
 
         public SolveButton(String toolTip, String IconLocation) {
             super(toolTip, IconLocation);
@@ -89,12 +118,12 @@ public class ENUToolBar extends JToolBar{
                 DistSlipSolveWorker dsSolver = new DistSlipSolveWorker(allGuiVars);
                 dsSolver.execute();
             }
-            
+
         }
-        
+
     }
-    
-    private class CrossValButton extends IconButton implements GuiUpdateRequestListener{
+
+    private class CrossValButton extends IconButton implements GuiUpdateRequestListener {
 
         public CrossValButton(String toolTip, String IconLocation) {
             super(toolTip, IconLocation);
@@ -103,26 +132,21 @@ public class ENUToolBar extends JToolBar{
         @Override
         protected void buttonClicked() {
             CrossValidator2 cvSolver = new CrossValidator2(simModel, simModel.getOrigin());
-            
-            //TODO multithread this
+
+            // TODO multithread this
             double minCvssGam = cvSolver.calculate();
-            JOptionPane.showMessageDialog(allGuiVars.getMainFrame(),
-                    "CVSS is min when Gamma is: " + minCvssGam,
-                    "Cross Validation Result",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(allGuiVars.getMainFrame(), "CVSS is min when Gamma is: " + minCvssGam,
+                    "Cross Validation Result", JOptionPane.ERROR_MESSAGE);
             return;
-            
+
         }
 
         @Override
         public void guiUpdateAfterStateChange() {
             // TODO Auto-generated method stub
-            
+
         }
-        
+
     }
-    
-    
-    
-    
+
 }
