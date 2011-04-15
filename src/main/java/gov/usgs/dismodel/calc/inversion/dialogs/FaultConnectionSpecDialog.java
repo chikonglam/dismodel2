@@ -1,5 +1,6 @@
-package gov.usgs.dismodel;
+package gov.usgs.dismodel.calc.inversion.dialogs;
 
+import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.DistributedFault;
 

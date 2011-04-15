@@ -9,7 +9,7 @@
  * Created on Feb 24, 2011, 5:41:10 PM
  */
 
-package gov.usgs.dismodel;
+package gov.usgs.dismodel.calc.inversion.dialogs;
 
 /**
  *

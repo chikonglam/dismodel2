@@ -1,0 +1,9 @@
+
+syntax: regexp
+^lib/libgluegen-rt\.so$
+syntax: regexp
+^lib/libjogl_cg\.so$
+syntax: regexp
+^lib/libjogl_awt\.so$
+syntax: regexp
+^lib/libjogl\.so$
