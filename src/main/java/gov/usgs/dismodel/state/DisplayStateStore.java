@@ -19,6 +19,7 @@ public class DisplayStateStore {
     private double xCenter = 0;
     private double yCenter = 0;
     private double chartSpan = 1e7d;
+    private boolean xyChartMode = false;
 
     // vector variables
     private Color realDisplacementVectorColor = new Color(219, 176, 4, 128);    // deep yellow
@@ -99,6 +100,14 @@ public class DisplayStateStore {
 
     public void setSourceColor(Color sourceColor) {
         this.sourceColor = sourceColor;
+    }
+
+    public boolean isXyChartMode() {
+        return xyChartMode;
+    }
+
+    public void setXyChartMode(boolean xyChartMode) {
+        this.xyChartMode = xyChartMode;
     }
     
     

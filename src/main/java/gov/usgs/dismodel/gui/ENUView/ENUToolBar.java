@@ -11,6 +11,9 @@ import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
+import org.jzy3d.maths.Coord3d;
+import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
+
 public class ENUToolBar extends JToolBar{
     protected AllGUIVars allGuiVars;
     protected SimulationDataModel simModel;
@@ -33,13 +36,11 @@ public class ENUToolBar extends JToolBar{
 
         public SnapToXyButton(String toolTip, String IconLocation) {
             super(toolTip, IconLocation);
-            // TODO Auto-generated constructor stub
         }
 
         @Override
         protected void buttonClicked() {
-            // TODO Auto-generated method stub
-            
+            allGuiVars.getEnuPanel().snapToXy();
         }
         
     }
@@ -53,8 +54,7 @@ public class ENUToolBar extends JToolBar{
 
         @Override
         protected void buttonClicked() {
-            // TODO Auto-generated method stub
-            
+            allGuiVars.getEnuPanel().toggleDragMode();
         }
         
     }
@@ -78,7 +78,6 @@ public class ENUToolBar extends JToolBar{
 
         public SolveButton(String toolTip, String IconLocation) {
             super(toolTip, IconLocation);
-            // TODO Auto-generated constructor stub
         }
 
         @Override
@@ -99,7 +98,6 @@ public class ENUToolBar extends JToolBar{
 
         public CrossValButton(String toolTip, String IconLocation) {
             super(toolTip, IconLocation);
-            // TODO Auto-generated constructor stub
         }
 
         @Override

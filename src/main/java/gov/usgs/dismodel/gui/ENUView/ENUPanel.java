@@ -11,6 +11,7 @@ import gov.usgs.dismodel.geom.overlays.jzy.AutoKmTicker;
 import gov.usgs.dismodel.geom.overlays.jzy.ColorStrip;
 import gov.usgs.dismodel.geom.overlays.jzy.DistributedFaultViewable;
 import gov.usgs.dismodel.geom.overlays.jzy.Marker;
+import gov.usgs.dismodel.geom.overlays.jzy.ScreenToGraphMap;
 import gov.usgs.dismodel.geom.overlays.jzy.Vector3D;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
@@ -31,9 +32,12 @@ import org.jzy3d.chart.Chart;
 import org.jzy3d.colors.Color;
 import org.jzy3d.global.Settings;
 import org.jzy3d.maths.BoundingBox3d;
+import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.AbstractDrawable;
 import org.jzy3d.plot3d.primitives.axes.AxeBox;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
+import org.jzy3d.plot3d.rendering.view.Camera;
+import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 
 public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFirer, DataChangeEventListener {
     private static final long serialVersionUID = -1463458221429777048L;
@@ -50,6 +54,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     private BoundingBox3d chartBounds;
     private AxeBox axesBounds;
     private AutoKmTicker kmTicker = new AutoKmTicker();
+    private ScreenToGraphMap mapper = new ScreenToGraphMap();
     private JzyMouseListener mouseController;
 
     // plotted stuff
@@ -81,7 +86,8 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
 
         // chart stuff
         this.chart = new Chart(Quality.Nicest, "swing");
-        this.mouseController = new JzyMouseListener(this, displaySettings, simModel);
+        this.chart.getScene().add(mapper);
+        this.mouseController = new JzyMouseListener(this, mapper, displaySettings, simModel);
         chart.addController(mouseController);
 
         // enuChart = new EnuViewerJzy2(simModel, displaySettings);
@@ -166,6 +172,8 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
             refreshVectorScaleBar();
             refreshSources();
             refreshModeledDisps();
+            
+            
 
             chart.getView().updateBounds();
         }
@@ -310,9 +318,35 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     protected static org.jzy3d.colors.Color fromAWT(java.awt.Color color) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
+    
+    public void snapToXy(){
+        Camera c = chart.getView().getCamera();
+        Coord3d eye = c.getEye();
+        // No, I do not understand why these particular numbers work
+        eye.x = -1.57f;
+        eye.y = 1.5707964f;
+        chart.setViewPoint(eye);       
+    }
 
     public Chart getChart() {
         return chart;
+    }
+    
+    public void dragModeOn(){
+        this.snapToXy();
+        this.mouseController.setDragXy(true);
+    }
+    
+    public void dragModeOff(){
+        this.mouseController.setDragXy(false);
+    }
+    
+    public void toggleDragMode(){
+        if (this.mouseController.isDragXy()){
+            dragModeOff();
+        } else {
+            dragModeOn();
+        }
     }
 
 }
