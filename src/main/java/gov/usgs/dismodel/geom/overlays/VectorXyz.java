@@ -1,5 +1,7 @@
 package gov.usgs.dismodel.geom.overlays;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -15,6 +17,7 @@ import gov.usgs.dismodel.geom.LocalENU;
  * Vector class containing the vector, error ellipsoid and scale (for display).
  * 
  */
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = {"nameAndLLH", "disp", "error"})
 public class VectorXyz {

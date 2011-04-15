@@ -3,11 +3,15 @@ package gov.usgs.dismodel.geom.overlays;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import gov.usgs.dismodel.geom.Angle;
 import gov.usgs.dismodel.geom.LLH;
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = { "location", "name" })
 public class Label implements Serializable {
@@ -29,10 +33,12 @@ public class Label implements Serializable {
         name = src.name;
     }
 
+    @XmlElement
     public LLH getLocation() {
         return location;
     }
 
+    @XmlElement
     public String getName() {
         return name;
     }

@@ -4,6 +4,10 @@ import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.jzy.DistributedFaultViewable;
 import gov.usgs.dismodel.state.DisplayStateStore;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
@@ -14,6 +18,7 @@ import org.jzy3d.plot3d.primitives.AbstractDrawable;
 /**
  * @author clam-PR
  */
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = { "rowCt", "colCt", "dLength", "dWidth", "subfaults"})
 public class DistributedFault extends OkadaFault3 {
@@ -188,22 +193,28 @@ public class DistributedFault extends OkadaFault3 {
         return curDisp;
     }
     
+    @XmlElement
     public double getdLength() {
         return dLength;
     }
 
+    @XmlElement
     public double getdWidth() {
         return dWidth;
     }
 
+    @XmlElement
     public int getRowCt() {
         return rowCt;
     }
 
+    @XmlElement
     public int getColCt() {
         return colCt;
     }
 
+    @XmlElementWrapper(name = "subFaults")
+    @XmlElement(name = "row")
     public OkadaFault3[][] getSubfaults() {
         return subfaults;
     }

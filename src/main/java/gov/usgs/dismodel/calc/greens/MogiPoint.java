@@ -21,7 +21,11 @@ import java.util.Arrays;
 import java.util.Formatter;
 
 import javax.swing.JDialog;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jzy3d.colors.Color;
 import org.jzy3d.maths.Coord3d;
@@ -31,6 +35,9 @@ import org.ojalgo.matrix.jama.JamaMatrix;
 
 /** Calculates displacements from a Mogi source which is a point-source 
 approximation to a spherical magma chamber. */
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement
+@XmlType(propOrder = {})
 public class MogiPoint extends DisplacementSolver {
 	
 

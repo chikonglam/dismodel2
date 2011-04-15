@@ -2,6 +2,7 @@ package gov.usgs.dismodel.geom;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
@@ -68,10 +69,12 @@ public class LatLon implements Serializable {
         return true;
     }
 
+    @XmlElement
     public Angle getLatitude() {
         return latitude;
     }
 
+    @XmlElement
     public Angle getLongitude() {
         return longitude;
     }

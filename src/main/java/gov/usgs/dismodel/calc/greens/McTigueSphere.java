@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JDialog;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -31,6 +33,7 @@ import org.jzy3d.plot3d.primitives.AbstractDrawable;
  *
  */
 
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = { "shearModulus", "radius"})
 public class McTigueSphere extends DisplacementSolver{

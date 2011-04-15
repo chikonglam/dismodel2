@@ -26,12 +26,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = { "stations", "refH", "refStation", "origin", "sourceModels", "sourceLowerbound",
         "sourceUpperbound", "fittedModels", "measuredDispVectors", "measuredUnrefdDispVectors",
@@ -41,15 +43,15 @@ public class SimulationDataModel implements ModelSolution {
     // --------------------
     private ArrayList<Label> stations = new ArrayList<Label>();
     private double refH;
-    private int refStation;
+    private int refStation = -1;
     private LLH origin = new LLH(37.4125, -102.4285, 0d);
 
     // sources
     // ----------
-    private List<DisplacementSolver> sourceModels = new ArrayList<DisplacementSolver>();
-    private List<DisplacementSolver> fittedModels = new ArrayList<DisplacementSolver>();
-    private List<DisplacementSolver> sourceLowerbound = new ArrayList<DisplacementSolver>();
-    private List<DisplacementSolver> sourceUpperbound = new ArrayList<DisplacementSolver>();
+    private ArrayList<DisplacementSolver> sourceModels = new ArrayList<DisplacementSolver>();
+    private ArrayList<DisplacementSolver> fittedModels = new ArrayList<DisplacementSolver>();
+    private ArrayList<DisplacementSolver> sourceLowerbound = new ArrayList<DisplacementSolver>();
+    private ArrayList<DisplacementSolver> sourceUpperbound = new ArrayList<DisplacementSolver>();
 
     // data and covars
     // ----------------
@@ -138,25 +140,25 @@ public class SimulationDataModel implements ModelSolution {
 
     @XmlElementWrapper(name = "sourceModels")
     @XmlElement(name = "models")
-    public List<DisplacementSolver> getSourceModels() {
+    public ArrayList<DisplacementSolver> getSourceModels() {
         return sourceModels;
     }
 
     @XmlElementWrapper(name = "fittedModels")
     @XmlElement(name = "models")
-    public List<DisplacementSolver> getFittedModels() {
+    public ArrayList<DisplacementSolver> getFittedModels() {
         return fittedModels;
     }
 
     @XmlElementWrapper(name = "sourceLowerbound")
     @XmlElement(name = "models")
-    public List<DisplacementSolver> getSourceLowerbound() {
+    public ArrayList<DisplacementSolver> getSourceLowerbound() {
         return sourceLowerbound;
     }
 
     @XmlElementWrapper(name = "sourceUpperbound")
     @XmlElement(name = "models")
-    public List<DisplacementSolver> getSourceUpperbound() {
+    public ArrayList<DisplacementSolver> getSourceUpperbound() {
         return sourceUpperbound;
     }
 
@@ -264,7 +266,7 @@ public class SimulationDataModel implements ModelSolution {
         this.stations = stations;
     }
 
-    @XmlElementWrapper(name = "Stations")
+    @XmlElementWrapper(name = "gpsStations")
     @XmlElement(name = "station")
     public List<Label> getStations() {
         return stations;

@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Formatter;
 
 import javax.swing.JDialog;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -38,6 +40,7 @@ import org.ojalgo.matrix.jama.JamaMatrix;
  * 
  */
 
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = {"name", "msp", "poissonRatio" })
 @XmlSeeAlso({ MogiPoint.class, McTigueSphere.class, OkadaFault3.class, DistributedFault.class })

@@ -4,6 +4,9 @@ import gov.usgs.dismodel.calc.SolverException;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
@@ -21,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author cforden
  * 
  */
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = { "x", "y", "z" })
 public class XyzDisplacement implements Serializable {
@@ -71,14 +75,17 @@ public class XyzDisplacement implements Serializable {
         z = other.z;
     }
 
+    @XmlElement
     public double getX() {
         return x;
     }
 
+    @XmlElement
     public double getY() {
         return y;
     }
 
+    @XmlElement
     public double getZ() {
         return z;
     }
