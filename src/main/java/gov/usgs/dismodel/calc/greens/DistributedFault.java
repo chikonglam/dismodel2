@@ -5,6 +5,7 @@ import gov.usgs.dismodel.geom.overlays.jzy.DistributedFaultViewable;
 import gov.usgs.dismodel.state.DisplayStateStore;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jzy3d.colors.Color;

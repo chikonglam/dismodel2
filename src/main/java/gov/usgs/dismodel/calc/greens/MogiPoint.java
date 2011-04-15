@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Formatter;
 
 import javax.swing.JDialog;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jzy3d.colors.Color;
 import org.jzy3d.maths.Coord3d;
@@ -100,11 +101,13 @@ public class MogiPoint extends DisplacementSolver {
     }
 
     @Override
+    @XmlTransient
     public int getNumSolutionParams() {
         return NUM_PARAMS;
     }
     
     @Override
+    @XmlTransient
     public ArrayList<Integer> getLinearParameterIndices() {
         return LINVAR;
     }
@@ -181,18 +184,22 @@ public class MogiPoint extends DisplacementSolver {
     
     //getters
     //--------
+    @XmlTransient
     public double getEast(){
         return this.msp[MODEL_EASTING_IDX];
     }
     
+    @XmlTransient
     public double getNorth(){
         return this.msp[MODEL_NORTHING_IDX];
     }
 
+    @XmlTransient
     public double getUp(){
         return this.msp[MODEL_ELEVATION_IDX];
     }
     
+    @XmlTransient
     public double getVolumeChange(){
         return this.msp[VOLUME_CHANGE_IDX];
     }

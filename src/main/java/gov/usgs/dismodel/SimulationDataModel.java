@@ -1,8 +1,5 @@
-package gov.usgs.dismodel;                //TODO move this back to gov.usgs.dismodel.state when ready
+package gov.usgs.dismodel; //TODO move this back to gov.usgs.dismodel.state when ready
 
-import gov.usgs.dismodel.ModelSolution;
-import gov.usgs.dismodel.RestorableSourceDialog;
-import gov.usgs.dismodel.SmoothingDialog;
 import gov.usgs.dismodel.calc.SolverException;
 import gov.usgs.dismodel.calc.batchInversion.DistributedSlipsBatchGreensIO;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
@@ -29,13 +26,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-
 @XmlRootElement
-@XmlType(propOrder = { "sourceModels", "sourceLowerbound", "sourceUpperbound", "fittedModels" })
+@XmlType(propOrder = { "stations", "refH", "refStation", "origin", "sourceModels", "sourceLowerbound",
+        "sourceUpperbound", "fittedModels", "measuredDispVectors", "measuredUnrefdDispVectors",
+        "measuredRefdDispVectors", "modeledDisplacements", "chi2", "nonNeg", "monentConstraint", "monentConType" })
 public class SimulationDataModel implements ModelSolution {
     // stations and geo vars
     // --------------------
@@ -46,11 +46,10 @@ public class SimulationDataModel implements ModelSolution {
 
     // sources
     // ----------
-    private ArrayList<DisplacementSolver> sourceModels = new ArrayList<DisplacementSolver>();
-    private ArrayList<RestorableSourceDialog> sourceDialogs = new ArrayList<RestorableSourceDialog>();
-    private ArrayList<DisplacementSolver> fittedModels = new ArrayList<DisplacementSolver>();
-    private ArrayList<DisplacementSolver> sourceLowerbound = new ArrayList<DisplacementSolver>();
-    private ArrayList<DisplacementSolver> sourceUpperbound = new ArrayList<DisplacementSolver>();
+    private List<DisplacementSolver> sourceModels = new ArrayList<DisplacementSolver>();
+    private List<DisplacementSolver> fittedModels = new ArrayList<DisplacementSolver>();
+    private List<DisplacementSolver> sourceLowerbound = new ArrayList<DisplacementSolver>();
+    private List<DisplacementSolver> sourceUpperbound = new ArrayList<DisplacementSolver>();
 
     // data and covars
     // ----------------
@@ -79,7 +78,11 @@ public class SimulationDataModel implements ModelSolution {
 
     // other
     // -----
-    private DistributedSlipsBatchGreensIO distributedSlipBatchIoProcessor = null; //new DistributedSlipsBatchGreensIO();        //TODO reenable this
+    private DistributedSlipsBatchGreensIO distributedSlipBatchIoProcessor = null; // new
+                                                                                  // DistributedSlipsBatchGreensIO();
+                                                                                  // //TODO
+                                                                                  // reenable
+                                                                                  // this
 
     public SimulationDataModel() {
         // empty
@@ -97,8 +100,8 @@ public class SimulationDataModel implements ModelSolution {
             return "Station locations and displacements are not loaded";
         }
     }
-
-    @XmlTransient
+    
+    @XmlElement
     public boolean getNonNeg() {
         return nonNeg;
     }
@@ -107,16 +110,6 @@ public class SimulationDataModel implements ModelSolution {
         this.nonNeg = nonNeg;
     }
 
-    @XmlTransient
-    public List<RestorableSourceDialog> getSourceDialogs() {
-        return sourceDialogs;
-    }
-
-    public void setSourceDialogs(ArrayList<RestorableSourceDialog> sourceDialog) {
-        this.sourceDialogs = sourceDialog;
-    }
-
-    @XmlTransient
     public boolean isDistributedFaultProblem() {
         for (DisplacementSolver curModel : sourceModels) {
             if (curModel instanceof DistributedFault)
@@ -124,13 +117,13 @@ public class SimulationDataModel implements ModelSolution {
         }
         return false;
     }
-
-    @XmlTransient
+    
+    @XmlElement
     public double getMonentConstraint() {
         return monentConstraint;
     }
 
-    @XmlTransient
+    @XmlElement
     public ConstraintType getMonentConType() {
         return monentConType;
     }
@@ -143,19 +136,27 @@ public class SimulationDataModel implements ModelSolution {
         this.monentConType = monentConType;
     }
 
-    public ArrayList<DisplacementSolver> getSourceModels() {
+    @XmlElementWrapper(name = "sourceModels")
+    @XmlElement(name = "models")
+    public List<DisplacementSolver> getSourceModels() {
         return sourceModels;
     }
 
-    public ArrayList<DisplacementSolver> getFittedModels() {
+    @XmlElementWrapper(name = "fittedModels")
+    @XmlElement(name = "models")
+    public List<DisplacementSolver> getFittedModels() {
         return fittedModels;
     }
 
-    public ArrayList<DisplacementSolver> getSourceLowerbound() {
+    @XmlElementWrapper(name = "sourceLowerbound")
+    @XmlElement(name = "models")
+    public List<DisplacementSolver> getSourceLowerbound() {
         return sourceLowerbound;
     }
 
-    public ArrayList<DisplacementSolver> getSourceUpperbound() {
+    @XmlElementWrapper(name = "sourceUpperbound")
+    @XmlElement(name = "models")
+    public List<DisplacementSolver> getSourceUpperbound() {
         return sourceUpperbound;
     }
 
@@ -174,7 +175,8 @@ public class SimulationDataModel implements ModelSolution {
         return covarWeighter;
     }
 
-    @XmlTransient
+    @XmlElementWrapper(name = "modeledDisplacements")
+    @XmlElement(name = "displayment")
     public List<XyzDisplacement> getModeledDisplacements() {
         return modeledDisplacements;
     }
@@ -232,8 +234,8 @@ public class SimulationDataModel implements ModelSolution {
     public void setChi2(double chi2) {
         this.chi2 = chi2;
     }
-
-    @XmlTransient
+    
+    @XmlElement
     public double getRefH() {
         return refH;
     }
@@ -262,7 +264,8 @@ public class SimulationDataModel implements ModelSolution {
         this.stations = stations;
     }
 
-    @XmlTransient
+    @XmlElementWrapper(name = "Stations")
+    @XmlElement(name = "station")
     public List<Label> getStations() {
         return stations;
     }
@@ -298,7 +301,8 @@ public class SimulationDataModel implements ModelSolution {
      * Returns displacements from which the reference-station's, displacements
      * have been subtracted, if appropriate.
      */
-    @XmlTransient
+    @XmlElementWrapper(name = "measuredDispVectors")
+    @XmlElement(name = "displacement")
     public List<VectorXyz> getMeasuredDispVectors() {
         return measuredRefdDispVectors;
     }
@@ -386,7 +390,8 @@ public class SimulationDataModel implements ModelSolution {
         return readSimModel;
     }
 
-    @XmlTransient
+    @XmlElementWrapper(name = "measuredUnrefdDispVectors")
+    @XmlElement(name = "displacement")
     public List<VectorXyz> getMeasuredUnrefdDispVectors() {
         return measuredUnrefdDispVectors;
     }
@@ -395,7 +400,8 @@ public class SimulationDataModel implements ModelSolution {
         this.measuredUnrefdDispVectors = measuredUnrefdDispVectors;
     }
 
-    @XmlTransient
+    @XmlElementWrapper(name = "measuredRefdDispVectors")
+    @XmlElement(name = "displacement")
     public List<VectorXyz> getMeasuredRefdDispVectors() {
         return measuredRefdDispVectors;
     }
@@ -413,7 +419,7 @@ public class SimulationDataModel implements ModelSolution {
         this.cvResults = cvResults;
     }
 
-    @XmlTransient
+    @XmlElement
     public double getChi2() {
         return chi2;
     }
@@ -426,6 +432,7 @@ public class SimulationDataModel implements ModelSolution {
         this.smoothingParams = smoothingParams;
     }
 
+    @XmlElement
     public int getRefStation() {
         return refStation;
     }
@@ -434,6 +441,7 @@ public class SimulationDataModel implements ModelSolution {
         this.refStation = refStation;
     }
 
+    @XmlElement
     public LLH getOrigin() {
         return origin;
     }

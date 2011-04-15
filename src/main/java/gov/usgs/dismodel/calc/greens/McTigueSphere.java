@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JDialog;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jzy3d.maths.Coord3d;
@@ -28,6 +30,7 @@ import org.jzy3d.plot3d.primitives.AbstractDrawable;
  * @author clam-PR
  *
  */
+
 @XmlRootElement
 @XmlType(propOrder = { "shearModulus", "radius"})
 public class McTigueSphere extends DisplacementSolver{
@@ -152,10 +155,12 @@ public class McTigueSphere extends DisplacementSolver{
 
 
     @Override
+    @XmlTransient
     public int getNumSolutionParams() {
         return NUM_PARAMS;
     }
     
+    @XmlElement
     public double getShearModulus() {
         return shearModulus;
     }
@@ -164,6 +169,7 @@ public class McTigueSphere extends DisplacementSolver{
         this.shearModulus = shearModulus;
     }
 
+    @XmlElement
     public double getRadius() {
         return radius;
     }
@@ -172,18 +178,22 @@ public class McTigueSphere extends DisplacementSolver{
         this.radius = radius;
     }
     
+    @XmlTransient
     public double getEast(){
         return this.msp[EAST_LOC_IDX];
     }
     
+    @XmlTransient
     public double getNorth(){
         return this.msp[NORTH_LOC_IDX];
     }
     
+    @XmlTransient
     public double getUp(){
         return this.msp[UP_LOC_IDX];
     }
 
+    @XmlTransient
     public double getVolumeChange(){
         return this.msp[VOLUME_IDX];
     }
@@ -213,6 +223,7 @@ public class McTigueSphere extends DisplacementSolver{
     }
 
     @Override
+    @XmlTransient
     public ArrayList<Integer> getLinearParameterIndices() {
         return  LINVAR;
     }

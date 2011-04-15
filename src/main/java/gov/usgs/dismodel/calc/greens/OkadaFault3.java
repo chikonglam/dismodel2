@@ -30,7 +30,7 @@ import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.AbstractDrawable;
 
 @XmlRootElement
-@XmlType(propOrder = { "isTopCoords", "shearModulus" })
+@XmlType(propOrder = { "isTopCoords", "shearModulus", "group" })
 @XmlSeeAlso({ DistributedFault.class })
 public class OkadaFault3 extends DisplacementSolver implements Fault {
     // INDEX nums
@@ -109,6 +109,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
     }
 
     @Override
+    @XmlTransient
     public ArrayList<Integer> getLinearParameterIndices() {
         return LINVAR;
     }
@@ -164,6 +165,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
     }
 
     @Override
+    @XmlTransient
     public int getNumSolutionParams() {
         return NUM_PARAMS;
     }
@@ -205,6 +207,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         return outStr;
     }
 
+    @XmlTransient
     public double getX1() {
         if (isTopCoords) {
             return getUpperX1();
@@ -213,6 +216,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         }
     }
 
+    @XmlTransient
     public double getY1() {
         if (isTopCoords) {
             return getUpperY1();
@@ -221,6 +225,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         }
     }
 
+    @XmlTransient
     public double getX2() {
         double x1 = getX1();
         double L = getLength();
@@ -230,6 +235,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         return x2;
     }
 
+    @XmlTransient
     public double getY2() {
         double y1 = getY1();
         double L = getLength();
@@ -238,17 +244,20 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         double y2 = y1 + L * cosStrike;
         return y2;
     }
-
+    
+    @XmlTransient
     public double getXc() {
         double xC = (getX1() + getX2()) / 2.0;
         return xC;
     }
 
+    @XmlTransient
     public double getYc() {
         double yC = (getY1() + getY2()) / 2.0;
         return yC;
     }
 
+    @XmlTransient
     public double getDepth() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         double depth = realParams.z0 / M2KM;
@@ -262,48 +271,58 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         }
     }
 
+    @XmlTransient
     public double getStrike() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         return realParams.phi;
     }
 
+    @XmlTransient
     public double getDip() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         return realParams.delta;
     }
 
+    @XmlTransient
     public double getAspectRatio() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         return (realParams.L / realParams.W);
     }
 
+    @XmlTransient
     public double getLength() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         return realParams.L / M2KM;
     }
 
+    @XmlTransient
     public double getWidth() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         return realParams.W / M2KM;
     }
 
+    @XmlTransient
     public double getStrikeSlip() {
         return this.msp[STRIKE_SLIP_IDX];
     }
 
+    @XmlTransient
     public double getDipSlip() {
         return this.msp[DIP_SLIP_IDX];
     }
 
+    @XmlTransient
     public double getOpening() {
         return this.msp[OPENING_IDX];
     }
 
+    @XmlTransient
     public double getLowerX1() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         return realParams.x0 / M2KM;
     }
 
+    @XmlTransient
     public double getUpperX1() {
         double lowerX1 = getLowerX1();
         double width = getWidth();
@@ -316,11 +335,13 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         return lowerX1 + dX;
     }
 
+    @XmlTransient
     public double getLowerY1() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         return realParams.y0 / M2KM;
     }
-
+    
+    @XmlTransient
     public double getUpperY1() {
         double lowerY1 = getLowerY1();
         double width = getWidth();
@@ -332,7 +353,8 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
 
         return lowerY1 + dY;
     }
-
+    
+    @XmlTransient
     public double getLowerX2() {
         double x1 = getLowerX1();
         double L = getLength();
@@ -342,6 +364,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         return x2;
     }
 
+    @XmlTransient
     public double getUpperX2() {
         double x1 = getUpperX1();
         double L = getLength();
@@ -350,7 +373,8 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         double x2 = x1 + L * sinStrike;
         return x2;
     }
-
+    
+    @XmlTransient
     public double getLowerY2() {
         double y1 = getLowerY1();
         double L = getLength();
@@ -359,7 +383,8 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         double y2 = y1 + L * cosStrike;
         return y2;
     }
-
+    
+    @XmlTransient
     public double getUpperY2() {
         double y1 = getUpperY1();
         double L = getLength();
@@ -369,6 +394,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         return y2;
     }
 
+    @XmlTransient
     public double getLowerXC() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         double x0 = realParams.x0 / M2KM;
@@ -378,6 +404,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         return x0 + dx;
     }
 
+    @XmlTransient
     public double getLowerYC() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         double y0 = realParams.y0 / M2KM;
@@ -387,19 +414,23 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         return y0 + dy;
     }
 
+    @XmlTransient
     public double getUpperXC() {
         return (getUpperX1() + getUpperX1()) / 2.0;
     }
 
+    @XmlTransient
     public double getUpperYC() {
         return (getUpperY1() + getUpperY1()) / 2.0;
     }
 
+    @XmlTransient
     public double getLowerUp() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         return -realParams.z0 / M2KM;
     }
 
+    @XmlTransient
     public double getUpperUp() {
         OkadaFundamentalVars realParams = toFundamentalVars();
         double depth = realParams.z0 / M2KM;
@@ -409,11 +440,13 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         return -depth + width * sinDip;
     }
 
+    @XmlTransient
     public double getUp() {
         return -getDepth();
     }
 
     @Override
+    @XmlTransient
     public double getFaultSize() {
         double length = getLength();
         double width = getWidth();
@@ -421,6 +454,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
     }
 
     @Override
+    @XmlTransient
     public double getMagnitude() {
         double ss = msp[STRIKE_SLIP_IDX];
         double ds = msp[DIP_SLIP_IDX];
@@ -434,6 +468,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         return isTopCoords;
     }
 
+    @XmlTransient
     public double[] getCenterENU() {
         double upperE = getUpperXC(); // TODO: make this more direct => faster
         double upperN = getUpperYC();
@@ -520,17 +555,14 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
         msp[DEP_LOC_IDX] -= up;
     }
 
-    @XmlTransient
     public void setStrikeSlip(double strikeSlip) {
         msp[STRIKE_SLIP_IDX] = strikeSlip;
     }
 
-    @XmlTransient
     public void setDipSlip(double dipSlip) {
         msp[DIP_SLIP_IDX] = dipSlip;
     }
 
-    @XmlTransient
     public void setOpening(double opening) {
         msp[OPENING_IDX] = opening;
     }
