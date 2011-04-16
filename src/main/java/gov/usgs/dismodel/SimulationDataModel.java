@@ -181,7 +181,7 @@ public class SimulationDataModel implements ModelSolution {
     }
 
     @XmlElementWrapper(name = "modeledDisplacements")
-    @XmlElement(name = "displayment")
+    @XmlElement(name = "displacement")
     public List<XyzDisplacement> getModeledDisplacements() {
         return modeledDisplacements;
     }
