@@ -63,6 +63,7 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
     // the state vars
     private DisplayStateStore displaySettings = new DisplayStateStore();
     private SimulationDataModel simModel = new SimulationDataModel();
+    private AllGUIVars allGuiVars = new AllGUIVars(this, null, null, displaySettings, simModel);
 
     // EventListeners
     private ArrayList<DataChangeEventListener> dataChgListeners = new ArrayList<DataChangeEventListener>();
@@ -74,8 +75,8 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
         setIconImage((new ImageIcon(Dismodel2.class.getResource("/gov/usgs/dismodel/resources/equals.png"))).getImage());
 
         // Create the WorldWindow.
-        wwjPanel = new GeoPanel(wwjSize, true, simModel, displaySettings, this);
-        enuPanel = new ENUPanel(enuSize, simModel, displaySettings, this);
+        wwjPanel = new GeoPanel(wwjSize, true, allGuiVars);
+        enuPanel = new ENUPanel(enuSize, allGuiVars);
 
         // Create a horizontal split pane containing the layer panel and the
         // WorldWindow panel.
@@ -106,7 +107,7 @@ public class Dismodel2 extends JFrame implements DataChangeEventListener, DataCh
         setLAF();
 
         // set menubar
-        this.menubar = new MainMenu(new AllGUIVars(this, wwjPanel, enuPanel, displaySettings, simModel));
+        this.menubar = new MainMenu(allGuiVars);
         // populateMenuBar();
         this.setJMenuBar(menubar);
 

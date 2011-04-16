@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.commons.beanutils.BeanUtils;
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = { "stations", "refH", "refStation", "origin", "sourceModels", "sourceLowerbound",
@@ -268,7 +271,7 @@ public class SimulationDataModel implements ModelSolution {
 
     @XmlElementWrapper(name = "gpsStations")
     @XmlElement(name = "station")
-    public List<Label> getStations() {
+    public ArrayList<Label> getStations() {
         return stations;
     }
 
@@ -450,6 +453,17 @@ public class SimulationDataModel implements ModelSolution {
 
     public void setOrigin(LLH origin) {
         this.origin = origin;
+    }
+    
+    public void replaceWith(SimulationDataModel that){
+    	try {
+			BeanUtils.copyProperties(this, that);
+			System.out.println("copy done");
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
     }
 
 }

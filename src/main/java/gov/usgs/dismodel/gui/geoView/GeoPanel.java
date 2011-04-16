@@ -65,6 +65,7 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
     private DisplayStateStore displaySettings;
     private WWClickRedirector wwClickRedirector;
     private Dismodel2 mainFrame;
+    AllGUIVars allGUIVars;
 
     // layers
     // --------
@@ -81,17 +82,18 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
     private ArrayList<ZoomEventListener> zoomListeners = new ArrayList<ZoomEventListener>();
 
     // Constructs a JPanel to hold the WorldWindow
-    public GeoPanel(Dimension canvasSize, boolean includeStatusBar, SimulationDataModel simModel,
-            DisplayStateStore displaySettings, Dismodel2 mainFrame) {
+    public GeoPanel(Dimension canvasSize, boolean includeStatusBar, AllGUIVars allGUIVars) {
         super(new BorderLayout());
 
         // state vars
-        this.simModel = simModel;
-        this.displaySettings = displaySettings;
-        this.mainFrame = mainFrame;
+        allGUIVars.setWwjPanel(this);
+        this.allGUIVars = allGUIVars;
+        this.simModel = allGUIVars.getSimModel();
+        this.displaySettings = allGUIVars.getDisplaySettings();
+        this.mainFrame = allGUIVars.getMainFrame();
 
         // Create the toolbar
-        toolbar = new WorldWindToolBar(new AllGUIVars(mainFrame, this, null, displaySettings, simModel));
+        toolbar = new WorldWindToolBar(this.allGUIVars);
         this.add(toolbar, BorderLayout.NORTH);
 
         // Create the WorldWindow and set its preferred size.
@@ -146,7 +148,9 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
 
     }
 
-    private PropertyChangeListener changeListener = new PropertyChangeListener() {
+
+
+	private PropertyChangeListener changeListener = new PropertyChangeListener() {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {

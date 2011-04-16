@@ -5,7 +5,8 @@ import gov.usgs.dismodel.gui.menubar.data.LoadCovMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadDisplacementMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadStationMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.ProcessGreensFilesMenuItem;
-import gov.usgs.dismodel.gui.menubar.file.SaveProjectFileMenu;
+import gov.usgs.dismodel.gui.menubar.file.LoadProjectMenuItem;
+import gov.usgs.dismodel.gui.menubar.file.SaveProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.ForwardModelMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.SmoothingMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.SolveMenuItem;
@@ -46,8 +47,8 @@ public class MainMenu extends JMenuBar {
         public FileMenu(String title) {
             super(title);
 
-            this.add(new SaveProjectFileMenu("Save Project...", allGuiVars));
-            this.add(new JMenuItem("Open Project..."));
+            this.add(new SaveProjectMenuItem("Save Project...", allGuiVars));
+            this.add(new LoadProjectMenuItem("Open Project...", allGuiVars));
             this.add(new JMenuItem("Exit"));
         }
     }    

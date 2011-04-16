@@ -50,6 +50,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     private SimulationDataModel simModel;
     private DisplayStateStore displaySettings;
     private Dismodel2 mainFrame;
+    private AllGUIVars allGUIVars;
 
     // Chart stuff
     private Chart chart;
@@ -66,22 +67,24 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
     private List<Vector3D> modeledVectors = new ArrayList<Vector3D>();
     private ColorStrip colorBar;
 
-    public ENUPanel(Dimension canvasSize, SimulationDataModel simModel, DisplayStateStore displaySettings, Dismodel2 mainFrame) {
+    public ENUPanel(Dimension canvasSize, AllGUIVars allGUIVars) {
         super(new BorderLayout());
 
         // set Jzy to use hardware
         Settings.getInstance().setHardwareAccelerated(true); 
 
         // state stuff
-        this.simModel = simModel;
-        this.displaySettings = displaySettings;
-        this.mainFrame = mainFrame;
+        allGUIVars.setEnuPanel(this);
+        this.allGUIVars = allGUIVars;
+        this.simModel = allGUIVars.getSimModel();
+        this.displaySettings = allGUIVars.getDisplaySettings();
+        this.mainFrame = allGUIVars.getMainFrame();
 
         // GUI stuff
         this.setPreferredSize(canvasSize);
 
         // tool bar
-        toolbar = new ENUToolBar(new AllGUIVars(mainFrame, null, this, displaySettings, simModel));
+        toolbar = new ENUToolBar(allGUIVars);
         this.add(toolbar, BorderLayout.NORTH);
 
         // chart stuff

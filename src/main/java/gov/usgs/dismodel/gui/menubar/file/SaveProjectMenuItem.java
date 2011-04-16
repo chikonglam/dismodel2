@@ -10,9 +10,9 @@ import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.menubar.ActionMenuItem;
 
-public class SaveProjectFileMenu extends ActionMenuItem{
+public class SaveProjectMenuItem extends ActionMenuItem{
 
-    public SaveProjectFileMenu(String title, AllGUIVars allGuiVars) {
+    public SaveProjectMenuItem(String title, AllGUIVars allGuiVars) {
         super(title, allGuiVars);
     }
 
