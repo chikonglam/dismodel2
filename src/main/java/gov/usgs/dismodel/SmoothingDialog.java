@@ -14,6 +14,11 @@ package gov.usgs.dismodel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
@@ -23,6 +28,9 @@ public class SmoothingDialog extends javax.swing.JDialog
             implements ActionListener {
 
 
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlRootElement
+    @XmlType(propOrder = { "useSmoothing", "gamma", "shouldCrossValidate", "numGammaValues", "minGamma", "maxGamma" })
     public static class Params {
         public boolean useSmoothing = false;
         public double  gamma = 1.0;
@@ -31,6 +39,69 @@ public class SmoothingDialog extends javax.swing.JDialog
         public int     numGammaValues = 10;
         public double  minGamma = 0.01;
         public double  maxGamma = 1.0;
+        
+        //empty constructor for jaxb
+        public Params() {
+            super();
+        }
+        
+        //accessors and mutators for jaxb
+        @XmlElement
+        public boolean getUseSmoothing() {
+            return useSmoothing;
+        }
+
+        public void setUseSmoothing(boolean useSmoothing) {
+            this.useSmoothing = useSmoothing;
+        }
+
+        @XmlElement
+        public double getGamma() {
+            return gamma;
+        }
+
+        public void setGamma(double gamma) {
+            this.gamma = gamma;
+        }
+
+        @XmlElement
+        public boolean getShouldCrossValidate() {
+            return shouldCrossValidate;
+        }
+
+        public void setShouldCrossValidate(boolean shouldCrossValidate) {
+            this.shouldCrossValidate = shouldCrossValidate;
+        }
+
+        @XmlElement
+        public int getNumGammaValues() {
+            return numGammaValues;
+        }
+
+        public void setNumGammaValues(int numGammaValues) {
+            this.numGammaValues = numGammaValues;
+        }
+
+        @XmlElement
+        public double getMinGamma() {
+            return minGamma;
+        }
+
+        public void setMinGamma(double minGamma) {
+            this.minGamma = minGamma;
+        }
+
+        @XmlElement
+        public double getMaxGamma() {
+            return maxGamma;
+        }
+
+        public void setMaxGamma(double maxGamma) {
+            this.maxGamma = maxGamma;
+        }
+        
+
+        
     }
 
 

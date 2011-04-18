@@ -40,7 +40,8 @@ import org.apache.commons.beanutils.BeanUtils;
 @XmlRootElement
 @XmlType(propOrder = { "stations", "refH", "refStation", "origin", "sourceModels", "sourceLowerbound",
         "sourceUpperbound", "fittedModels", "measuredDispVectors", "measuredUnrefdDispVectors",
-        "measuredRefdDispVectors", "modeledDisplacements", "covarWeighter", "chi2", "nonNeg", "monentConstraint", "monentConType" })
+        "measuredRefdDispVectors", "modeledDisplacements", "covarWeighter", "chi2", "nonNeg", 
+        "monentConstraint", "monentConType", "smoothingParams" })
 public class SimulationDataModel implements ModelSolution {
     // stations and geo vars
     // --------------------
@@ -352,7 +353,7 @@ public class SimulationDataModel implements ModelSolution {
         smoothingParams = dialog.getParams();
     }
 
-    @XmlTransient
+    @XmlElement
     public SmoothingDialog.Params getSmoothingParams() {
         return smoothingParams;
     }
