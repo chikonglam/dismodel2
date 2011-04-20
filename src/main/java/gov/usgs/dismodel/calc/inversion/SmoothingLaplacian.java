@@ -18,18 +18,14 @@ public class SmoothingLaplacian {
 	 * @param faultIn group of connected sorted subfaults
 	 * @param breakSurface
 	 * @param dikeOpening
-	 * 							previously: @param segmentCt
-	 * @param totalCol
-	 * @param totalRow
-	 * 							previously: @param segmentColCt
-	 * 							previously: @param segmentRowCt
+	 * @param totalNumOfSubFaults
 	 * @return Laplacian matrix (the same order as the one sent in) 
 	 */
-	public static double [][] generate(ArrayList<ArrayList<DisplacementSolver>> twoDArrayFaults, boolean breakSurface, boolean dikeOpening, int totalCol, int totalRow){//, int segmentCt, int totalCol, int totalRow, int[] segmentColCt, int[] segmentRowCt){
+	public static double [][] generate(ArrayList<ArrayList<DisplacementSolver>> twoDArrayFaults, boolean breakSurface, boolean dikeOpening, int totalNumOfSubFaults){ //, int totalCol, int totalRow){//, int segmentCt, int totalCol, int totalRow, int[] segmentColCt, int[] segmentRowCt){
 	    int noOfGps = twoDArrayFaults.size();
 		double [][][] lapacianArray = new double[noOfGps][][];
 		
-		double [][] combinedMatrix = new double[totalCol*totalRow][totalCol*totalRow];
+		double [][] combinedMatrix = new double[totalNumOfSubFaults][totalNumOfSubFaults];
 		
 		int[] totalColArray = new int[noOfGps];
 		int[] totalRowArray = new int[noOfGps];

@@ -401,7 +401,17 @@ DataChangeEventFrier {
             ArrayList<DisplacementSolver> tempDrawer = new ArrayList<DisplacementSolver>();
             tempDrawer.add(tempFault);
             
-            simModel.getFittedModels().set(modelIndex, tempFault);
+            if (!isCreateNew() && modelIndex >= 0){
+                simModel.getFittedModels().set(modelIndex, tempFault);
+            } else {
+                if (modelIndex < 0){
+                    modelIndex = simModel.getFittedModels().size();
+                    simModel.getFittedModels().set(modelIndex, tempFault);
+                } else{
+                    simModel.getFittedModels().set(modelIndex, tempFault);
+                }
+                
+            }
             fireDataChangeEvent();
 
             if (lsDialog == null || !lsDialog.isVisible()) {
