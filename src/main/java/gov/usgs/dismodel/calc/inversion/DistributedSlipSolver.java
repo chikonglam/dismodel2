@@ -203,7 +203,7 @@ public class DistributedSlipSolver {
             updateModelDisp(fittedModel, modeledDisp1D);
             double chi2 = costFunction(modeledDisp1D);
             XyzDisplacement[] modeledDisplacements = toXyzDispArray(modeledDisp1D);
-            return new InversionResults(fittedModel, fittedModel, chi2, 0d, modeledDisplacements);
+            return new InversionResults(fittedModel, chi2,  modeledDisplacements);
         } else {
             return null;
         }
@@ -596,13 +596,12 @@ public class DistributedSlipSolver {
         double[][] smoothedGreensMatrix = new double[rows][cols];
 
         double[][] unsmoothedGm = unweightedGreensFunct;
-        final boolean breakSurface = false;
         final boolean dikeOpening = false;
         /*
          * Get the smoothing submatrix for one sense of motion (STRIKE_SLIP_IDX,
          * DIP_SLIP_IDX, OPENING_IDX)
          */
-        double[][] oneMotionSmoothingRows = SmoothingLaplacian.generate(groupedOriginalModel, breakSurface, //TODO: get breakSurface, and dikeOpening in
+        double[][] oneMotionSmoothingRows = SmoothingLaplacian.generate(groupedOriginalModel,  //TODO: get b dikeOpening in
                 dikeOpening, numSubFaults);
 
         /*

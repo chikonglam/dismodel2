@@ -13,15 +13,16 @@ import gov.usgs.dismodel.calc.greens.OkadaFault3;
  */
 public class SmoothingLaplacian {
     
-	 /**
+	 private static final double BREAK_SURFACE_THRESHOLD = 1e-3d;
+
+    /**
 	  * Batch laplacian Matrix generator
 	 * @param faultIn group of connected sorted subfaults
 	 * @param breakSurface
-	 * @param dikeOpening
 	 * @param totalNumOfSubFaults
 	 * @return Laplacian matrix (the same order as the one sent in) 
 	 */
-	public static double [][] generate(ArrayList<ArrayList<DisplacementSolver>> twoDArrayFaults, boolean breakSurface, boolean dikeOpening, int totalNumOfSubFaults){ //, int totalCol, int totalRow){//, int segmentCt, int totalCol, int totalRow, int[] segmentColCt, int[] segmentRowCt){
+	public static double [][] generate(ArrayList<ArrayList<DisplacementSolver>> twoDArrayFaults, boolean dikeOpening, int totalNumOfSubFaults){ //, int totalCol, int totalRow){//, int segmentCt, int totalCol, int totalRow, int[] segmentColCt, int[] segmentRowCt){
 	    int noOfGps = twoDArrayFaults.size();
 		double [][][] lapacianArray = new double[noOfGps][][];
 		
@@ -64,6 +65,9 @@ public class SmoothingLaplacian {
 	    	
 	    	totalRowArray[groupIter] = curRowCt;
 	    	totalColArray[groupIter] = colCtCumSum;
+	    	
+	    	//check if the segment reaches the ref H => break surface
+	    	boolean breakSurface = Math.abs(((DistributedFault)curGroup.get(0)).getUpperUp()) < BREAK_SURFACE_THRESHOLD;
 	    	
 	    	//get the individual smoothing matrices
 	    	double[][] preArrangeMatrix = SmoothingLaplacian.generate(curGroup.toArray(new DisplacementSolver[0]), 
