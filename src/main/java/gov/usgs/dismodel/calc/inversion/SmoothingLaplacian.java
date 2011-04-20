@@ -13,7 +13,7 @@ import gov.usgs.dismodel.calc.greens.OkadaFault3;
  */
 public class SmoothingLaplacian {
     
-	 private static final double BREAK_SURFACE_THRESHOLD = 1e-3d;
+	 private static final double BREAK_SURFACE_DEPTH = -1e-3d;
 
     /**
 	  * Batch laplacian Matrix generator
@@ -67,7 +67,7 @@ public class SmoothingLaplacian {
 	    	totalColArray[groupIter] = colCtCumSum;
 	    	
 	    	//check if the segment reaches the ref H => break surface
-	    	boolean breakSurface = Math.abs(((DistributedFault)curGroup.get(0)).getUpperUp()) < BREAK_SURFACE_THRESHOLD;
+	    	boolean breakSurface = ((DistributedFault)curGroup.get(0)).getUpperUp() > BREAK_SURFACE_DEPTH;
 	    	
 	    	//get the individual smoothing matrices
 	    	double[][] preArrangeMatrix = SmoothingLaplacian.generate(curGroup.toArray(new DisplacementSolver[0]), 

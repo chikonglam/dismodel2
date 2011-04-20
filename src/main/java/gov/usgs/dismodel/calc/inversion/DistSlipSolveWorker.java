@@ -63,7 +63,7 @@ public class DistSlipSolveWorker extends SwingWorker<InversionResults, Inversion
         simModel.setFittedModels(new ArrayList<DisplacementSolver>(Arrays.asList(dsSoln.getFittedModels())));
         simModel.setChi2(dsSoln.getChiSquared());
         simModel.setModeledDisplacements(Arrays.asList(dsSoln.getStationDisplacements()));
-        simModel.setRefH(dsSoln.getRefHeight());
+
         fireDataChangeEvent();
         // enuViewer.drawRefHeight(simModel.getRefH(),
         // refHcolor);

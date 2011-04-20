@@ -37,7 +37,7 @@ public class ENUStatusBar extends JPanel implements DataChangeEventListener {
             label = " ";
 
             if (simModel.getModeledDisplacements().size() > 0) {
-                label += String.format("Chi^2=%.5e  ", simModel.getChi2());
+                label += String.format("Chi^2=%.3e  ", simModel.getChi2());
             }
 
             if (simModel.getRefH() != 0d) {
