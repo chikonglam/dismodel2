@@ -46,6 +46,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
 
     private ENUToolBar toolbar;
     private JPanel panel3d;
+    private ENUStatusBar statusBar;
     // private EnuViewerJzy2 enuChart;
     private SimulationDataModel simModel;
     private DisplayStateStore displaySettings;
@@ -86,6 +87,10 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
         // tool bar
         toolbar = new ENUToolBar(allGUIVars);
         this.add(toolbar, BorderLayout.NORTH);
+        
+        // status bar
+        statusBar = new ENUStatusBar(allGUIVars);
+        this.add(statusBar, BorderLayout.SOUTH);
 
         // chart stuff
         this.chart = new Chart(Quality.Nicest, "swing");
@@ -177,8 +182,11 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
             refreshModeledDisps();
             
             
+            
+            
 
             chart.getView().updateBounds();
+            statusBar.updateAfterDataChange();
         }
 
     };
