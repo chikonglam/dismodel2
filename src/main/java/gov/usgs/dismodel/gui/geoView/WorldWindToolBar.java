@@ -167,11 +167,11 @@ public class WorldWindToolBar extends JToolBar {
 		
 		private void fireZoomNRecenter(){
 			DisplayStateStore displaySettings = allGuiVars.getDisplaySettings();
+                        for (RecenterEventListener listener : recenterListeners) {
+                            listener.recenterAfterChange(displaySettings);
+                        }
 			for (ZoomEventListener listener : zoomListeners) {
 				listener.updateZoomLevelAfterSettingsChanged(displaySettings);
-			}
-			for (RecenterEventListener listener : recenterListeners) {
-			    listener.recenterAfterChange(displaySettings);
 			}
 
 		}

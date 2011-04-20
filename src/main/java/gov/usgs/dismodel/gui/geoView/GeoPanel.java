@@ -21,6 +21,8 @@ import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.render.SurfaceIcon;
 import gov.nasa.worldwind.util.StatusBar;
 import gov.nasa.worldwind.view.orbit.BasicOrbitView;
+import gov.usgs.dismodel.Dismodel2;
+import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.overlays.Label;
@@ -35,8 +37,6 @@ import gov.usgs.dismodel.gui.events.RecenterEventListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
-import gov.usgs.dismodel.Dismodel2;
-import gov.usgs.dismodel.SimulationDataModel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -144,13 +144,10 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
         // rotation
         wwClickRedirector = new WWClickRedirector(wwd, simModel);
         wwd.getInputHandler().addMouseListener(wwClickRedirector);
-        
 
     }
 
-
-
-	private PropertyChangeListener changeListener = new PropertyChangeListener() {
+    private PropertyChangeListener changeListener = new PropertyChangeListener() {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
@@ -193,9 +190,6 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
                 return;
             }
 
-            if (wwView.isAnimating()) {
-                wwView.stopAnimations();
-            }
 
             Position pos = ((BasicOrbitView) wwView).getCenterPosition();
 
@@ -219,23 +213,30 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
         zoomListeners.remove(listener);
     }
 
-
     @Override
     public void recenterAfterChange(DisplayStateStore displaySettings) {
-    	 SwingUtilities.invokeLater(threadedRecenter);
+        SwingUtilities.invokeLater(threadedRecenter);
     }
-    
+
     private Runnable threadedRecenter = new Runnable() {
-		
-		@Override
-		public void run() {
-	    	Position center = new Position( displaySettings.getCenterOfMap() ,0);
-	    	wwView.goTo(center, displaySettings.getChartSpan());
-		}
-	};
-    
-    
-    
+
+        @Override
+        public void run() {
+            Position center = new Position(displaySettings.getCenterOfMap(), 0);
+            //wwView.goTo(center, displaySettings.getChartSpan());
+
+
+            Position eyePos = wwView.getEyePosition();
+
+            Position tmpPos = Position.fromRadians(center.getLatitude().radians, center.getLongitude().radians,
+                    eyePos.getAltitude());
+            wwView.setEyePosition(tmpPos);
+
+            wwd.redraw();
+
+        }
+    };
+
     public void initCenter(DisplayStateStore displaySettings) {
         SwingUtilities.invokeLater(threadedUpdateMapCenter);
     }
@@ -426,13 +427,8 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
         this.wwClickRedirector.removeGeoPosClickListener(listener);
     }
 
-	public WorldWindowGLCanvas getWorldWind() {
-		return wwd;
-	}
-    
-    
-
-
-
+    public WorldWindowGLCanvas getWorldWind() {
+        return wwd;
+    }
 
 }
