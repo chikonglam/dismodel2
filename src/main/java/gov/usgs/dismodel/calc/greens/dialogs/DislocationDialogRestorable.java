@@ -406,7 +406,7 @@ DataChangeEventFrier {
             } else {
                 if (modelIndex < 0){
                     modelIndex = simModel.getFittedModels().size();
-                    simModel.getFittedModels().set(modelIndex, tempFault);
+                    simModel.getFittedModels().add(modelIndex, tempFault);
                 } else{
                     simModel.getFittedModels().set(modelIndex, tempFault);
                 }

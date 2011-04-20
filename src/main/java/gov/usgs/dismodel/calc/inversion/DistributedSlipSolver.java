@@ -95,7 +95,6 @@ public class DistributedSlipSolver {
     // Vars
     // ----
     private double[] disp1D;
-    private double[][] gMatrix;
     private double[][] gMatrixSlipMajor;
     private DisplacementSolver[] originalModel;
     private ArrayList<ArrayList<DisplacementSolver>> groupedOriginalModel;
@@ -246,9 +245,7 @@ public class DistributedSlipSolver {
         this.targetMonent = targetMonent;
         this.momentConType = momentConType;
 
-        // this.gMatrix = makeGMatrix(originalModel);
         this.gMatrixSlipMajor = makeSlipMajorGMatrix(originalModel, this.slipLocation);
-        // convertGF2SlipMajor(gMatrix);
         this.useSmoothingOverride = smoothingOverride;
         this.smoothingGamma = smoothingGamma;
 
@@ -325,17 +322,6 @@ public class DistributedSlipSolver {
         return twoDFaultArray;
     }
 
-//  Nothing is using this => deprecated    
-//    private DistributedFault[] toDistributedFaultArray(DisplacementSolver[] faultsIn) {
-//        final int length = faultsIn.length;
-//        DistributedFault[] ret = new DistributedFault[length];
-//        for (int iter = 0; iter < length; iter++) {
-//            ret[iter] = (DistributedFault) faultsIn[iter];
-//        }
-//        return ret;
-//
-//    }
-
     private void putInSegRowColCts(DisplacementSolver[] faultsIn) {
         this.segmentCt = faultsIn.length;
         int curRowCt = 0;
@@ -402,33 +388,7 @@ public class DistributedSlipSolver {
         }
     }
 
-//nothing is using this => deprecated    
-//    private double[][] makeGMatrix(DisplacementSolver[] model) {
-//        double[][] gTran = new double[numVar][numStation * DIM_CT]; // can try
-//                                                                    // to avoid
-//                                                                    // new
-//
-//        int curVarIter = 0;
-//
-//        for (int segmentIter = 0; segmentIter < segmentCt; segmentIter++) {
-//            for (int rowIter = 0; rowIter < subFaultRowCt[segmentIter]; rowIter++) {
-//                for (int colIter = 0; colIter < subFaultColCt[segmentIter]; colIter++) {
-//                    for (int paramIter = 0; paramIter < numParamPerSubFault; paramIter++) {
-//                        int curParam = linVarIndicies.get(paramIter);
-//                        gTran[curVarIter] = isolateLinDisp((DistributedFault) model[segmentIter], rowIter, colIter,
-//                                curParam);
-//                        curVarIter++;
-//                    }
-//                }
-//            }
-//
-//        }
-//
-//        double[][] outG = matrixTranspose(gTran);
-//
-//        return outG;
-//
-//    }
+
 
     private double[][] makeSlipMajorGMatrix(DisplacementSolver[] model, ArrayList<SlipLocation> slipLocation) {
         double[][] gTran = new double[numVar][]; // can try to avoid new
@@ -499,7 +459,6 @@ public class DistributedSlipSolver {
         }
 
         return unitDispVec;
-        // TODO Test this
     }
 
     /**
@@ -557,18 +516,19 @@ public class DistributedSlipSolver {
     }
 
     private double[] calcSubFaultAreas() {
-        double[] areas = new double[numVar];
+        
         int fillIter = 0;
-        for (int segmentIter = 0; segmentIter < segmentCt; segmentIter++) {
-            for (int rowIter = 0; rowIter < subFaultRowCt[segmentIter]; rowIter++) {
-                for (int colIter = 0; colIter < subFaultColCt[segmentIter]; colIter++) {
-                    for (int paramIter = 0; paramIter < numParamPerSubFault; paramIter++) {
-                        areas[fillIter++] = ((DistributedFault) this.originalModel[segmentIter]).getSubfaults()[rowIter][colIter]
-                                .getFaultSize();
-                    }
-                }
-            }
+        int numOfVar = this.slipLocation.size();
+        double[] areas = new double[numOfVar];
+        for (int varIter = 0; varIter < numOfVar; varIter++){
+            SlipLocation curSlipLoc = this.slipLocation.get(varIter);
+            int curSFIdx = curSlipLoc.subfaultIdx;
+            int curRow = curSlipLoc.row;
+            int curCol = curSlipLoc.col;
+            //int curParamIdx = curSlipLoc.slipIndex;
+            areas[varIter] = ((DistributedFault) this.originalModel[curSFIdx]).getSubfaults()[curRow][curCol].getFaultSize();
         }
+        
         return areas;
     }
 
@@ -642,21 +602,13 @@ public class DistributedSlipSolver {
          * Get the smoothing submatrix for one sense of motion (STRIKE_SLIP_IDX,
          * DIP_SLIP_IDX, OPENING_IDX)
          */
-        // double[][] oneMotionSmoothingRows =
-        // SmoothingLaplacian.generate(originalModel, //TODO: Change to support
-        // multi faults
-        // breakSurface, dikeOpening, segmentCt, colCumSum, rowCt,
-        // subFaultColCt, subFaultRowCt);
-
-        double[][] oneMotionSmoothingRows = SmoothingLaplacian.generate(groupedOriginalModel, breakSurface,
+        double[][] oneMotionSmoothingRows = SmoothingLaplacian.generate(groupedOriginalModel, breakSurface, //TODO: get breakSurface, and dikeOpening in
                 dikeOpening, numSubFaults);
 
         /*
          * If there is to be more than one sense of motion, copy the smoothing
          * matrix to the other senses.
          */
-        // TODO:::: Finish here when class LaplacianSmoothing is rewritten
-        // without interleaved motion senses.
         double[][] smoothingRows = convert1MotionTo3Motion(oneMotionSmoothingRows);
 
         /* Allow space for pseudodata at the bottom of the displacement vector */
@@ -698,55 +650,6 @@ public class DistributedSlipSolver {
         return smoothingRows;
     }
 
-//  Nothing is using this => deprecated
-//    /**
-//     * Reorders each row in a Green's Function matrix. The input is a matrix in
-//     * model-major ordering, in which each major group of coefficients inside
-//     * each row, is a cluster of coefficients for the same subfault. The output
-//     * is a matrix in slip-major ordering, in which each major group of
-//     * coefficients inside each row, is a cluster of coefficients for slips in
-//     * the same direction.
-//     * 
-//     * A Green's function calculates the displacement ("slip") at the surface,
-//     * or other points where sensors are placed, due to movement
-//     * ("DISlocations") in the bulk of the earth.
-//     * 
-//     * @param modelMajorGF
-//     *            a Greens Function in which each row is subdivided into groups
-//     *            by subfault. Each such partial row contains one or more slip
-//     *            values for that subfault.
-//     * @return a Green's Function in which each row is subdivided into groups by
-//     *         slip direction. Each such strip along each row, contains slip
-//     *         values in that direction, for one or more subfaults.
-//     */
-//    private double[][] convertGF2SlipMajor(double[][] modelMajorGF) {
-//        int rowCt = modelMajorGF.length;
-//        int colCt = modelMajorGF[0].length;
-//        double[][] slipMajorGF = new double[rowCt][colCt];
-//
-//        for (int subFaultIter = 0; subFaultIter < numSubFaults; subFaultIter++) {
-//            for (int slipIter = 0; slipIter < numParamPerSubFault; slipIter++) {
-//                for (int rowIter = 0; rowIter < rowCt; rowIter++) {
-//                    slipMajorGF[rowIter][slipIter * numSubFaults + subFaultIter] = modelMajorGF[rowIter][subFaultIter
-//                            * numParamPerSubFault + slipIter];
-//                }
-//            }
-//        }
-//        return slipMajorGF;
-//    }
-
-//      Nothing is using this  ==> deprecated
-//    private double[] convertSlipMag2ModelMajor(double[] slipMajorSlipMag) {
-//        int slipMagLen = slipMajorSlipMag.length;
-//        double[] modelMajorSlipMag = new double[slipMagLen];
-//        for (int subFaultIter = 0; subFaultIter < numSubFaults; subFaultIter++) {
-//            for (int slipIter = 0; slipIter < numParamPerSubFault; slipIter++) {
-//                modelMajorSlipMag[subFaultIter * numParamPerSubFault + slipIter] = slipMajorSlipMag[slipIter
-//                        * numSubFaults + subFaultIter];
-//            }
-//        }
-//        return modelMajorSlipMag;
-//    }
 
     private ConstrainedLinearLeastSquaresSolver applyConstraints(EqualityAndBoundsSlipSolver solver) {
         boolean mustSetArea = false;
@@ -768,56 +671,37 @@ public class DistributedSlipSolver {
             }
             mustSetArea = true;
         }
+        
+        
+        int fillIter = 0;
+        int numOfVar = this.slipLocation.size();
+        double[] areas = new double[numOfVar];
+        for (int varIter = 0; varIter < numOfVar; varIter++){
+            SlipLocation curSlipLoc = this.slipLocation.get(varIter);
+            int curSFIdx = curSlipLoc.subfaultIdx;
+            int curRow = curSlipLoc.row;
+            int curCol = curSlipLoc.col;
+            int curParamIdx = curSlipLoc.slipIndex;
+            OkadaFault3 curLB = ((DistributedFault) modelLB[curSFIdx]).getSubfaults()[curRow][curCol];
+            OkadaFault3 curUB = ((DistributedFault) modelUB[curSFIdx]).getSubfaults()[curRow][curCol];
+            double lbVal = curLB.getMsp()[curParamIdx];
+            double ubVal = curUB.getMsp()[curParamIdx];
+            
+            
+            if (!Double.isInfinite(lbVal)){             //TODO: implement better bounding system (at least the same as the other ones)
+                solver.setLowerBoundForABlockSlip(varIter, lbVal);
+                mustSetArea = true;
+            }
+            
+            if (!Double.isInfinite(ubVal)){             //TODO: implement better bounding system (at least the same as the other ones)
+                solver.setUpperBoundForABlockSlip(varIter, ubVal);
+                mustSetArea = true;
+            }
+            
+            
+            
+        }
 
-        int patchIter = 0;
-
-        for (int segmentIter = 0; segmentIter < segmentCt; segmentIter++) {
-            for (int rowIter = 0; rowIter < subFaultRowCt[segmentIter]; rowIter++) {
-                for (int colIter = 0; colIter < subFaultColCt[segmentIter]; colIter++) {
-                    OkadaFault3 curLB = ((DistributedFault) modelLB[segmentIter]).getSubfaults()[rowIter][colIter];
-                    OkadaFault3 curUB = ((DistributedFault) modelUB[segmentIter]).getSubfaults()[rowIter][colIter];
-
-                    double lbss = curLB.getStrikeSlip();
-                    if (!Double.isInfinite(lbss)) {
-                        solver.setLowerBoundForABlockSlip(patchIter + 0 * this.numParamPerSubFault, lbss);
-                        mustSetArea = true;
-                    }
-
-                    double lbds = curLB.getDipSlip();
-                    if (!Double.isInfinite(lbds)) {
-                        solver.setLowerBoundForABlockSlip(patchIter + 1 * this.numParamPerSubFault, lbds);
-                        mustSetArea = true;
-                    }
-
-                    double lbts = curLB.getOpening();
-                    if (!Double.isInfinite(lbts)) {
-                        solver.setLowerBoundForABlockSlip(patchIter + 2 * this.numParamPerSubFault, lbts);
-                        mustSetArea = true;
-                    }
-
-                    double ubss = curUB.getStrikeSlip();
-                    if (!Double.isInfinite(ubss)) {
-                        solver.setUpperBoundForABlockSlip(patchIter + 0 * this.numParamPerSubFault, ubss);
-                        mustSetArea = true;
-                    }
-
-                    double ubds = curUB.getDipSlip();
-                    if (!Double.isInfinite(ubds)) {
-                        solver.setUpperBoundForABlockSlip(patchIter + 1 * this.numParamPerSubFault, ubds);
-                        mustSetArea = true;
-                    }
-
-                    double ubts = curUB.getOpening();
-                    if (!Double.isInfinite(ubts)) {
-                        solver.setUpperBoundForABlockSlip(patchIter + 2 * this.numParamPerSubFault, ubts);
-                        mustSetArea = true;
-                    }
-
-                    patchIter++;
-
-                } // iterate over columns
-            } // iterate over rows
-        } // over segments
         if (mustSetArea) {
             double[] subFaultAreas = calcSubFaultAreas();
             solver.setSubfaultAreas(subFaultAreas);
