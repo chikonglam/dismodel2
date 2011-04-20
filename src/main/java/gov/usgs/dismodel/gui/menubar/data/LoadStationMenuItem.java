@@ -39,6 +39,8 @@ public class LoadStationMenuItem extends DataChangingMenuItem implements Recente
 			
 			//defaults the origin at the center of the stations
 			allGuiVars.getSimModel().setOrigin(centerOfStations);
+			//defaults the ref Height to average of the stations
+			allGuiVars.getSimModel().setRefH(centerOfStations.getHeight());
 			
 			allGuiVars.getSimModel().setStations((ArrayList<Label>)stations);
 			fireDataChangeEvent();

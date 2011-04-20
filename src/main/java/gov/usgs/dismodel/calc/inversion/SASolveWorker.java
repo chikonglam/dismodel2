@@ -59,7 +59,7 @@ public class SASolveWorker extends SwingWorker<InversionResults, InversionProgre
         p.setVisible(true);
 
         sa = new SimuAnnealCervelli(modelArray, stationLocArray, realDispArray,
-                simModel.getCovarWeighter(), lowerbound, upperbound, p);
+                simModel.getCovarWeighter(), lowerbound, upperbound, simModel.getRefH(), p);
 
         
         return sa.calculate();
@@ -86,8 +86,6 @@ public class SASolveWorker extends SwingWorker<InversionResults, InversionProgre
         simModel.setSourceModels(new ArrayList<DisplacementSolver>( Arrays.asList(saResult.getFittedModels())));
         simModel.setChi2(saResult.getChiSquared());
         simModel.setModeledDisplacements(Arrays.asList(saResult.getStationDisplacements()));
-        double refH = saResult.getRefHeight();
-        simModel.setRefH(refH);
         fireDataChangeEvent();
         
 

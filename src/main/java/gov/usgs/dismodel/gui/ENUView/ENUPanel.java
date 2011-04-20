@@ -230,6 +230,7 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
 
     private void refreshSources() {
         List<DisplacementSolver> modelArray = simModel.getFittedModels();
+        double refH = simModel.getRefH();
 
         for (AbstractDrawable src : sourceModels) {
             chart.getScene().remove(src, false);
@@ -239,7 +240,16 @@ public class ENUPanel extends JPanel implements ZoomEventListener, ZoomEventFire
         if (modelArray == null || modelArray.size() < 1)
             return;
 
-        for (DisplacementSolver model : modelArray) {
+        
+        for (DisplacementSolver unShiftedmodel : modelArray) {
+            DisplacementSolver model;
+            try {
+                model = (DisplacementSolver) unShiftedmodel.clone();
+                model.offsetLocation(0, 0, refH);
+            } catch (CloneNotSupportedException e) {
+                model = null;
+            }
+            
             if (model != null){
                 AbstractDrawable modelDrawable = model.toAbstractDrawable(displaySettings);
                 chart.getScene().add(modelDrawable, true);

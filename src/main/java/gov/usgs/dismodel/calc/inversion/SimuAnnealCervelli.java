@@ -76,7 +76,7 @@ public class SimuAnnealCervelli {
     private DisplacementSolver[] modelInUB;
     private int numModels;
     private DisplacementSolver[] fittedModelUnshifted;
-    private DisplacementSolver[] fittedModelShiftedHeight;
+    //private DisplacementSolver[] fittedModelShiftedHeight;
     private JamaMatrix gMatrix;
     
     //station vars
@@ -144,14 +144,13 @@ public class SimuAnnealCervelli {
     public SimuAnnealCervelli(final DisplacementSolver[] modelwithGuesses,
             final LocalENU[] stationPositions, final XyzDisplacement[] stationDisplacements,
             CovarianceWeighter covWeighter, final DisplacementSolver[] lowerbound,
-            final DisplacementSolver[] upperbound, InversionListener listener) {
+            final DisplacementSolver[] upperbound, double refHeight, InversionListener listener) {
         super();
         this.stationDisplacements = stationDisplacements;
         double [] dispInRow = unrollDispMatix(stationDisplacements);
         covWeighter.setMeasuredDisplacementData(dispInRow);
-        double averageHeight = AverageHeight(stationPositions);
         this.listener = listener;
-        realConstructor(modelwithGuesses, stationPositions, covWeighter, lowerbound, upperbound, averageHeight);      
+        realConstructor(modelwithGuesses, stationPositions, covWeighter, lowerbound, upperbound, refHeight);      
     }
 
     
@@ -308,9 +307,8 @@ public class SimuAnnealCervelli {
         fillModelArrayAccordingToMap(fittedModelUnshifted, saSoln, optimizedMapper);
         updateModelDisp(fittedModelUnshifted, stationDisp1D);
         this.estDisplacements = toXyzDispArray(stationDisp1D);
-        this.fittedModelShiftedHeight = MakeShiftedModelArray(fittedModelUnshifted, refH);
         
-        return new InversionResults(fittedModelUnshifted, fittedModelShiftedHeight, chi2, refH, estDisplacements);
+        return new InversionResults(fittedModelUnshifted, chi2, estDisplacements);
     }
     
     public void cancel(){
@@ -415,7 +413,7 @@ public class SimuAnnealCervelli {
                 }
             }
 
-            acrossRunsEnergyList.add(curRunBestEnergy);                 //TODO: make progress in Newton's method available when user cancels
+            acrossRunsEnergyList.add(curRunBestEnergy);                
             acrossRunsModelList.add(curRunBestModel);
 
         }  //runIter
@@ -505,7 +503,6 @@ public class SimuAnnealCervelli {
         }
         
         return unitDispVec;
-        //TODO Test this
     }
 
     private int findMinEnergy(List<Double> energyList) {
@@ -711,8 +708,7 @@ public class SimuAnnealCervelli {
         if (Double.isNaN(sse) || Double.isInfinite(sse)){
             return INF_ERROR_OFFSET;
         } else {
-            //TODO:  remove the division after Chris integrated this part
-            return sse;      ///(degOfFreedom);		//not using DoF anymore
+            return sse; 
         }
     }
 
@@ -744,21 +740,7 @@ private void regenRandParams(double[] randArrayOut, final int numOfNums, final d
 
 
 
-//private JamaMatrix makeGMatrix(DisplacementSolver[] models) {
-//    int numModel = models.length;
-//    int numObs = numStation*DIM_CT;
-//    double[][] Gtemp = new double[numModels][];
-//
-//    DisplacementSolver[] curModel = new DisplacementSolver[1];
-//    
-//    for (int iter = 0; iter < numModel; iter++){
-//        Gtemp[iter] = new double[numObs];
-//        curModel[0] = models[iter];
-//        updateModelDisp(curModel, Gtemp[iter]);
-//    }
-//    //TODO: Test this
-//    return JamaMatrix.FACTORY.copyRaw(Gtemp).transpose();
-//}
+
 
 private DisplacementSolver[] MakeShiftedModelArray(DisplacementSolver[] unshiftedModels, double refHeight) {
     DisplacementSolver[] shiftedModels = copyOf(unshiftedModels);
@@ -965,7 +947,6 @@ private MapBuildIterFunct fixedIter = new MapBuildIterFunct() {
 };
 
 private MapBuildIterFunct notUsedIter = new MapBuildIterFunct() {
-    //TODO: Test this
     @Override
     public double iterFunction(final int modelIdx, final int paramIdx) {
         if (  Double.isNaN( modelInwithGuess[modelIdx].getMsp()[paramIdx])){
@@ -979,7 +960,6 @@ private MapBuildIterFunct notUsedIter = new MapBuildIterFunct() {
 private MapBuildIterFunct linearIter = new MapBuildIterFunct() {
     @Override
     public double iterFunction(final int modelIdx, final int paramIdx) {
-      //TODO Test this
         if (Double.isNaN(fixedIter.iterFunction(modelIdx, paramIdx)) && (Double.isNaN(notUsedIter.iterFunction(modelIdx, paramIdx))) ){
             List<Integer> curModelLinVar = modelInwithGuess[modelIdx].getLinearParameterIndices();
             if (curModelLinVar != null && curModelLinVar.contains(paramIdx)){

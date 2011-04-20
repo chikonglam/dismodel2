@@ -5,20 +5,16 @@ import gov.usgs.dismodel.calc.greens.XyzDisplacement;
 
 public class InversionResults {
     private DisplacementSolver[] modelsB4ShiftingHeight;
-    private DisplacementSolver[] shiftedHmodels;
     private double chi2;
-    private double refHeight;
     private XyzDisplacement[] modeledDisplacements;
     private int curSolnPos;
     private boolean continueWrapping;
     
-    public InversionResults(DisplacementSolver[] modelsB4ShiftingHeight, DisplacementSolver[] shiftedHeightModels, double chi2,
-            double refHeight, XyzDisplacement[] modeledDisplacements) {
+    public InversionResults(DisplacementSolver[] modelsB4ShiftingHeight, double chi2,
+             XyzDisplacement[] modeledDisplacements) {
         super();
         this.modelsB4ShiftingHeight = modelsB4ShiftingHeight;
-        this.shiftedHmodels = shiftedHeightModels;
         this.chi2 = chi2;
-        this.refHeight = refHeight;
         this.modeledDisplacements = modeledDisplacements;
     }
 
@@ -27,16 +23,13 @@ public class InversionResults {
     }
 
     public DisplacementSolver[] getModels() {
-        return shiftedHmodels;
+        return modelsB4ShiftingHeight;
     }
 
     public double getChi2() {
         return chi2;
     }
 
-    public double getRefHeight() {
-        return refHeight;
-    }
 
     public XyzDisplacement[] getModeledDisplacements() {
         return modeledDisplacements;
@@ -62,10 +55,10 @@ public class InversionResults {
     @Override
     public String toString() {
         String solnStr = "InversionResults [chi2=" + chi2 + ",\n models=\n";
-        for (DisplacementSolver curModel : shiftedHmodels) {
+        for (DisplacementSolver curModel : modelsB4ShiftingHeight) {
             solnStr += curModel.toString() + "\n"; 
         }
-        solnStr += "refHeight=" + refHeight + "]";
+        solnStr +=  "]";
         return solnStr;
     }
 
@@ -84,14 +77,13 @@ public class InversionResults {
     	curSolnPos = 0;
     	StringBuilder wrappedStrBldr = new StringBuilder(
     			"Inversion Results [chi2=" + chi2 + ",  models=\n");
-        for (DisplacementSolver curModel : shiftedHmodels) {
+        for (DisplacementSolver curModel : modelsB4ShiftingHeight) {
             String theModelSolnStr = new String(curModel.toString() + "\n");
             continueWrapping = true;
             while (continueWrapping) {
                 wrappedStrBldr.append(getSolnPart(theModelSolnStr));
             }
         }
-        wrappedStrBldr.append("refHeight=" + refHeight + "]");
         return wrappedStrBldr.toString();
     }
 
