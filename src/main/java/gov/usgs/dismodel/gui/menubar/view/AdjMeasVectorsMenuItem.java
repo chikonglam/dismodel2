@@ -1,4 +1,4 @@
-package gov.usgs.dismodel.gui.menubar.map;
+package gov.usgs.dismodel.gui.menubar.view;
 
 import gov.usgs.dismodel.gui.VectorScaleAndColorChooser;
 import gov.usgs.dismodel.gui.components.AllGUIVars;

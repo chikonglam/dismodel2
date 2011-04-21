@@ -7,15 +7,16 @@ import gov.usgs.dismodel.gui.menubar.data.LoadStationMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.ProcessGreensFilesMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.LoadProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.SaveProjectMenuItem;
+import gov.usgs.dismodel.gui.menubar.inversion.DistSlipConsMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.ForwardModelMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.SmoothingMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.SolveMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.DislocationMenuItem;
+import gov.usgs.dismodel.gui.menubar.source.EditViewSrcMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.MogiMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.SphericalMenuItem;
-import gov.usgs.dismodel.gui.menubar.inversion.DistSlipConsMenuItem;
-import gov.usgs.dismodel.gui.menubar.map.AdjMeasVectorsMenuItem;
-import gov.usgs.dismodel.gui.menubar.map.AdjSimVectorsMenuItem;
+import gov.usgs.dismodel.gui.menubar.view.AdjMeasVectorsMenuItem;
+import gov.usgs.dismodel.gui.menubar.view.AdjSimVectorsMenuItem;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -35,7 +36,7 @@ public class MainMenu extends JMenuBar {
         // top level (0) menu items
         // ------------------------
         this.add(new FileMenu("File"));
-        this.add(new MapMenu("Map"));
+        this.add(new ViewMenu("View"));
         this.add(new DataMenu("Data"));
         this.add(new SourceMenu("Source"));
         this.add(new InversionMenu("Inversion"));
@@ -49,18 +50,18 @@ public class MainMenu extends JMenuBar {
         public FileMenu(String title) {
             super(title);
 
-            this.add(new SaveProjectMenuItem("Save Project...", allGuiVars));
             this.add(new LoadProjectMenuItem("Open Project...", allGuiVars));
+            this.add(new SaveProjectMenuItem("Save Project...", allGuiVars));
             this.add(new JMenuItem("Exit"));
         }
     }
     
-    //Map
-    private class MapMenu extends JMenu {
-        public MapMenu(String title) {
+    //View
+    private class ViewMenu extends JMenu {
+        public ViewMenu(String title) {
             super(title);
 
-            this.add(new Map_AdjAppearanceMenu("Adjust Apperance"));
+            this.add(new View_AdjAppearanceMenu("Adjust Apperance"));
         }
     }    
 
@@ -82,7 +83,7 @@ public class MainMenu extends JMenuBar {
         public SourceMenu(String title) {
             super(title);
 
-            this.add(new JMenuItem("Edit / view sources..."));
+            this.add(new EditViewSrcMenuItem("Edit / view sources...", allGuiVars));
             this.add(new DislocationMenuItem("Add Dislocation...", allGuiVars));
             this.add(new MogiMenuItem("Add Mogi...", allGuiVars));
             this.add(new SphericalMenuItem("Add Spherical...", allGuiVars));
@@ -130,9 +131,9 @@ public class MainMenu extends JMenuBar {
         private static final long serialVersionUID = -3577880343506143989L;
     }
     
-    // Map / Adjust Appearance
-    private class Map_AdjAppearanceMenu extends JMenu {
-        public Map_AdjAppearanceMenu(String title) {
+    // View / Adjust Appearance
+    private class View_AdjAppearanceMenu extends JMenu {
+        public View_AdjAppearanceMenu(String title) {
             super(title);
             
             this.add(new AdjMeasVectorsMenuItem("Measured displacement vectors ...", allGuiVars));
