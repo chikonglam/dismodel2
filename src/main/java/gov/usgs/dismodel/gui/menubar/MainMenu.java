@@ -14,6 +14,8 @@ import gov.usgs.dismodel.gui.menubar.source.DislocationMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.MogiMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.SphericalMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.DistSlipConsMenuItem;
+import gov.usgs.dismodel.gui.menubar.map.AdjMeasVectorsMenuItem;
+import gov.usgs.dismodel.gui.menubar.map.AdjSimVectorsMenuItem;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -33,7 +35,7 @@ public class MainMenu extends JMenuBar {
         // top level (0) menu items
         // ------------------------
         this.add(new FileMenu("File"));
-        this.add(new JMenu("Map"));
+        this.add(new MapMenu("Map"));
         this.add(new DataMenu("Data"));
         this.add(new SourceMenu("Source"));
         this.add(new InversionMenu("Inversion"));
@@ -51,7 +53,17 @@ public class MainMenu extends JMenuBar {
             this.add(new LoadProjectMenuItem("Open Project...", allGuiVars));
             this.add(new JMenuItem("Exit"));
         }
+    }
+    
+    //Map
+    private class MapMenu extends JMenu {
+        public MapMenu(String title) {
+            super(title);
+
+            this.add(new Map_AdjAppearanceMenu("Adjust Apperance"));
+        }
     }    
+
     
     // Data
     private class DataMenu extends JMenu {
@@ -116,6 +128,16 @@ public class MainMenu extends JMenuBar {
         }
 
         private static final long serialVersionUID = -3577880343506143989L;
+    }
+    
+    // Map / Adjust Appearance
+    private class Map_AdjAppearanceMenu extends JMenu {
+        public Map_AdjAppearanceMenu(String title) {
+            super(title);
+            
+            this.add(new AdjMeasVectorsMenuItem("Measured displacement vectors ...", allGuiVars));
+            this.add(new AdjSimVectorsMenuItem("Simulated displacement vectors ...", allGuiVars));
+        }
     }
 
 }
