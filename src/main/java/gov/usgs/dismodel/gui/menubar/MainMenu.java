@@ -5,6 +5,7 @@ import gov.usgs.dismodel.gui.menubar.data.LoadCovMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadDisplacementMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadStationMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.ProcessGreensFilesMenuItem;
+import gov.usgs.dismodel.gui.menubar.file.ExitMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.LoadProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.SaveProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.DistSlipConsMenuItem;
@@ -20,7 +21,6 @@ import gov.usgs.dismodel.gui.menubar.view.AdjSimVectorsMenuItem;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 
 
 public class MainMenu extends JMenuBar {
@@ -49,10 +49,11 @@ public class MainMenu extends JMenuBar {
     private class FileMenu extends JMenu {
         public FileMenu(String title) {
             super(title);
+            this.setMnemonic('F');
 
             this.add(new LoadProjectMenuItem("Open Project...", allGuiVars));
             this.add(new SaveProjectMenuItem("Save Project...", allGuiVars));
-            this.add(new JMenuItem("Exit"));
+            this.add(new ExitMenuItem("Exit", allGuiVars));
         }
     }
     
@@ -60,6 +61,7 @@ public class MainMenu extends JMenuBar {
     private class ViewMenu extends JMenu {
         public ViewMenu(String title) {
             super(title);
+            this.setMnemonic('V');
 
             this.add(new View_AdjAppearanceMenu("Adjust Apperance"));
         }
@@ -70,6 +72,7 @@ public class MainMenu extends JMenuBar {
     private class DataMenu extends JMenu {
         public DataMenu(String title) {
             super(title);
+            this.setMnemonic('D');
 
             this.add(new Data_GpsMenu("GPS"));
             this.add(new Data_BatchMenu("Batch Process"));
@@ -82,6 +85,7 @@ public class MainMenu extends JMenuBar {
     private class SourceMenu extends JMenu {
         public SourceMenu(String title) {
             super(title);
+            this.setMnemonic('S');
 
             this.add(new EditViewSrcMenuItem("Edit / view sources...", allGuiVars));
             this.add(new DislocationMenuItem("Add Dislocation...", allGuiVars));
@@ -96,6 +100,7 @@ public class MainMenu extends JMenuBar {
     private class InversionMenu extends JMenu {
         public InversionMenu(String title) {
             super(title);
+            this.setMnemonic('I');
 
             this.add(new SmoothingMenuItem("Smoothing...", allGuiVars));
             this.add(new DistSlipConsMenuItem("Dist Slip Constraints...", allGuiVars));
