@@ -115,16 +115,19 @@ public class DistributedFault extends OkadaFault3 {
         if (direction == 0 ) direction = Double.compare(y2, y1);
         double startX = x1;
         double startY = y1;
+        double dirComp = 1.0;
+        double strikeDeg = overallFault.getStrike();
+        
         if (direction < 0){
         	startX = x2;
         	startY = y2;
+        	dirComp = -1.0;
         }
                 
         
         final double u1 = overallFault.getUpperUp();
         final double length = overallFault.getLength();
         final double width = overallFault.getWidth();
-        final double strikeDeg = overallFault.getStrike();
         final double dipDeg = overallFault.getDip();
         final double SS = overallFault.getStrikeSlip();
         final double DS = overallFault.getDipSlip();
@@ -145,10 +148,10 @@ public class DistributedFault extends OkadaFault3 {
         
         OkadaFault3[][] dividedFaults = new OkadaFault3[widthStep][lengthStep];
         for (int dLIter = 0; dLIter < lengthStep; dLIter++){
-            double curUpperX1 = startX + (realDx * dLIter);
-            double curUpperY1 = startY + (realDy * dLIter);
-            double curUpperX2 = curUpperX1 + realDx;
-            double curUpperY2 = curUpperY1 + realDy;
+            double curUpperX1 = startX + (realDx * dLIter) * dirComp;
+            double curUpperY1 = startY + (realDy * dLIter)* dirComp;
+            double curUpperX2 = curUpperX1 + realDx * dirComp;
+            double curUpperY2 = curUpperY1 + realDy * dirComp;
             
             for(int dUIter = 0; dUIter < widthStep; dUIter++){
                 double curU = u1 + dUIter * realDU;
@@ -159,9 +162,15 @@ public class DistributedFault extends OkadaFault3 {
                 double curX2 = curUpperX2 + curXAdj;
                 double curY2 = curUpperY2 + curYAdj;
                 
-                dividedFaults[dUIter][dLIter] = new OkadaFault3(curX1, curY1, curX2, curY2, 
-                        Double.NaN, Double.NaN, -curU, true, Double.NaN, dipDeg, Double.NaN, 
-                        Double.NaN, realDw, SS, DS, TS);
+                if (direction > 0){
+	                dividedFaults[dUIter][dLIter] = new OkadaFault3(curX1, curY1, curX2, curY2, 
+	                        Double.NaN, Double.NaN, -curU, true, Double.NaN, dipDeg, Double.NaN, 
+	                        Double.NaN, realDw, SS, DS, TS);
+                } else {
+	                dividedFaults[dUIter][dLIter] = new OkadaFault3(curX2, curY2, curX1, curY1, 
+	                        Double.NaN, Double.NaN, -curU, true, Double.NaN, dipDeg, Double.NaN, 
+	                        Double.NaN, realDw, SS, DS, TS);
+                }
             }
         }
         return dividedFaults;

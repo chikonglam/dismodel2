@@ -81,8 +81,8 @@ public class DistributedFaultViewable extends AbstractDrawable {
         
         //horizontal divs
         if (rowCt > 1){
-            rowDivLines = new LineStrip[rowCt - 1];
-            for (int rowIter = 1; rowIter < rowCt ; rowIter++ ){
+            rowDivLines = new LineStrip[rowCt-1];
+            for (int rowIter = 0; rowIter < rowCt-1 ; rowIter++ ){
                 double x1 = subfaults[rowIter][0].getLowerX1();
                 double y1 = subfaults[rowIter][0].getLowerY1();
                 double u1 = subfaults[rowIter][0].getLowerUp();
@@ -94,26 +94,26 @@ public class DistributedFaultViewable extends AbstractDrawable {
                 Coord3d pt2 = new Coord3d(x2, y2, u2);
                 curLine.add(new Point(pt1, Color.BLACK));
                 curLine.add(new Point(pt2, Color.BLACK));
-                rowDivLines[rowIter - 1] = curLine;
+                rowDivLines[rowIter] = curLine;
             }
         }
         
         //vertical divs
         if (colCt>1){
             colDivLines = new LineStrip[colCt - 1];
-            for (int colIter = 1; colIter < colCt ; colIter++ ){
-                double x1 = subfaults[0][colIter].getLowerX1();
-                double y1 = subfaults[0][colIter].getLowerY1();
-                double u1 = subfaults[0][colIter].getLowerUp();
-                double x2 = subfaults[rowCt-1][colIter].getUpperX1();
-                double y2 = subfaults[rowCt-1][colIter].getUpperY1();
-                double u2 = subfaults[rowCt-1][colIter].getUpperUp();
+            for (int colIter = 0; colIter < colCt - 1; colIter++ ){
+                double x1 = subfaults[0][colIter+1].getUpperX1();
+                double y1 = subfaults[0][colIter+1].getUpperY1();
+                double u1 = subfaults[0][colIter+1].getUpperUp();
+                double x2 = subfaults[rowCt-1][colIter+1].getLowerX1();
+                double y2 = subfaults[rowCt-1][colIter+1].getLowerY1();
+                double u2 = subfaults[rowCt-1][colIter+1].getLowerUp();
                 LineStrip curLine = new LineStrip();
                 Coord3d pt1 = new Coord3d(x1, y1, u1);
                 Coord3d pt2 = new Coord3d(x2, y2, u2);
                 curLine.add(new Point(pt1, Color.BLACK));
                 curLine.add(new Point(pt2, Color.BLACK));
-                colDivLines[colIter - 1] = curLine;
+                colDivLines[colIter] = curLine;
             }
         }
         

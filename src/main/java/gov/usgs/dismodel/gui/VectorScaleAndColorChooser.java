@@ -59,9 +59,9 @@ public class VectorScaleAndColorChooser extends JDialog {
                 sliderLabel.setText(title);
             }
         };
-        slider = new JSlider(JSlider.HORIZONTAL, 0, 100000, initialValue);
-        slider.setMajorTickSpacing(10000);
-        slider.setMinorTickSpacing(1000);
+        slider = new JSlider(JSlider.HORIZONTAL, 0, 500000, initialValue);
+        slider.setMajorTickSpacing(100000);
+        slider.setMinorTickSpacing(50000);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         slider.addChangeListener(sliderListener);
