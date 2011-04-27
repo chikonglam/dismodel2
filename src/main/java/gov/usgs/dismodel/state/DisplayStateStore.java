@@ -4,7 +4,22 @@ import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 
 import java.awt.Color;
+import java.lang.reflect.InvocationTargetException;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.apache.commons.beanutils.BeanUtils;
+
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement
+@XmlType(propOrder = { "stationColor", "centerOfMap", "xCenter", "yCenter", "chartSpan", "realDisplacementVectorColor",
+		"modeledDisplacementVectorColor", "displacementVectorScale", "sourceColor"})
 public class DisplayStateStore {
     // constants
     public static final double DEFAULT_ZOOM_FACTOR = 1.2d;
@@ -30,6 +45,8 @@ public class DisplayStateStore {
     private Color sourceColor = new Color(255, 0, 0, 128);
 
     // getters and setters
+    @XmlJavaTypeAdapter(ColorAdapter.class)
+    @XmlElement
     public Color getRealDisplacementVectorColor() {
         return realDisplacementVectorColor;
     }
@@ -38,6 +55,8 @@ public class DisplayStateStore {
         this.realDisplacementVectorColor = realDisplacementVectorColor;
     }
 
+    @XmlJavaTypeAdapter(ColorAdapter.class)
+    @XmlElement
     public Color getModeledDisplacementVectorColor() {
         return modeledDisplacementVectorColor;
     }
@@ -46,6 +65,7 @@ public class DisplayStateStore {
         this.modeledDisplacementVectorColor = modeledDisplacementVectorColor;
     }
 
+    @XmlElement
     public int getDisplacementVectorScale() {
         return displacementVectorScale;
     }
@@ -54,6 +74,7 @@ public class DisplayStateStore {
         this.displacementVectorScale = displacementVectorScale;
     }
 
+    @XmlElement
     public double getxCenter() {
         return xCenter;
     }
@@ -62,6 +83,7 @@ public class DisplayStateStore {
         this.xCenter = xCenter;
     }
 
+    @XmlElement
     public double getyCenter() {
         return yCenter;
     }
@@ -70,6 +92,7 @@ public class DisplayStateStore {
         this.yCenter = yCenter;
     }
 
+    @XmlElement
     public double getChartSpan() {
         return chartSpan;
     }
@@ -78,6 +101,8 @@ public class DisplayStateStore {
         this.chartSpan = chartSpan;
     }
 
+    @XmlJavaTypeAdapter(LatLonAdapter.class)
+    @XmlElement
     public LatLon getCenterOfMap() {
         return centerOfMap;
     }
@@ -86,6 +111,8 @@ public class DisplayStateStore {
         this.centerOfMap = centerOfMap;
     }
 
+    @XmlJavaTypeAdapter(ColorAdapter.class)
+    @XmlElement
     public Color getStationColor() {
         return stationColor;
     }
@@ -94,6 +121,8 @@ public class DisplayStateStore {
         this.stationColor = stationColor;
     }
 
+    @XmlJavaTypeAdapter(ColorAdapter.class)
+    @XmlElement
     public Color getSourceColor() {
         return sourceColor;
     }
@@ -108,6 +137,46 @@ public class DisplayStateStore {
 
     public void setXyChartMode(boolean xyChartMode) {
         this.xyChartMode = xyChartMode;
+    }
+    
+    //JAXB adapters
+    //---------------
+    public static class ColorAdapter extends XmlAdapter<String, Color> {
+    	  public Color unmarshal(String s) {
+    	    return Color.decode(s);
+    	  }
+    	  public String marshal(Color c) {
+    	    return "#"+Integer.toHexString(c.getRGB());
+    	  }
+    }
+    
+    public static class LatLonAdapter extends XmlAdapter<String, LatLon>{
+		@Override
+		public LatLon unmarshal(String v) throws Exception {
+			String[] splitStr = v.split(",");
+			double latDeg = Double.parseDouble(splitStr[0]);
+			double lonDeg = Double.parseDouble(splitStr[1]);
+			return LatLon.fromDegrees(latDeg, lonDeg);
+		}
+
+		@Override
+		public String marshal(LatLon v) throws Exception {
+			double latDeg = v.getLatitude().getDegrees();
+			double lonDeg = v.getLongitude().getDegrees();
+			return String.format("%.13f,%.13f" ,latDeg, lonDeg);
+		}
+    	
+    }
+    
+    public void replaceWith(DisplayStateStore that){
+    	try {
+			BeanUtils.copyProperties(this, that);
+			System.out.println("display state read");
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
     }
     
     

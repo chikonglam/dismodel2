@@ -1,8 +1,8 @@
 package gov.usgs.dismodel.gui.ENUView;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

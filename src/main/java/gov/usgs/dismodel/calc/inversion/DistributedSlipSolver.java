@@ -1,12 +1,12 @@
 package gov.usgs.dismodel.calc.inversion;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.DistributedFault;
 import gov.usgs.dismodel.calc.greens.OkadaFault3;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -608,7 +608,8 @@ public class DistributedSlipSolver {
          * If there is to be more than one sense of motion, copy the smoothing
          * matrix to the other senses.
          */
-        double[][] smoothingRows = convert1MotionTo3Motion(oneMotionSmoothingRows);
+        double[][] smoothingRowsB4 = convert1MotionTo3Motion(oneMotionSmoothingRows);
+        double[][] smoothingRows = multiply(smoothingRowsB4, 1e6d); 	////DEBUG remove this after stuff is done
 
         /* Allow space for pseudodata at the bottom of the displacement vector */
         double[] smoothableData = new double[rows];
@@ -635,7 +636,20 @@ public class DistributedSlipSolver {
         return new EqualityAndBoundsSlipSolver(smoothedWeightedGreensMatrix.toRawCopy(), smoothableData);
     }
 
-    private double[][] convert1MotionTo3Motion(double[][] smoothingMatrix) {
+    private double[][] multiply(double[][] smoothingRowsB4, double d) {
+		int numRows = smoothingRowsB4.length;
+		int numCols = smoothingRowsB4[0].length;
+		
+		double [][] ret = new double[numRows][numCols];
+		for (int rowIter = 0; rowIter<numRows; rowIter++){
+			for (int colIter = 0; colIter<numCols; colIter++){
+				ret[rowIter][colIter] = smoothingRowsB4[rowIter][colIter] * d;
+			}
+		}
+		return ret;
+	}
+
+	private double[][] convert1MotionTo3Motion(double[][] smoothingMatrix) {
         int smoothingRowsRowCt = numSubFaults * numParamPerSubFault;
         int smoothingRowsColCt = numSubFaults * numParamPerSubFault;
         double[][] smoothingRows = new double[smoothingRowsRowCt][smoothingRowsColCt];

@@ -22,6 +22,7 @@ import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.gui.geoView.GeoPanel;
 import gov.usgs.dismodel.gui.menubar.MainMenu;
 import gov.usgs.dismodel.state.DisplayStateStore;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

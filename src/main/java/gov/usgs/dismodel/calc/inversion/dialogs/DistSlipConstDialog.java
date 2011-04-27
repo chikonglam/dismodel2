@@ -2,8 +2,8 @@ package gov.usgs.dismodel.calc.inversion.dialogs;
 
 import javax.swing.JWindow;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.inversion.ConstraintType;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 public class DistSlipConstDialog extends DistSlipConstDialogBase {
 	private SimulationDataModel simModel;

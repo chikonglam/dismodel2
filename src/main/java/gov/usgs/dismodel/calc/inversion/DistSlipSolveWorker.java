@@ -1,7 +1,6 @@
 package gov.usgs.dismodel.calc.inversion;
 
 import gov.usgs.dismodel.InversionProgress;
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.inversion.InversionProgressStats;
 import gov.usgs.dismodel.calc.inversion.InversionResults;
@@ -10,6 +9,7 @@ import gov.usgs.dismodel.calc.inversion.dialogs.FaultConnectionSpecDialog;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -3,13 +3,13 @@ package gov.usgs.dismodel.calc.inversion;
 import java.util.List;
 
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.SmoothingDialog;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 public class CrossValidator2 {
 	static final int AXIS_PER_STATION = 3; 

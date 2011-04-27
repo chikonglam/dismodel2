@@ -1,10 +1,10 @@
 package gov.usgs.dismodel.gui.menubar.inversion;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.SmoothingDialog;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
 import gov.usgs.dismodel.gui.menubar.ActionMenuItem;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

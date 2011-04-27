@@ -1,6 +1,5 @@
 package gov.usgs.dismodel.gui.ENUView;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.jzy.ScreenToGraphMap;
@@ -9,6 +8,7 @@ import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;

@@ -1,10 +1,10 @@
 package gov.usgs.dismodel.calc.greens;
 
 import gov.nasa.worldwind.render.Renderable;
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.state.DisplayStateStore;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.Window;
 import java.util.ArrayList;

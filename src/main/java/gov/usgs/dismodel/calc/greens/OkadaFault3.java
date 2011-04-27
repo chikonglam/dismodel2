@@ -14,7 +14,7 @@ import gov.usgs.dismodel.geom.overlays.jzy.ColorUtil;
 import gov.usgs.dismodel.geom.overlays.jzy.FaultViewable;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.state.DisplayStateStore;
-import gov.usgs.dismodel.SimulationDataModel;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.Window;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
     // non-optimzed vars
     // -----------------
     private boolean isTopCoords = false;
-    private double shearModulus = 1;
+    private double shearModulus = 30000000000.0d;
     private int group = -1;
 
     // Constructor

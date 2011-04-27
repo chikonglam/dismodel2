@@ -1,5 +1,7 @@
-package gov.usgs.dismodel; //TODO move this back to gov.usgs.dismodel.state when ready
+package gov.usgs.dismodel.state; //TODO move this back to gov.usgs.dismodel.state when ready
 
+import gov.usgs.dismodel.ModelSolution;
+import gov.usgs.dismodel.SmoothingDialog;
 import gov.usgs.dismodel.calc.SolverException;
 import gov.usgs.dismodel.calc.batchInversion.DistributedSlipsBatchGreensIO;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;

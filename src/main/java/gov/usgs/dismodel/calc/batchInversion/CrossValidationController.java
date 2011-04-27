@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 
 import gov.usgs.dismodel.CrossValidationProgressDlg;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.SmoothingDialog;
 import gov.usgs.dismodel.calc.SolverException;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
@@ -12,6 +11,7 @@ import gov.usgs.dismodel.calc.inversion.ConstrainedLinearLeastSquaresSolver;
 import gov.usgs.dismodel.calc.inversion.CrossVal;
 import gov.usgs.dismodel.calc.inversion.CrossValResults;
 import gov.usgs.dismodel.calc.inversion.DistributedSlipSolver;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 public class CrossValidationController {
 

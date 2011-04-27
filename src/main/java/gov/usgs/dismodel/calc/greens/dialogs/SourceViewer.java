@@ -1,11 +1,11 @@
 package gov.usgs.dismodel.calc.greens.dialogs;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
 import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.util.ArrayList;
 import java.util.List;

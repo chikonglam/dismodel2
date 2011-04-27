@@ -4,10 +4,10 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.ForwardModel;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.menubar.DataChangingMenuItem;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 public class ForwardModelMenuItem extends DataChangingMenuItem{
 

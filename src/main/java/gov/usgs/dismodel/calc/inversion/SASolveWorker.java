@@ -11,7 +11,7 @@ import gov.usgs.dismodel.geom.overlays.VectorXyz;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.DataChangeEventFrier;
 import gov.usgs.dismodel.gui.events.DataChangeEventListener;
-import gov.usgs.dismodel.SimulationDataModel;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 
 import java.util.ArrayList;

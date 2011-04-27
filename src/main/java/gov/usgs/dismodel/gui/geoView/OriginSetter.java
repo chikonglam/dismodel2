@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.usgs.dismodel.Dismodel2;
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.geom.LLH;
 
 import gov.usgs.dismodel.geom.LocalENU;
@@ -16,6 +15,7 @@ import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.RecenterEventFirer;
 import gov.usgs.dismodel.gui.events.RecenterEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 public class OriginSetter extends OriginSetterBase implements DataChangeEventFrier, GeoPosClickListener, RecenterEventFirer{
 	//TODO implement center on orgin

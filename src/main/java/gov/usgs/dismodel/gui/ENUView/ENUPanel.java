@@ -1,7 +1,6 @@
 package gov.usgs.dismodel.gui.ENUView;
 
 import gov.usgs.dismodel.Dismodel2;
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.OkadaFault3;
 import gov.usgs.dismodel.geom.LLH;
@@ -20,6 +19,7 @@ import gov.usgs.dismodel.gui.events.GeoPosClickListener;
 import gov.usgs.dismodel.gui.events.ZoomEventFirer;
 import gov.usgs.dismodel.gui.events.ZoomEventListener;
 import gov.usgs.dismodel.state.DisplayStateStore;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

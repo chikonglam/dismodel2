@@ -2,7 +2,7 @@ package gov.usgs.dismodel.calc.batchInversion;
 
 import gov.usgs.dismodel.OkayDialog;
 import gov.usgs.dismodel.SaveAndLoad;
-import gov.usgs.dismodel.SimulationDataModel;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -43,7 +43,7 @@ public class BatchProcessGreensDlg extends OkayDialog {
 
     File greensFile = null;
     JFrame frame;
-    gov.usgs.dismodel.SimulationDataModel simModel;
+    gov.usgs.dismodel.state.SimulationDataModel simModel;
 
     /*
      * Methods

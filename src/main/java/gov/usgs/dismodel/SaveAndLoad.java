@@ -1,36 +1,17 @@
 package gov.usgs.dismodel;
 
-import gov.nasa.worldwind.avlist.AVList;
-import gov.nasa.worldwind.geom.Angle;
-import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.layers.RenderableLayer;
-import gov.nasa.worldwind.ogc.kml.KMLAbstractFeature;
-import gov.nasa.worldwind.ogc.kml.KMLAbstractGeometry;
-import gov.nasa.worldwind.ogc.kml.KMLAbstractStyleSelector;
-import gov.nasa.worldwind.ogc.kml.KMLDocument;
-import gov.nasa.worldwind.ogc.kml.KMLFolder;
-import gov.nasa.worldwind.ogc.kml.KMLLineString;
-import gov.nasa.worldwind.ogc.kml.KMLLineStyle;
-import gov.nasa.worldwind.ogc.kml.KMLPlacemark;
-import gov.nasa.worldwind.ogc.kml.KMLPoint;
-import gov.nasa.worldwind.ogc.kml.KMLRoot;
-import gov.nasa.worldwind.ogc.kml.KMLStyle;
-import gov.nasa.worldwind.ogc.kml.impl.KMLController;
-import gov.nasa.worldwind.view.orbit.BasicOrbitView;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
-import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.overlays.Label;
 import gov.usgs.dismodel.sourcemodels.Quake;
+import gov.usgs.dismodel.state.SavedState;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,42 +38,21 @@ public class SaveAndLoad {
     public static final String M_FILE_EXTENSION      = ".m";
     
     
-    public static void saveProject(JFrame owner, SimulationDataModel simModel) throws IOException, JAXBException {
+    public static void saveProject(JFrame owner, SavedState state) throws IOException, JAXBException {
         javax.swing.filechooser.FileFilter filter = new FileNameExtensionFilter("Save Project File", "XML");
         File saveFile = chooseSaveFile(owner, filter);
         if (saveFile != null){
-            SimulationDataModel.writeToXML(simModel, saveFile);
+            SavedState.writeToXML(state, saveFile);
         }
-        
-        //TODO:  integrate GUI stuff to GUIDataModel
-        //TODO:  Doublecheck all things are in SimulationDataModel
-        
-    
-        
-//        LLH llh = ww.getCenterAndAltitude();
-//        BasicOrbitView view = (BasicOrbitView) ww.wwd.getView();
-//        double zoom = view.getZoom();
-//        double heading = view.getHeading().degrees;
-//        
-//        FileOutputStream fout = new FileOutputStream(toFile);
-//        ObjectOutputStream os = new ObjectOutputStream(fout);
-//        os.writeObject(llh);
-//        os.writeDouble(zoom);
-//        os.writeDouble(heading);
-//        
-//        // TODO save complete GUI state from WW and ENU window
-//        // save seismicity
-//        // save vectors, etc.
-//        os.close();
 
     }
     
-    public static SimulationDataModel loadProject(JFrame owner) throws IOException, JAXBException {
+    public static SavedState loadProject(JFrame owner) throws IOException, JAXBException {
         javax.swing.filechooser.FileFilter filter = new FileNameExtensionFilter("Load Project File", "XML");
         File loadFile = chooseFile(owner, filter);
         if (loadFile != null){
-        	SimulationDataModel simModel = SimulationDataModel.readXML(loadFile);
-        	return simModel;
+        	SavedState state = SavedState.readXML(loadFile);
+        	return state;
         } else {
         	return null;
         }

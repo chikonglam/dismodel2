@@ -1,8 +1,8 @@
 package gov.usgs.dismodel.calc.inversion.dialogs;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.DistributedFault;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 
 import java.awt.Frame;

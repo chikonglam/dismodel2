@@ -1,10 +1,10 @@
 package gov.usgs.dismodel.calc;
 
-import gov.usgs.dismodel.SimulationDataModel;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,7 +16,7 @@ import gov.usgs.dismodel.geom.overlays.VectorXyz;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.gui.events.GuiUpdateRequestListener;
 import gov.usgs.dismodel.gui.menubar.DataChangingMenuItem;
-import gov.usgs.dismodel.SimulationDataModel;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 public class LoadDisplacementMenuItem extends DataChangingMenuItem implements GuiUpdateRequestListener{
 	private static final long serialVersionUID = 1166963296917504942L;
