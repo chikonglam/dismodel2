@@ -608,8 +608,10 @@ public class DistributedSlipSolver {
          * If there is to be more than one sense of motion, copy the smoothing
          * matrix to the other senses.
          */
-        double[][] smoothingRowsB4 = convert1MotionTo3Motion(oneMotionSmoothingRows);
-        double[][] smoothingRows = multiply(smoothingRowsB4, 1e6d); 	////DEBUG remove this after stuff is done
+        
+        double[][] smoothingRows = convert1MotionTo3Motion(oneMotionSmoothingRows);
+      //double[][] smoothingRowsB4 = convert1MotionTo3Motion(oneMotionSmoothingRows);////DEBUG remove this after stuff is done
+        //double[][] smoothingRows = multiply(smoothingRowsB4, 1e6d); 	////DEBUG remove this after stuff is done
 
         /* Allow space for pseudodata at the bottom of the displacement vector */
         double[] smoothableData = new double[rows];
