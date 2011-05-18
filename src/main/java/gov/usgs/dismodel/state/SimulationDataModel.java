@@ -8,7 +8,6 @@ import gov.usgs.dismodel.calc.greens.DistributedFault;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
 import gov.usgs.dismodel.calc.inversion.ConstraintType;
 import gov.usgs.dismodel.calc.inversion.CovarianceWeighter;
-import gov.usgs.dismodel.calc.inversion.CrossValResults;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.Label;
@@ -81,7 +80,6 @@ public class SimulationDataModel implements ModelSolution {
     private ConstraintType monentConType;
 
     private SmoothingDialog.Params smoothingParams = new SmoothingDialog.Params();
-    private CrossValResults cvResults;
 
 
     public SimulationDataModel() {
@@ -334,9 +332,6 @@ public class SimulationDataModel implements ModelSolution {
         return smoothingParams.gamma;
     }
 
-    public void setCrossValResults(CrossValResults cvResults) {
-        this.cvResults = cvResults;
-    }
 
     // Persistence stuff
     public static void writeToXML(SimulationDataModel simModel, File xmlFile) throws JAXBException, IOException {
@@ -378,15 +373,6 @@ public class SimulationDataModel implements ModelSolution {
 
     public void setMeasuredRefdDispVectors(List<VectorXyz> measuredRefdDispVectors) {
         this.measuredRefdDispVectors = measuredRefdDispVectors;
-    }
-
-    @XmlTransient
-    public CrossValResults getCvResults() {
-        return cvResults;
-    }
-
-    public void setCvResults(CrossValResults cvResults) {
-        this.cvResults = cvResults;
     }
 
     @XmlElement
