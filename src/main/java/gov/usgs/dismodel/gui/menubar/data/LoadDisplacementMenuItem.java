@@ -46,29 +46,6 @@ public class LoadDisplacementMenuItem extends DataChangingMenuItem implements Gu
 		SimulationDataModel simModel = allGuiVars.getSimModel();
 		JFrame frame = allGuiVars.getMainFrame();
 		
-        if (simModel.getDistributedSlipBatchIoProcessor() != null && 
-        		simModel.getDistributedSlipBatchIoProcessor().getGreensMatrix() != null) {
-            /*
-             * The user has previously loaded a Greens matrix, in
-             * which case displacements can have extended
-             * pseudo-data entries for the Laplacian smoothing
-             * equations, so use loadOneColExtDisp() not
-             * loadOneColDisp().
-             */
-            try {
-                simModel
-                        .getDistributedSlipBatchIoProcessor()
-                        .setDisplacements(
-                                SaveAndLoad
-                                        .findLoadOneColExtDisp(frame));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-                JOptionPane.showMessageDialog(frame, e1
-                        .getMessage(), "Load error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-            return;
-        }
         
 		List<XyzDisplacement> stationDisps = SaveAndLoad.loadOneColDisp(frame);
         List<Label> stations = simModel.getStations();

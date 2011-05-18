@@ -3,7 +3,6 @@ package gov.usgs.dismodel.state; //TODO move this back to gov.usgs.dismodel.stat
 import gov.usgs.dismodel.ModelSolution;
 import gov.usgs.dismodel.SmoothingDialog;
 import gov.usgs.dismodel.calc.SolverException;
-import gov.usgs.dismodel.calc.batchInversion.DistributedSlipsBatchGreensIO;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.DistributedFault;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
@@ -84,13 +83,6 @@ public class SimulationDataModel implements ModelSolution {
     private SmoothingDialog.Params smoothingParams = new SmoothingDialog.Params();
     private CrossValResults cvResults;
 
-    // other
-    // -----
-    private DistributedSlipsBatchGreensIO distributedSlipBatchIoProcessor = null; // new
-                                                                                  // DistributedSlipsBatchGreensIO();
-                                                                                  // //TODO
-                                                                                  // reenable
-                                                                                  // this
 
     public SimulationDataModel() {
         // empty
@@ -321,36 +313,6 @@ public class SimulationDataModel implements ModelSolution {
         return;
     }
 
-    @XmlTransient
-    public DistributedSlipsBatchGreensIO getDistributedSlipBatchIoProcessor() {
-        return distributedSlipBatchIoProcessor;
-    }
-
-    /**
-     * Records the input parameter as being the first Green's function to be
-     * read, and reads it in.
-     * 
-     * @param greensFile
-     *            contains a Green's function as a matrix.
-     * @throws NumberFormatException
-     * @throws IOException
-     */
-    public void setAndRead1stGreensFile(File greensFile) throws NumberFormatException, IOException {
-        /*
-         * For now at least, we forbid reference stations when using Green's
-         * functions loaded from files; we don't even associate such Green's
-         * functions with stations so far, although maybe that could be useful.
-         * For now, the user can have the Green's function and data in the
-         * files, already weighted by a covariance matrix, and with the
-         * reference station already subtracted out.
-         */
-        getCovarWeighter().selectReferenceStation(-1);
-        measuredRefdDispVectors = null;
-
-        distributedSlipBatchIoProcessor.set1stGreensFile(greensFile);
-        distributedSlipBatchIoProcessor.readGreensFile(greensFile);
-    }
-
     public void setCrossValidationParams(SmoothingDialog dialog) {
         smoothingParams = dialog.getParams();
     }
@@ -430,10 +392,6 @@ public class SimulationDataModel implements ModelSolution {
     @XmlElement
     public double getChi2() {
         return chi2;
-    }
-
-    public void setDistributedSlipBatchIoProcessor(DistributedSlipsBatchGreensIO distributedSlipBatchIoProcessor) {
-        this.distributedSlipBatchIoProcessor = distributedSlipBatchIoProcessor;
     }
 
     public void setSmoothingParams(SmoothingDialog.Params smoothingParams) {

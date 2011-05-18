@@ -1,7 +1,8 @@
 package gov.usgs.dismodel.gui.ENUView;
 
 import gov.usgs.dismodel.calc.ForwardModel;
-import gov.usgs.dismodel.calc.inversion.CrossValidator2;
+import gov.usgs.dismodel.calc.inversion.CVResult;
+import gov.usgs.dismodel.calc.inversion.CrossValidator3;
 import gov.usgs.dismodel.calc.inversion.DistSlipSolveWorker;
 import gov.usgs.dismodel.calc.inversion.SASolveWorker;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
@@ -131,11 +132,11 @@ public class ENUToolBar extends JToolBar {
 
         @Override
         protected void buttonClicked() {
-            CrossValidator2 cvSolver = new CrossValidator2(simModel, simModel.getOrigin());
+            CrossValidator3 cvSolver = new CrossValidator3(simModel, simModel.getOrigin());
 
             // TODO multithread this
-            double minCvssGam = cvSolver.calculate();
-            JOptionPane.showMessageDialog(allGuiVars.getMainFrame(), "CVSS is min when Gamma is: " + minCvssGam,
+            CVResult result = cvSolver.crossValidate();
+            JOptionPane.showMessageDialog(allGuiVars.getMainFrame(), "CVSS is min when Gamma is: " + result.getGam() + "\n  (CVSS=" + result.getCvss() + ")",
                     "Cross Validation Result", JOptionPane.ERROR_MESSAGE);
             return;
 

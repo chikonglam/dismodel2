@@ -32,10 +32,10 @@ public class DistributedSlipSolver {
 
     // constants
     // --------
-    final private int DIM_CT = 3;
-    final private int DIM_X = 0;
-    final private int DIM_Y = 1;
-    final private int DIM_Z = 2;
+    protected final int DIM_CT = 3;
+    protected final int DIM_X = 0;
+    protected final int DIM_Y = 1;
+    protected final int DIM_Z = 2;
 
     private static Comparator<DisplacementSolver> faultComparator = new Comparator<DisplacementSolver>() { // use
                                                                                                            // to
@@ -94,16 +94,16 @@ public class DistributedSlipSolver {
 
     // Vars
     // ----
-    private double[] disp1D;
-    private double[][] gMatrixSlipMajor;
+    protected double[] disp1D;
+    protected double[][] gMatrixSlipMajor;
     private DisplacementSolver[] originalModel;
-    private ArrayList<ArrayList<DisplacementSolver>> groupedOriginalModel;
+    protected ArrayList<ArrayList<DisplacementSolver>> groupedOriginalModel;
     private DisplacementSolver[] fittedModel;
     private DisplacementSolver[] modelLB;
     private DisplacementSolver[] modelUB;
     private LocalENU[] stationPositions;
-    private int numStation;
-    private CovarianceWeighter cov;
+    protected int numStation;
+    protected CovarianceWeighter cov;
     private SimulationDataModel simModel;
     private int segmentCt;
     //private int rowCt;
@@ -111,16 +111,16 @@ public class DistributedSlipSolver {
     private int[] subFaultColCt;
     private int[] subFaultRowCt;
 
-    private int numVar;
+    protected int numVar;
 
-    private int numSubFaults;
-    private int numParamPerSubFault;
+    protected int numSubFaults;
+    protected int numParamPerSubFault;
     private ArrayList<Integer> linVarIndicies;
     private boolean nonNegative;
     private double targetMonent;
     private ConstraintType momentConType;
     private boolean useSmoothingOverride = false;
-    private double smoothingGamma = Double.NaN;
+    protected double smoothingGamma = Double.NaN;
 
     private ArrayList<SlipLocation> slipLocation = new ArrayList<SlipLocation>();
     private ArrayList<ArrayList<Integer>> activeSubFaultParams;
@@ -651,7 +651,7 @@ public class DistributedSlipSolver {
 		return ret;
 	}
 
-	private double[][] convert1MotionTo3Motion(double[][] smoothingMatrix) {
+	protected double[][] convert1MotionTo3Motion(double[][] smoothingMatrix) {
         int smoothingRowsRowCt = numSubFaults * numParamPerSubFault;
         int smoothingRowsColCt = numSubFaults * numParamPerSubFault;
         double[][] smoothingRows = new double[smoothingRowsRowCt][smoothingRowsColCt];
@@ -666,7 +666,7 @@ public class DistributedSlipSolver {
     }
 
 
-    private ConstrainedLinearLeastSquaresSolver applyConstraints(EqualityAndBoundsSlipSolver solver) {
+    protected ConstrainedLinearLeastSquaresSolver applyConstraints(EqualityAndBoundsSlipSolver solver) {
         boolean mustSetArea = false;
         if (this.nonNegative) {
             solver.setAllBlksNonNeg();
