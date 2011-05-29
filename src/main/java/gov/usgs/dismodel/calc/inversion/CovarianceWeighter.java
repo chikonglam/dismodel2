@@ -330,9 +330,11 @@ public class CovarianceWeighter {
             }
         }
 
-        double gam2 = gamma * gamma;
-        for (int diagIter = origRow; diagIter < outRow; diagIter++) {
-            covWithGam[diagIter][diagIter] = gam2;
+        if (!Double.isNaN(gamma)){
+            double gam2 = gamma * gamma;
+            for (int diagIter = origRow; diagIter < outRow; diagIter++) {
+                covWithGam[diagIter][diagIter] = gam2;
+            }
         }
 
         JamaMatrix covWithGamInv = JamaMatrix.FACTORY.copyRaw(covWithGam).invert();

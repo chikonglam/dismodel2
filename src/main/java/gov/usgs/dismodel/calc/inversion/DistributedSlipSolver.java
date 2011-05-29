@@ -448,7 +448,11 @@ public class DistributedSlipSolver {
             curModeledParams[otherParamIdx] = 0d;
         }
 
-        curModeledParams[paramIdx] = 1d;
+        if (curFault.getMsp()[paramIdx] >= 0){
+            curModeledParams[paramIdx] = 1d;
+        } else {
+            curModeledParams[paramIdx] = -1d;
+        }
         XyzDisplacement curDisp;
 
         for (int stationIter = 0; stationIter < numStation; stationIter++) {
@@ -493,7 +497,11 @@ public class DistributedSlipSolver {
             int curCol = curSlip.col;
             int curSlipIdx = curSlip.slipIndex;
             double[] curMSP = ((DistributedFault) model2BFitted[curSubFault]).getSubfaults()[curRow][curCol].getMsp();
-            curMSP[curSlipIdx] = slipMagitude[fitIndex];
+            if ( ((DistributedFault) model2BFitted[curSubFault]).getMsp()[curSlipIdx] >= 0){
+        	curMSP[curSlipIdx] = slipMagitude[fitIndex];
+            } else {
+        	curMSP[curSlipIdx] = -slipMagitude[fitIndex];
+            }
         }
     }
 

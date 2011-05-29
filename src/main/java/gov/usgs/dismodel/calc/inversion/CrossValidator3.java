@@ -5,6 +5,8 @@ import java.util.List;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.jama.JamaMatrix;
 
+import cern.colt.Arrays;
+
 import gov.usgs.dismodel.SmoothingDialog;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
@@ -62,16 +64,17 @@ public class CrossValidator3 extends DistributedSlipSolver {
     private double calcCVSS(double gamma) {
 	this.smoothingGamma = gamma; 
 	
-	double[] weightedD = cov.weight(disp1D);
+	double[] weightedDisp = cov.weight(disp1D);
 	EqualityAndBoundsSlipSolver solver;
 	JamaMatrix gDiffed = cov.autoDifferenceOutReferenceData(gMatrixSlipMajor);
 
-	JamaMatrix weighter = cov.getAutoSmoothedWeighter(numSubFaults * numParamPerSubFault, this.smoothingGamma);
-	//solver = getSmoothedShieldingSolver(gDiffed.toRawCopy(), weighter, weightedD, maskedStationIdx);
+	JamaMatrix weighter = cov.getAutoWeighterMatrix();
+	
 	
 	double[][] unweightedGreensFunct = gDiffed.toRawCopy();
-	JamaMatrix smoothedWeighter = weighter;
-	double[] weightedDisp = weightedD;
+	
+	JamaMatrix weightedGreensMatrix = weighter.multiplyRight((BasicMatrix) JamaMatrix.FACTORY
+	        .copyRaw(unweightedGreensFunct));
 
 	/*
 	 * Allow space to append a numVar by numVar, square submatrix for
@@ -80,9 +83,8 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	 */
 	int rows = this.numVar + numStation * DIM_CT;
 	int cols = numVar;
-	double[][] smoothedGreensMatrix = new double[rows][cols];
+	double[][] smoothedWeightedGreensMatrix = new double[rows][cols];
 
-	double[][] unsmoothedGm = unweightedGreensFunct;
 	final boolean dikeOpening = false;
 	/*
 	 * Get the smoothing submatrix for one sense of motion (STRIKE_SLIP_IDX,
@@ -110,37 +112,37 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	 * function matrix, and add zeros as pseudodata at the bottom of the
 	 * measured displacements
 	 */
-	for (int row = 0; row < unsmoothedGm.length; row++) {
+	double [][] weightedGreen = weightedGreensMatrix.toRawCopy();
+
+	for (int row = 0; row < weightedGreen.length; row++) {
 	    smoothableData[row] = weightedDisp[row];
 	    for (int col = 0; col < cols; col++) {
-		smoothedGreensMatrix[row][col] = unsmoothedGm[row][col];
+		smoothedWeightedGreensMatrix[row][col] = weightedGreen[row][col];
 
 	    }
 	}
-	for (int row = unsmoothedGm.length; row < rows; row++) {
+	for (int row = weightedGreen.length; row < rows; row++) {
 	    smoothableData[row] = 0.0;
 	    for (int col = 0; col < cols; col++) {
-		smoothedGreensMatrix[row][col] = smoothingRows[row - unsmoothedGm.length][col];
+		smoothedWeightedGreensMatrix[row][col] = (smoothingRows[row - weightedGreen.length][col]) / gamma;
 	    }
 
 	}
-
-	JamaMatrix smoothedWeightedGreensMatrix = smoothedWeighter.multiplyRight((BasicMatrix) JamaMatrix.FACTORY
-	        .copyRaw(smoothedGreensMatrix));
 
 	double curCVSS = 0;
 	
 	for (int maskedStationIdx = 0; maskedStationIdx < numStation; maskedStationIdx++){
 	
-        	double[][] shieldGreen = shieldStationFromGreensMatrix(smoothedWeightedGreensMatrix.toRawCopy(),
+        	double[][] shieldGreen = shieldStationFromGreensMatrix(smoothedWeightedGreensMatrix,
         	        maskedStationIdx);
-        	double[] shieldDisp = shieldStationFromDisp(smoothableData, maskedStationIdx); 
+        	double[] shieldDisp = shieldStationFromDisp(smoothableData, maskedStationIdx);
+        	
         	solver = new EqualityAndBoundsSlipSolver(shieldGreen, shieldDisp); 
         
         	applyConstraints(solver);
         	double[] slipSoln = solver.solve();
         	
-        	double [][] weightedGreenAtStation = getGreensforStation(smoothedWeightedGreensMatrix.toRawCopy(), maskedStationIdx);
+        	double [][] weightedGreenAtStation = getGreensforStation(smoothedWeightedGreensMatrix, maskedStationIdx);
         	JamaMatrix WG = JamaMatrix.FACTORY.copyRaw(weightedGreenAtStation);
         	JamaMatrix slipCol = JamaMatrix.FACTORY.makeColumn(slipSoln);
         	JamaMatrix estStationDisp = WG.multiplyRight((BasicMatrix)slipCol);
@@ -155,6 +157,14 @@ public class CrossValidator3 extends DistributedSlipSolver {
         	curCVSS += res;
 	}
 	return (curCVSS / numStation);
+    }
+
+    private void printDouble2D(double[][] shieldGreen) {
+	int length = shieldGreen.length;
+	for (int arrayIter = 0; arrayIter < length; arrayIter++){
+	    System.out.println(Arrays.toString(shieldGreen[arrayIter]));
+	}
+	
     }
 
     private double[] extract1StationDisp(double[] smoothableData, int maskedStationIdx) {
@@ -175,75 +185,6 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	return ret;
     }
 
-    private EqualityAndBoundsSlipSolver getSmoothedShieldingSolver(double[][] unweightedGreensFunct,
-	    JamaMatrix smoothedWeighter, double[] weightedDisp, final int maskedStationIdx) {
-	/*
-	 * Allow space to append a numVar by numVar, square submatrix for
-	 * smoothing, at the bottom of the Green's function matrix that we will
-	 * soon calculate.
-	 */
-	int rows = this.numVar + numStation * DIM_CT;
-	int cols = numVar;
-	double[][] smoothedGreensMatrix = new double[rows][cols];
-
-	double[][] unsmoothedGm = unweightedGreensFunct;
-	final boolean dikeOpening = false;
-	/*
-	 * Get the smoothing submatrix for one sense of motion (STRIKE_SLIP_IDX,
-	 * DIP_SLIP_IDX, OPENING_IDX)
-	 */
-	double[][] oneMotionSmoothingRows = SmoothingLaplacian.generate(groupedOriginalModel, // TODO:
-											      // get
-											      // b
-											      // dikeOpening
-											      // in
-	        dikeOpening, numSubFaults);
-
-	/*
-	 * If there is to be more than one sense of motion, copy the smoothing
-	 * matrix to the other senses.
-	 */
-
-	double[][] smoothingRows = convert1MotionTo3Motion(oneMotionSmoothingRows);
-
-	/* Allow space for pseudodata at the bottom of the displacement vector */
-	double[] smoothableData = new double[rows];
-
-	/*
-	 * Now add on the smoothing equation rows to the bottom of the Green's
-	 * function matrix, and add zeros as pseudodata at the bottom of the
-	 * measured displacements
-	 */
-	for (int row = 0; row < unsmoothedGm.length; row++) {
-	    smoothableData[row] = weightedDisp[row];
-	    for (int col = 0; col < cols; col++) {
-		smoothedGreensMatrix[row][col] = unsmoothedGm[row][col];
-
-	    }
-	}
-	for (int row = unsmoothedGm.length; row < rows; row++) {
-	    smoothableData[row] = 0.0;
-	    for (int col = 0; col < cols; col++) {
-		smoothedGreensMatrix[row][col] = smoothingRows[row - unsmoothedGm.length][col];
-	    }
-
-	}
-
-	JamaMatrix smoothedWeightedGreensMatrix = smoothedWeighter.multiplyRight((BasicMatrix) JamaMatrix.FACTORY
-	        .copyRaw(smoothedGreensMatrix));
-
-	double[][] shieldGreen = shieldStationFromGreensMatrix(smoothedWeightedGreensMatrix.toRawCopy(),
-	        maskedStationIdx); // only difference from getSmoothedSolver()
-	double[] shieldDisp = shieldStationFromDisp(smoothableData, maskedStationIdx); // only
-										       // difference
-										       // from
-										       // getSmoothedSolver()
-
-	return new EqualityAndBoundsSlipSolver(shieldGreen, shieldDisp); // only
-									 // difference
-									 // from
-									 // getSmoothedSolver()
-    }
 
     // TODO: test this
     private double[] shieldStationFromDisp(double[] source, int index) {
@@ -296,7 +237,5 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	
 	return new CVResult(minCVSS, gamAtMinCVSS);
     }
-
-
 
 }
