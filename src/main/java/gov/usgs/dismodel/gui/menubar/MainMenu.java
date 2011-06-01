@@ -10,6 +10,7 @@ import gov.usgs.dismodel.gui.menubar.file.LoadProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.SaveProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.DistSlipConsMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.ForwardModelMenuItem;
+import gov.usgs.dismodel.gui.menubar.inversion.ShearModulusMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.SmoothingMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.SolveMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.DislocationMenuItem;
@@ -104,6 +105,7 @@ public class MainMenu extends JMenuBar {
 
             this.add(new SmoothingMenuItem("Smoothing...", allGuiVars));
             this.add(new DistSlipConsMenuItem("Dist Slip Constraints...", allGuiVars));
+            this.add(new ShearModulusMenuItem("Adjust shear modulus...", allGuiVars));
             this.add(new ForwardModelMenuItem("Forward Model", allGuiVars));
             this.add(new SolveMenuItem("Solve", allGuiVars));
         }
