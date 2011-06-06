@@ -28,7 +28,6 @@ import org.ojalgo.matrix.jama.JamaMatrix;
 public class DistributedSlipSolver {
     // configs
     // -------
-    private double shearModulus = 1.0d;
 
     // constants
     // --------
@@ -124,6 +123,7 @@ public class DistributedSlipSolver {
 
     private ArrayList<SlipLocation> slipLocation = new ArrayList<SlipLocation>();
     private ArrayList<ArrayList<Integer>> activeSubFaultParams;
+    private double shearModulus;
 
     // constructors
     // ------------
@@ -234,6 +234,7 @@ public class DistributedSlipSolver {
         this.groupedOriginalModel = putModelsInGroups(this.originalModel);
         this.fittedModel = copyOf(this.originalModel);
         this.simModel = simModel;
+        shearModulus = simModel.getShearModulus();
         this.cov = cov;
         this.stationPositions = stationPositions;
         this.numStation = stationPositions.length;
@@ -680,6 +681,7 @@ public class DistributedSlipSolver {
             solver.setAllBlksNonNeg();
             mustSetArea = true;
         }
+        
         if (!Double.isNaN(targetMonent)) {
             switch (this.momentConType) {
             case LESS_THAN_OR_EQUAL:
