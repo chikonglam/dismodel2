@@ -23,7 +23,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
-	<classpathentry kind="lib" path="lib/ojalgo-28.jar"/>
+	<classpathentry kind="lib" path="lib/ojalgo-30.0.jar"/>
+	<classpathentry kind="lib" path="lib/ojalgo-ext-30.0.jar"/>
 	<classpathentry kind="lib" path="lib/org.jzy3d-0.8.3.jar"/>
 	<classpathentry kind="lib" path="lib/pcolt-0.9.jar"/>
 	<classpathentry kind="lib" path="lib/worldwind-0.6.762.14907.jar"/>

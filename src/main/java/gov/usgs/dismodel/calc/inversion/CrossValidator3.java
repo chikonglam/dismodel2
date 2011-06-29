@@ -10,6 +10,7 @@ import cern.colt.Arrays;
 import gov.usgs.dismodel.SmoothingDialog;
 import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
+import gov.usgs.dismodel.calc.overlays.ojalgo.JamaUtil;
 import gov.usgs.dismodel.geom.LLH;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
@@ -65,16 +66,16 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	this.smoothingGamma = gamma; 
 	
 	double[] weightedDisp = cov.weight(disp1D);
-	EqualityAndBoundsSlipSolver solver;
+	ConstrainedQuadProgSolver solver;
 	JamaMatrix gDiffed = cov.autoDifferenceOutReferenceData(gMatrixSlipMajor);
 
 	JamaMatrix weighter = cov.getAutoWeighterMatrix();
 	
 	
-	double[][] unweightedGreensFunct = gDiffed.toRawCopy();
+	double[][] unweightedGreensFunct = JamaUtil.toRawCopy(gDiffed);
 	
 	JamaMatrix weightedGreensMatrix = weighter.multiplyRight((BasicMatrix) JamaMatrix.FACTORY
-	        .copyRaw(unweightedGreensFunct));
+	        .copy(unweightedGreensFunct));
 
 	/*
 	 * Allow space to append a numVar by numVar, square submatrix for
@@ -112,7 +113,7 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	 * function matrix, and add zeros as pseudodata at the bottom of the
 	 * measured displacements
 	 */
-	double [][] weightedGreen = weightedGreensMatrix.toRawCopy();
+	double [][] weightedGreen = JamaUtil.toRawCopy(weightedGreensMatrix);
 
 	for (int row = 0; row < weightedGreen.length; row++) {
 	    smoothableData[row] = weightedDisp[row];
@@ -137,21 +138,21 @@ public class CrossValidator3 extends DistributedSlipSolver {
         	        maskedStationIdx);
         	double[] shieldDisp = shieldStationFromDisp(smoothableData, maskedStationIdx);
         	
-        	solver = new EqualityAndBoundsSlipSolver(shieldGreen, shieldDisp); 
+        	solver = new ConstrainedQuadProgSolver(shieldGreen, shieldDisp); 
         
         	applyConstraints(solver);
         	double[] slipSoln = solver.solve();
         	
         	double [][] weightedGreenAtStation = getGreensforStation(smoothedWeightedGreensMatrix, maskedStationIdx);
-        	JamaMatrix WG = JamaMatrix.FACTORY.copyRaw(weightedGreenAtStation);
+        	JamaMatrix WG = JamaMatrix.FACTORY.copy(weightedGreenAtStation);
         	JamaMatrix slipCol = JamaMatrix.FACTORY.makeColumn(slipSoln);
         	JamaMatrix estStationDisp = WG.multiplyRight((BasicMatrix)slipCol);
         	
         	double [] realStationDisp = extract1StationDisp(smoothableData, maskedStationIdx);
         	
-        	double dx = realStationDisp[DIM_X] - estStationDisp.getNumber(DIM_X, 0);
-        	double dy = realStationDisp[DIM_Y] - estStationDisp.getNumber(DIM_Y, 0);
-        	double dz = realStationDisp[DIM_Z] - estStationDisp.getNumber(DIM_Z, 0);
+        	double dx = realStationDisp[DIM_X] - estStationDisp.get(DIM_X, 0);
+        	double dy = realStationDisp[DIM_Y] - estStationDisp.get(DIM_Y, 0);
+        	double dz = realStationDisp[DIM_Z] - estStationDisp.get(DIM_Z, 0);
         	
         	double res = dx*dx + dy*dy + dz*dz;
         	curCVSS += res;

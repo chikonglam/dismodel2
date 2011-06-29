@@ -1,6 +1,7 @@
 package gov.usgs.dismodel.calc.inversion;
 
 import gov.usgs.dismodel.calc.SolverException;
+import gov.usgs.dismodel.calc.overlays.ojalgo.JamaUtil;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
 
 import java.io.BufferedReader;
@@ -232,7 +233,7 @@ public class CovarianceWeighter {
      * @throws SolverException
      */
     public void setCovarianceMatrix(double[][] covar) throws SolverException {
-        origCovar = JamaMatrix.FACTORY.copyRaw(covar);
+        origCovar = JamaMatrix.FACTORY.copy(covar);
         checkSymmetryFillTriangle(origCovar);
         calcRefSubtractedInverse(this.referenceStationIdx);
     }
@@ -240,7 +241,7 @@ public class CovarianceWeighter {
     @XmlElementWrapper(name = "covarianceMatrix")
     @XmlElement(name = "covRow")
     public double[][] getCovarianceMatrix() {
-        return origCovar.toRawCopy();
+        return JamaUtil.toRawCopy(origCovar);
     }
 
     protected void calcInverse(JamaMatrix in) throws SolverException {
@@ -285,9 +286,9 @@ public class CovarianceWeighter {
      */
     protected void calcWeighterMatrix() {
         /* Parallel Colt's Cholesky Decomposition: */
-        DenseDoubleMatrix2D in = new DenseDoubleMatrix2D(origInvcov.toRawCopy());
+        DenseDoubleMatrix2D in = new DenseDoubleMatrix2D( JamaUtil.toRawCopy(origInvcov) );
         DenseDoubleCholeskyDecomposition coltCho = new DenseDoubleCholeskyDecomposition(in);
-        weighterMatrix = JamaMatrix.FACTORY.copyRaw(coltCho.getL().toArray());
+        weighterMatrix = JamaMatrix.FACTORY.copy(coltCho.getL().toArray());
 
     }
 
@@ -300,9 +301,9 @@ public class CovarianceWeighter {
 
     protected void calcDerefWeighterMatrix() {
         /* Parallel Colt's Cholesky Decomposition: */
-        DenseDoubleMatrix2D in = new DenseDoubleMatrix2D(invcov.toRawCopy());
+        DenseDoubleMatrix2D in = new DenseDoubleMatrix2D( JamaUtil.toRawCopy(invcov) );
         DenseDoubleCholeskyDecomposition coltCho = new DenseDoubleCholeskyDecomposition(in);
-        derefedWeighterMatrix = JamaMatrix.FACTORY.copyRaw(coltCho.getL().toArray());
+        derefedWeighterMatrix = JamaMatrix.FACTORY.copy(coltCho.getL().toArray());
     }
 
     /**
@@ -326,7 +327,7 @@ public class CovarianceWeighter {
                                                               // can find a
                                                               // faster way
             for (int colIter = 0; colIter < origCol; colIter++) {
-                covWithGam[rowIter][colIter] = derefMatrix.getNumber(rowIter, colIter);
+                covWithGam[rowIter][colIter] = derefMatrix.get(rowIter, colIter);
             }
         }
 
@@ -337,11 +338,11 @@ public class CovarianceWeighter {
             }
         }
 
-        JamaMatrix covWithGamInv = JamaMatrix.FACTORY.copyRaw(covWithGam).invert();
+        JamaMatrix covWithGamInv = JamaMatrix.FACTORY.copy(covWithGam).invert();
 
         DenseDoubleCholeskyDecomposition smoothedChol = new DenseDoubleCholeskyDecomposition(new DenseDoubleMatrix2D(
-                covWithGamInv.toRawCopy()));
-        JamaMatrix smoothedWeighter = JamaMatrix.FACTORY.copyRaw(smoothedChol.getL().toArray());
+        	JamaUtil.toRawCopy(covWithGamInv)));
+        JamaMatrix smoothedWeighter = JamaMatrix.FACTORY.copy(smoothedChol.getL().toArray());
         return smoothedWeighter;
     }
 
@@ -437,7 +438,7 @@ public class CovarianceWeighter {
             throw new SolverException("Wrong size of displacement data set");
 
         dOrig = JamaMatrix.FACTORY.makeColumn(data);
-        dSubtracted = JamaMatrix.FACTORY.copyMatrix(dOrig);
+        dSubtracted = JamaMatrix.FACTORY.copy(dOrig);
         if (referenceStationIdx == -1)
             return;
         dSubtracted = subtractReferenceData();
@@ -483,7 +484,7 @@ public class CovarianceWeighter {
             if (referenceStationIdx != -1)
                 subtractReferenceData();
             else
-                dSubtracted = JamaMatrix.FACTORY.copyMatrix(dOrig);
+                dSubtracted = JamaMatrix.FACTORY.copy(dOrig);
         }
 
         calcRefSubtractedInverse(refStationIdx);
@@ -708,14 +709,14 @@ public class CovarianceWeighter {
         JamaMatrix dOnlyLinVars = dOrig.subtract(dNoLinVars);
         // TODO Test this
         JamaMatrix W = getWeighterMatrix();
-        JamaMatrix G = JamaMatrix.FACTORY.copyRaw(gTran).transpose();
+        JamaMatrix G = JamaMatrix.FACTORY.copy(gTran).transpose();
         JamaMatrix WD = W.multiplyRight((BasicMatrix) dOnlyLinVars);
         JamaMatrix WG = W.multiplyRight((BasicMatrix) G);
         JamaMatrix WGTran = WG.transpose();
 
         JamaMatrix invWGTxWG = (WGTran.multiplyRight((BasicMatrix) WG)).invert();
         JamaMatrix result = invWGTxWG.multiplyRight((BasicMatrix) WGTran).multiplyRight((BasicMatrix) WD);
-        double[][] outTemp = result.transpose().toRawCopy();
+        double[][] outTemp = JamaUtil.toRawCopy( result.transpose() );
 
         return outTemp[0];
     }
@@ -802,7 +803,7 @@ public class CovarianceWeighter {
      * @return
      */
     public JamaMatrix autoDifferenceOutReferenceData(double[][] gMatrix) {
-        JamaMatrix G = JamaMatrix.FACTORY.copyRaw(gMatrix);
+        JamaMatrix G = JamaMatrix.FACTORY.copy(gMatrix);
         if (referenceStationIdx != -1) {
             JamaMatrix retVal = getDifferenceOperator().multiplyRight(G);
             return retVal;
@@ -843,7 +844,7 @@ public class CovarianceWeighter {
         }
         // TODO:: JUnit test both overloads of weight()
         JamaMatrix weightedDisplacements = weighter.multiplyRight((BasicMatrix) (d));
-        return weightedDisplacements.transpose().toRawCopy()[0];
+        return JamaUtil.toRawCopy(weightedDisplacements.transpose())[0];
     }
 
     private double[] derefDispVector(double[] dispVect, int station2Exclude) {

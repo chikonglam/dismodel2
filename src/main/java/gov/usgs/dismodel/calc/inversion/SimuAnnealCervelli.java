@@ -245,7 +245,7 @@ public class SimuAnnealCervelli {
 			this.measuredDataMultiplier = measuredDataMultiplier;
 			double [] displacements = unrollDispMatix(stationDisplacements);
 			JamaMatrix dCol = JamaMatrix.FACTORY.makeColumn(displacements);
-			JamaMatrix matL = JamaMatrix.FACTORY.copyRaw(measuredDataMultiplier);
+			JamaMatrix matL = JamaMatrix.FACTORY.copy(measuredDataMultiplier);
 			JamaMatrix dAfter = (JamaMatrix) ((BasicMatrix)matL).multiplyRight(dCol);
 			if (dAfter != null){
 				double [] prodCol = getCol(dAfter, 0);
@@ -261,14 +261,14 @@ public class SimuAnnealCervelli {
 		int numOfRow = dAfter.getRowDim();
 		double [] ret = new double[numOfRow];
 		for (int iter = 0; iter < numOfRow; iter++){
-			ret[iter] = dAfter.getNumber(iter, col);
+			ret[iter] = dAfter.get(iter, col);
 		}
 		return ret;
 	}
 
 	public void setSimulatedDataMultiplier(double[][] simulatedDataMultiplier) {
 		this.simulatedDataMultiplier = simulatedDataMultiplier;
-		this.simulatedDataMultiplierJama = JamaMatrix.FACTORY.copyRaw(simulatedDataMultiplier);
+		this.simulatedDataMultiplierJama = JamaMatrix.FACTORY.copy(simulatedDataMultiplier);
 		
 	}
 

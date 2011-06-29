@@ -4,6 +4,7 @@ import gov.usgs.dismodel.calc.greens.DisplacementSolver;
 import gov.usgs.dismodel.calc.greens.DistributedFault;
 import gov.usgs.dismodel.calc.greens.OkadaFault3;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
+import gov.usgs.dismodel.calc.overlays.ojalgo.JamaUtil;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
 import gov.usgs.dismodel.state.SimulationDataModel;
@@ -509,16 +510,16 @@ public class DistributedSlipSolver {
     private double[] callSolver() {
 
         double[] weightedD = cov.weight(disp1D);
-        EqualityAndBoundsSlipSolver solver;
+        ConstrainedQuadProgSolver solver;
         JamaMatrix gDiffed = cov.autoDifferenceOutReferenceData(gMatrixSlipMajor);
 
         if (useSmoothingOverride) {
             JamaMatrix weighter = cov.getAutoSmoothedWeighter(numSubFaults * numParamPerSubFault, this.smoothingGamma);
-            solver = getSmoothedSolver(gDiffed.toRawCopy(), weighter, weightedD);
+            solver = getSmoothedSolver(JamaUtil.toRawCopy(gDiffed), weighter, weightedD);
         } else {
             JamaMatrix weighter = cov.getAutoWeighterMatrix();
-            double[][] weightedGreens = weighter.multiplyRight((BasicMatrix) gDiffed).toRawCopy();
-            solver = new EqualityAndBoundsSlipSolver(weightedGreens, weightedD);
+            double[][] weightedGreens = JamaUtil.toRawCopy( weighter.multiplyRight((BasicMatrix) gDiffed) );
+            solver = new ConstrainedQuadProgSolver(weightedGreens, weightedD);
         }
         applyConstraints(solver);
         return solver.solve();
@@ -526,7 +527,6 @@ public class DistributedSlipSolver {
 
     private double[] calcSubFaultAreas() {
         
-        int fillIter = 0;
         int numOfVar = this.slipLocation.size();
         double[] areas = new double[numOfVar];
         for (int varIter = 0; varIter < numOfVar; varIter++){
@@ -579,11 +579,11 @@ public class DistributedSlipSolver {
         return ret;
     }
 
-    public EqualityAndBoundsSlipSolver getSmoothedSolver() {
+    public ConstrainedQuadProgSolver getSmoothedSolver() {
         JamaMatrix gDiffed = cov.autoDifferenceOutReferenceData(gMatrixSlipMajor);
         double[] weightedD = cov.weight(disp1D);
         JamaMatrix weighter = cov.getAutoSmoothedWeighter(numSubFaults * numParamPerSubFault, this.smoothingGamma);
-        return getSmoothedSolver(gDiffed.toRawCopy(), weighter, weightedD);
+        return getSmoothedSolver(JamaUtil.toRawCopy(gDiffed), weighter, weightedD);
     }
 
     /**
@@ -593,7 +593,7 @@ public class DistributedSlipSolver {
      * @param weightedDisp
      * @param unweightedGreensFunct
      */
-    public EqualityAndBoundsSlipSolver getSmoothedSolver(double[][] unweightedGreensFunct, JamaMatrix smoothedWeighter,
+    public ConstrainedQuadProgSolver getSmoothedSolver(double[][] unweightedGreensFunct, JamaMatrix smoothedWeighter,
             double[] weightedDisp) {
         /*
          * Allow space to append a numVar by numVar, square submatrix for
@@ -642,9 +642,9 @@ public class DistributedSlipSolver {
             }
 
         JamaMatrix smoothedWeightedGreensMatrix = smoothedWeighter.multiplyRight((BasicMatrix) JamaMatrix.FACTORY
-                .copyRaw(smoothedGreensMatrix));
+                .copy(smoothedGreensMatrix));
 
-        return new EqualityAndBoundsSlipSolver(smoothedWeightedGreensMatrix.toRawCopy(), smoothableData);
+        return new ConstrainedQuadProgSolver(JamaUtil.toRawCopy(smoothedWeightedGreensMatrix), smoothableData);
     }
 
     private double[][] multiply(double[][] smoothingRowsB4, double d) {
@@ -675,65 +675,54 @@ public class DistributedSlipSolver {
     }
 
 
-    protected ConstrainedLinearLeastSquaresSolver applyConstraints(EqualityAndBoundsSlipSolver solver) {
-        boolean mustSetArea = false;
-        if (this.nonNegative) {
-            solver.setAllBlksNonNeg();
-            mustSetArea = true;
-        }
-        
-        if (!Double.isNaN(targetMonent)) {
-            switch (this.momentConType) {
-            case LESS_THAN_OR_EQUAL:
-                solver.setMomentUpperBound(this.targetMonent, shearModulus);
-                break;
-            case EQUAL:
-                solver.setMoment(this.targetMonent, shearModulus);
-                break;
-            case GREATER_THAN_OR_EQUAL:
-                solver.setMomentLowerBound(this.targetMonent, shearModulus);
-                break;
-            }
-            mustSetArea = true;
-        }
-        
-        
-        int fillIter = 0;
+    protected ConstrainedQuadProgSolver applyConstraints(ConstrainedQuadProgSolver solver) {
         int numOfVar = this.slipLocation.size();
-        double[] areas = new double[numOfVar];
-        for (int varIter = 0; varIter < numOfVar; varIter++){
-            SlipLocation curSlipLoc = this.slipLocation.get(varIter);
-            int curSFIdx = curSlipLoc.subfaultIdx;
-            int curRow = curSlipLoc.row;
-            int curCol = curSlipLoc.col;
-            int curParamIdx = curSlipLoc.slipIndex;
-            OkadaFault3 curLB = ((DistributedFault) modelLB[curSFIdx]).getSubfaults()[curRow][curCol];
-            OkadaFault3 curUB = ((DistributedFault) modelUB[curSFIdx]).getSubfaults()[curRow][curCol];
-            double lbVal = curLB.getMsp()[curParamIdx];
-            double ubVal = curUB.getMsp()[curParamIdx];
-            
-            
-            if (!Double.isInfinite(lbVal)){             //TODO: implement better bounding system (at least the same as the other ones)
-                solver.setLowerBoundForABlockSlip(varIter, lbVal);
-                mustSetArea = true;
-            }
-            
-            if (!Double.isInfinite(ubVal)){             //TODO: implement better bounding system (at least the same as the other ones)
-                solver.setUpperBoundForABlockSlip(varIter, ubVal);
-                mustSetArea = true;
-            }
-            
-            
-            
-        }
 
-        if (mustSetArea) {
-            double[] subFaultAreas = calcSubFaultAreas();
-            solver.setSubfaultAreas(subFaultAreas);
-            // set area
+	if (!Double.isNaN(targetMonent)) {
+            double[] areas = this.calcSubFaultAreas();
+            double[] shearMods = this.getAllShearMods();
+            solver.setMomentCon(momentConType, targetMonent, areas, shearMods);
         }
-        return solver;
+            //TODO: make the x-bounds work
+            double[] LBs = new double[numOfVar];
+            double[] UBs = new double[numOfVar];
+            
+            for (int varIter = 0; varIter < numOfVar; varIter++){
+                SlipLocation curSlipLoc = this.slipLocation.get(varIter);
+                int curSFIdx = curSlipLoc.subfaultIdx;
+                int curRow = curSlipLoc.row;
+                int curCol = curSlipLoc.col;
+                int curParamIdx = curSlipLoc.slipIndex;
+                
+                
+                OkadaFault3 curLB = ((DistributedFault) modelLB[curSFIdx]).getSubfaults()[curRow][curCol];
+                OkadaFault3 curUB = ((DistributedFault) modelUB[curSFIdx]).getSubfaults()[curRow][curCol];
+                double lbVal = curLB.getMsp()[curParamIdx];
+                double ubVal = curUB.getMsp()[curParamIdx];
+                
+                LBs[varIter] = lbVal;
+                UBs[varIter] = ubVal;
+            }
+            solver.setLB(LBs);
+            solver.setUB(UBs);
+            
+            return solver;
+
     } // applyConstraints()
+
+    private double[] getAllShearMods() {
+	int numOfVar = this.slipLocation.size();
+	double[] shearMods = new double[numOfVar];
+	for (int varIter = 0; varIter < numOfVar; varIter++){
+	    SlipLocation curSlipLoc = this.slipLocation.get(varIter);
+	    int curSFIdx = curSlipLoc.subfaultIdx;
+	    int curRow = curSlipLoc.row;
+	    int curCol = curSlipLoc.col;
+	    //int curParamIdx = curSlipLoc.slipIndex;
+	    shearMods[varIter] = ((DistributedFault) this.originalModel[curSFIdx]).getSubfaults()[curRow][curCol].getShearModulus();
+	}
+	return shearMods;
+    }
 
     private static class SlipLocation {
         public int subfaultIdx;
