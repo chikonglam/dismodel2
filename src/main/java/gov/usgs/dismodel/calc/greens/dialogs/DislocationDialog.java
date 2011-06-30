@@ -51,6 +51,8 @@ public class DislocationDialog extends javax.swing.JDialog implements MouseClick
         namePanel = new javax.swing.JPanel();
         labName = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
+        labShearMod = new javax.swing.JLabel();
+        txtShearMod = new javax.swing.JTextField();
         whereIsDislocPanel = new javax.swing.JPanel();
         unitsLabel = new javax.swing.JLabel();
         unitsCB = new javax.swing.JComboBox();
@@ -169,12 +171,29 @@ public class DislocationDialog extends javax.swing.JDialog implements MouseClick
         namePanel.setMinimumSize(new java.awt.Dimension(494, 25));
         namePanel.setLayout(new javax.swing.BoxLayout(namePanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        labName.setFont(new java.awt.Font("sansserif", 3, 14));
-        labName.setText("Name of the dislocation:");
+        labName.setFont(new java.awt.Font("sansserif", 3, 14)); // NOI18N
+        labName.setText("Name:");
         namePanel.add(labName);
 
-        txtName.setText("Name");
+        txtName.setText("Fault");
+        txtName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNameActionPerformed(evt);
+            }
+        });
         namePanel.add(txtName);
+
+        labShearMod.setFont(new java.awt.Font("sansserif", 3, 14)); // NOI18N
+        labShearMod.setText("Shear Mod:");
+        namePanel.add(labShearMod);
+
+        txtShearMod.setText("3.00E10");
+        txtShearMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtShearModActionPerformed(evt);
+            }
+        });
+        namePanel.add(txtShearMod);
 
         wholePanel.add(namePanel);
 
@@ -1820,6 +1839,14 @@ public class DislocationDialog extends javax.swing.JDialog implements MouseClick
     protected void widthCBActionPerformed(java.awt.event.ActionEvent evt) {                                        
     }                                       
 
+    protected void txtNameActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    protected void txtShearModActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
     public boolean isUnitsAreXY() {
         return unitsAreXY;
     }
@@ -2112,6 +2139,7 @@ public class DislocationDialog extends javax.swing.JDialog implements MouseClick
     public javax.swing.JLabel fixedLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labName;
+    private javax.swing.JLabel labShearMod;
     public javax.swing.JCheckBox lengthCB;
     public javax.swing.JCheckBox lengthFixed;
     public javax.swing.JTextField lengthLB;
@@ -2150,6 +2178,7 @@ public class DislocationDialog extends javax.swing.JDialog implements MouseClick
     public javax.swing.JTextField strikeUB;
     public javax.swing.JTextField strikeValue;
     protected javax.swing.JTextField txtName;
+    protected javax.swing.JTextField txtShearMod;
     private javax.swing.JComboBox unitsCB;
     private javax.swing.JLabel unitsLabel;
     public javax.swing.JLabel upperBoundLabel;
