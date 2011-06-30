@@ -1503,6 +1503,10 @@ public class DislocationDialog extends javax.swing.JDialog implements MouseClick
 
         applyButton.setText("Apply");
         applyButton.setToolTipText("Entering size in meters, then clicking Apply, will divide the fault-segment into rectangular subfault tiles.");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, deltaLength, org.jdesktop.beansbinding.ELProperty.create("${text != null && text != \"\"}"), applyButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
         applyButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 applyButtonActionPerformed(evt);
