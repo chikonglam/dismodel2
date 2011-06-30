@@ -270,6 +270,7 @@ DataChangeEventFrier {
         if (name != null && ! name.isEmpty()){
         	of.setName(name);
         }
+        
 
         if (isCreateNew()) {
         	 sourceModel.add(of);
