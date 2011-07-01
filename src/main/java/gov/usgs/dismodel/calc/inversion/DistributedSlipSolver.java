@@ -124,7 +124,6 @@ public class DistributedSlipSolver {
 
     private ArrayList<SlipLocation> slipLocation = new ArrayList<SlipLocation>();
     private ArrayList<ArrayList<Integer>> activeSubFaultParams;
-    private double shearModulus;
 
     // constructors
     // ------------
@@ -235,7 +234,6 @@ public class DistributedSlipSolver {
         this.groupedOriginalModel = putModelsInGroups(this.originalModel);
         this.fittedModel = copyOf(this.originalModel);
         this.simModel = simModel;
-        shearModulus = simModel.getShearModulus();
         this.cov = cov;
         this.stationPositions = stationPositions;
         this.numStation = stationPositions.length;

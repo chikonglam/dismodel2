@@ -41,7 +41,7 @@ import org.apache.commons.beanutils.BeanUtils;
 @XmlType(propOrder = { "stations", "refH", "refStation", "origin", "sourceModels", "sourceLowerbound",
         "sourceUpperbound", "fittedModels", "measuredDispVectors", "measuredUnrefdDispVectors",
         "measuredRefdDispVectors", "modeledDisplacements", "covarWeighter", "chi2", "nonNeg", 
-        "monentConstraint", "monentConType", "smoothingParams", "shearModulus" })
+        "monentConstraint", "monentConType", "smoothingParams"})
 public class SimulationDataModel implements ModelSolution {
     // stations and geo vars
     // --------------------
@@ -49,7 +49,6 @@ public class SimulationDataModel implements ModelSolution {
     private double refH;
     private int refStation = -1;
     private LLH origin = new LLH(37.4125, -102.4285, 0d);
-    private double shearModulus = 1;
 
     // sources
     // ----------
@@ -414,14 +413,6 @@ public class SimulationDataModel implements ModelSolution {
 		}
     }
 
-    @XmlElement
-    public double getShearModulus() {
-        return shearModulus;
-    }
-
-    public void setShearModulus(double shearModulus) {
-        this.shearModulus = shearModulus;
-    }
     
 
 }
