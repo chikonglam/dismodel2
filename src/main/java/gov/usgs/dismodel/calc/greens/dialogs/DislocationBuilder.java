@@ -182,6 +182,17 @@ public class DislocationBuilder {
         OkadaFault3 tempUB = new OkadaFault3(x1.UpperBound, y1.UpperBound, x2.UpperBound, y2.UpperBound, xC.UpperBound, yC.UpperBound, dep.UpperBound, isUpperCoord, strike.UpperBound, dip.UpperBound, aspectRatio.UpperBound, len.UpperBound, wid.UpperBound, ss.UpperBound, ds.UpperBound, ts.UpperBound);
         OkadaFault3 tempLB = new OkadaFault3(x1.LowerBound, y1.LowerBound, x2.LowerBound, y2.LowerBound, xC.LowerBound, yC.LowerBound, dep.LowerBound, isUpperCoord, strike.LowerBound, dip.LowerBound, aspectRatio.LowerBound, len.LowerBound, wid.LowerBound, ss.LowerBound, ds.LowerBound, ts.LowerBound);
 
+        String shearModStr = d.txtShearMod.getText();
+        if (shearModStr != null && shearModStr.length() > 0){
+            try {
+        	double shearMod = Double.parseDouble(shearModStr);
+        	tempFault.setShearModulus(shearMod);
+        	tempUB.setShearModulus(shearMod);
+        	tempLB.setShearModulus(shearMod);
+            }catch(Exception e){
+            }
+        }
+        
         if ( dLtxt.equals("") || dWtxt.equals("")){
             isDistedSlip = false;
             faultInitVal = tempFault ;

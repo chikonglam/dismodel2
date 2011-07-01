@@ -2178,7 +2178,7 @@ public class DislocationDialog extends javax.swing.JDialog implements MouseClick
     public javax.swing.JTextField strikeUB;
     public javax.swing.JTextField strikeValue;
     protected javax.swing.JTextField txtName;
-    protected javax.swing.JTextField txtShearMod;
+    public javax.swing.JTextField txtShearMod;
     private javax.swing.JComboBox unitsCB;
     private javax.swing.JLabel unitsLabel;
     public javax.swing.JLabel upperBoundLabel;

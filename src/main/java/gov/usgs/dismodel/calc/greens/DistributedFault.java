@@ -144,6 +144,8 @@ public class DistributedFault extends OkadaFault3 {
         final double dxPerUIter = projectedDw * Math.cos(strike);
         final double dyPerUIter = -projectedDw * Math.sin(strike);
         
+        final double shearMod = overallFault.getShearModulus();
+        
         
         
         OkadaFault3[][] dividedFaults = new OkadaFault3[widthStep][lengthStep];
@@ -162,6 +164,7 @@ public class DistributedFault extends OkadaFault3 {
                 double curX2 = curUpperX2 + curXAdj;
                 double curY2 = curUpperY2 + curYAdj;
                 
+                dividedFaults[dUIter][dLIter].setShearModulus(shearMod);
                 if (direction > 0){
 	                dividedFaults[dUIter][dLIter] = new OkadaFault3(curX1, curY1, curX2, curY2, 
 	                        Double.NaN, Double.NaN, -curU, true, Double.NaN, dipDeg, Double.NaN, 
