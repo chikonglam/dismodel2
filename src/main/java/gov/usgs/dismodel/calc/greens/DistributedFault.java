@@ -164,7 +164,7 @@ public class DistributedFault extends OkadaFault3 {
                 double curX2 = curUpperX2 + curXAdj;
                 double curY2 = curUpperY2 + curYAdj;
                 
-                dividedFaults[dUIter][dLIter].setShearModulus(shearMod);
+
                 if (direction > 0){
 	                dividedFaults[dUIter][dLIter] = new OkadaFault3(curX1, curY1, curX2, curY2, 
 	                        Double.NaN, Double.NaN, -curU, true, Double.NaN, dipDeg, Double.NaN, 
@@ -174,6 +174,7 @@ public class DistributedFault extends OkadaFault3 {
 	                        Double.NaN, Double.NaN, -curU, true, Double.NaN, dipDeg, Double.NaN, 
 	                        Double.NaN, realDw, SS, DS, TS);
                 }
+                dividedFaults[dUIter][dLIter].setShearModulus(shearMod);
             }
         }
         return dividedFaults;
