@@ -138,17 +138,21 @@ public class ConstrainedQuadProgSolver {
 	
 	if (lb != null){
 	    TwoMatrices Ab = genBoundMatrices(lb);
-	    JamaMatrix ADown = Ab.A;
-	    JamaMatrix BDown = Ab.B;
-	    appendMatrixDownIfNotNull(A, ADown);
-	    appendMatrixDownIfNotNull(b, BDown);
+	    if (Ab != null && Ab.A != null && Ab.B != null){
+        	    JamaMatrix ADown = Ab.A;
+        	    JamaMatrix BDown = Ab.B;
+        	    appendMatrixDownIfNotNull(A, ADown);
+        	    appendMatrixDownIfNotNull(b, BDown);
+	    }
 	}
 	if (ub != null){	//TODO: decouple
 	    TwoMatrices Ab = genBoundMatrices(ub);
-	    JamaMatrix ADown = Ab.A.negate();
-	    JamaMatrix BDown = Ab.B.negate();
-	    appendMatrixDownIfNotNull(A, ADown);
-	    appendMatrixDownIfNotNull(b, BDown);
+	    if (Ab != null && Ab.A != null && Ab.B != null){
+        	    JamaMatrix ADown = Ab.A.negate();
+        	    JamaMatrix BDown = Ab.B.negate();
+        	    appendMatrixDownIfNotNull(A, ADown);
+        	    appendMatrixDownIfNotNull(b, BDown);
+	    }
 	}
 
 	if (A != null && b != null){	//the inequality bounds
@@ -208,10 +212,14 @@ public class ConstrainedQuadProgSolver {
 	    }
 	}
 	
+	if (A.size() > 0){
 	JamaMatrix AM = JamaMatrix.FACTORY.copy( A.toArray(new double[0][]) );
 	JamaMatrix bM = JamaMatrix.FACTORY.makeColumn( b.toArray(new Double[0]) );
 	
 	return new TwoMatrices(AM, bM);
+	} else {
+	    return new TwoMatrices(null, null);
+	}
     }
     
     

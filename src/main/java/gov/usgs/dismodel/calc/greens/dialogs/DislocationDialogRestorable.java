@@ -333,7 +333,7 @@ DataChangeEventFrier {
         //resetAll();
         
         Fault faultIn = (Fault) sourceIn;
-        
+        this.txtShearMod.setText( Double.toString(  (   (OkadaFault3)faultIn   ).getShearModulus()  )  ); 
         //now put the stuff in leaving the bounds alone
         this.endpoint1xValue.setText(String.format("%.2f", faultIn.getX1()));
         this.endpoint1yValue.setText(String.format("%.2f", faultIn.getY1()));
