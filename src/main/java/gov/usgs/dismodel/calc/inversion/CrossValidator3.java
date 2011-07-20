@@ -86,7 +86,7 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	int cols = numVar;
 	double[][] smoothedWeightedGreensMatrix = new double[rows][cols];
 
-	final boolean dikeOpening = false;
+	final boolean dikeOpening = false;	//TODO: change this to non-hard-coded
 	/*
 	 * Get the smoothing submatrix for one sense of motion (STRIKE_SLIP_IDX,
 	 * DIP_SLIP_IDX, OPENING_IDX)

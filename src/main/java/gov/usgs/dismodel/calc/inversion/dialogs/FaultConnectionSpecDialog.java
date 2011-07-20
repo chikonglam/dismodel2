@@ -7,6 +7,7 @@ import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.awt.Frame;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FaultConnectionSpecDialog extends FaultConnectionSpecBase {
 
@@ -25,9 +26,34 @@ public class FaultConnectionSpecDialog extends FaultConnectionSpecBase {
 		super(parent, modal);
 		this.simModel = simModel;
 		allFaults = getArrayOfAllDistFaults();
-		indepFaults = (ArrayList<DistributedFault>) allFaults.clone();
+		indepFaults = new ArrayList<DistributedFault>();
 		groupedFaults = new ArrayList<ArrayList<DistributedFault>>();
+		sortGroupedFaults(allFaults, groupedFaults, indepFaults);
 		updateInterface();
+	}
+	
+	protected void sortGroupedFaults(final ArrayList<DistributedFault> allFaults, ArrayList<ArrayList<DistributedFault>> groupedFaults, ArrayList<DistributedFault> independentFaults){
+	    int maxGpNum = -1;
+	    for(DistributedFault fault : allFaults){
+		int curGp = fault.getGroup();
+		if (curGp > maxGpNum) maxGpNum = curGp;
+	    }
+	    
+	    groupedFaults.clear();
+	    for (int createGpIter = 0; createGpIter <= maxGpNum; createGpIter++){
+		groupedFaults.add(new ArrayList<DistributedFault>());
+	    }
+	    
+	    independentFaults.clear();
+	    for(DistributedFault fault : allFaults){
+		int curGp = fault.getGroup();
+		if (curGp < 0){
+		    independentFaults.add(fault);
+		} else {
+		    groupedFaults.get(curGp).add(fault);
+		}
+	    }
+	    
 	}
 
 	//-----Overriding methods
@@ -136,6 +162,12 @@ public class FaultConnectionSpecDialog extends FaultConnectionSpecBase {
 	protected void updateInterface(){
 		int selectedGroup = cbGroup.getSelectedIndex();
 		int numOfGroups = this.groupedFaults.size();
+		
+		//populate the no of seg box
+		String curNoTxt = this.txtNoSegments.getText();
+		if (numOfGroups > 0 && curNoTxt != null && curNoTxt != "" ){
+		    this.txtNoSegments.setText( Integer.toString(numOfGroups) );
+		}
 		
 		//populate the box for the disconnected faults
 		updateTable(this.tabUnconned, this.indepFaults);
