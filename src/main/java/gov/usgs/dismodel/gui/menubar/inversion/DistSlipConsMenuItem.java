@@ -8,6 +8,7 @@ import gov.usgs.dismodel.state.SimulationDataModel;
 import java.awt.event.ActionEvent;
 
 public class DistSlipConsMenuItem extends ActionMenuItem{
+    private static final long serialVersionUID = -2695013499866429543L;
 
     public DistSlipConsMenuItem(String title, AllGUIVars allGuiVars) {
         super(title, allGuiVars);

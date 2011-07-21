@@ -37,9 +37,6 @@ public class DistSlipSolveWorker extends SwingWorker<InversionResults, Inversion
 
     @Override
     protected InversionResults doInBackground() throws Exception {
-
-        FaultConnectionSpecDialog connDiag = new FaultConnectionSpecDialog(allGuiVars.getMainFrame(), true, simModel);
-        connDiag.setVisible(true);
         final DistributedSlipSolver solver = DistributedSlipSolver.make(simModel);
         return solver.calculate();
 
