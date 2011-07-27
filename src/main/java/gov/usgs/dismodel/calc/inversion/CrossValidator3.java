@@ -143,12 +143,12 @@ public class CrossValidator3 extends DistributedSlipSolver {
         	applyConstraints(solver);
         	double[] slipSoln = solver.solve();
         	
-        	double [][] weightedGreenAtStation = getGreensforStation(smoothedWeightedGreensMatrix, maskedStationIdx);
+        	double [][] weightedGreenAtStation = getGreensforStation(weightedGreen, maskedStationIdx);
         	JamaMatrix WG = JamaMatrix.FACTORY.copy(weightedGreenAtStation);
         	JamaMatrix slipCol = JamaMatrix.FACTORY.makeColumn(slipSoln);
         	JamaMatrix estStationDisp = WG.multiplyRight((BasicMatrix)slipCol);
         	
-        	double [] realStationDisp = extract1StationDisp(smoothableData, maskedStationIdx);
+        	double [] realStationDisp = extract1StationDisp(weightedDisp, maskedStationIdx);
         	
         	double dx = realStationDisp[DIM_X] - estStationDisp.get(DIM_X, 0);
         	double dy = realStationDisp[DIM_Y] - estStationDisp.get(DIM_Y, 0);
@@ -213,7 +213,7 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	int offset = 0;
 	double[][] ret = new double[newLength][numCol];
 	for (int retIter = 0; retIter < newLength; retIter++) {
-	    if (retIter == index)
+	    if (retIter == index * DIM_CT)
 		offset = DIM_CT;
 	    ret[retIter] = source[retIter + offset];
 	}
