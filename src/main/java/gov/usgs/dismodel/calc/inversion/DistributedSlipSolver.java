@@ -342,7 +342,7 @@ public class DistributedSlipSolver {
             colCtCumSum += curColCt;
             numSubFaults += curRowCt * curColCt;
         }
-        numVar = numSubFaults * numParamPerSubFault;
+//        numVar = numSubFaults * numParamPerSubFault;
         colCumSum = colCtCumSum;
     }
 
@@ -391,7 +391,7 @@ public class DistributedSlipSolver {
 
 
     private double[][] makeSlipMajorGMatrix(DisplacementSolver[] model, ArrayList<SlipLocation> slipLocation) {
-        double[][] gTran = new double[numVar][]; // can try to avoid new
+	ArrayList<double[]> gTran = new ArrayList<double[]>(); // can try to avoid new
 
         int curVarIter = 0;
 
@@ -402,27 +402,19 @@ public class DistributedSlipSolver {
                 if (curSegActiveParams.contains(curParam)) {
                     for (int rowIter = 0; rowIter < subFaultRowCt[segmentIter]; rowIter++) {
                         for (int colIter = 0; colIter < subFaultColCt[segmentIter]; colIter++) {
-                            gTran[curVarIter] = isolateLinDisp((DistributedFault) model[segmentIter], rowIter, colIter,
-                                    curParam);
+                            gTran.add( isolateLinDisp((DistributedFault) model[segmentIter], rowIter, colIter,
+                                    curParam) );
                             slipLocation.add(new SlipLocation(segmentIter, rowIter, colIter, curParam));
                             curVarIter++;
                         }
                     }
-                } else {
-                    for (int rowIter = 0; rowIter < subFaultRowCt[segmentIter]; rowIter++) {
-                        for (int colIter = 0; colIter < subFaultColCt[segmentIter]; colIter++) {
-                            gTran[curVarIter] = new double[numStation * DIM_CT];
-                            slipLocation.add(new SlipLocation(segmentIter, rowIter, colIter, curParam));
-                            curVarIter++;
-                        }
-                    }
-                }
+                } 
 
             }
 
         }
-
-        double[][] outG = matrixTranspose(gTran);
+        numVar = gTran.size();
+        double[][] outG = matrixTranspose(gTran.toArray(new double[0][]));
 
         return outG;
 
@@ -512,7 +504,7 @@ public class DistributedSlipSolver {
         JamaMatrix gDiffed = cov.autoDifferenceOutReferenceData(gMatrixSlipMajor);
 
         if (useSmoothingOverride) {
-            JamaMatrix weighter = cov.getAutoSmoothedWeighter(numSubFaults * numParamPerSubFault, this.smoothingGamma);
+            JamaMatrix weighter = cov.getAutoSmoothedWeighter(numVar, this.smoothingGamma);
             solver = getSmoothedSolver(JamaUtil.toRawCopy(gDiffed), weighter, weightedD);
         } else {
             JamaMatrix weighter = cov.getAutoWeighterMatrix();
@@ -580,7 +572,7 @@ public class DistributedSlipSolver {
     public ConstrainedQuadProgSolver getSmoothedSolver() {
         JamaMatrix gDiffed = cov.autoDifferenceOutReferenceData(gMatrixSlipMajor);
         double[] weightedD = cov.weight(disp1D);
-        JamaMatrix weighter = cov.getAutoSmoothedWeighter(numSubFaults * numParamPerSubFault, this.smoothingGamma);
+        JamaMatrix weighter = cov.getAutoSmoothedWeighter(numVar, this.smoothingGamma);
         return getSmoothedSolver(JamaUtil.toRawCopy(gDiffed), weighter, weightedD);
     }
 
@@ -616,10 +608,8 @@ public class DistributedSlipSolver {
          * matrix to the other senses.
          */
         
-        double[][] smoothingRows = convert1MotionTo3Motion(oneMotionSmoothingRows);
-      //double[][] smoothingRowsB4 = convert1MotionTo3Motion(oneMotionSmoothingRows);////DEBUG remove this after stuff is done
-        //double[][] smoothingRows = multiply(smoothingRowsB4, 1e6d); 	////DEBUG remove this after stuff is done
-
+        //double[][] smoothingRows = convert1MotionTo3Motion(oneMotionSmoothingRows);
+        double[][] smoothingRows = convert1MotionToMultiMotion(oneMotionSmoothingRows, numVar / numSubFaults);	//TODO: kick out this magic number when ready
         /* Allow space for pseudodata at the bottom of the displacement vector */
         double[] smoothableData = new double[rows];
 
@@ -671,6 +661,21 @@ public class DistributedSlipSolver {
         }
         return smoothingRows;
     }
+	
+	protected double[][] convert1MotionToMultiMotion(double[][] smoothingMatrix, int numOfMotion) {
+	        int smoothingRowsRowCt = numSubFaults * numOfMotion;
+	        int smoothingRowsColCt = numSubFaults * numOfMotion;
+	        double[][] smoothingRows = new double[smoothingRowsRowCt][smoothingRowsColCt];
+	        for (int rowIter = 0; rowIter < numSubFaults; rowIter++) {
+	            for (int colIter = 0; colIter < numSubFaults; colIter++) {
+	                for (int diagIter = 0; diagIter < numOfMotion; diagIter++) {
+	                    smoothingRows[diagIter * numSubFaults + rowIter][diagIter * numSubFaults + colIter] = smoothingMatrix[rowIter][colIter];
+	                }
+	            }
+	        }
+	        return smoothingRows;
+	    }
+
 
 
     protected ConstrainedQuadProgSolver applyConstraints(ConstrainedQuadProgSolver solver) {
