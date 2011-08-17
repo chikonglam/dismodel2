@@ -14,6 +14,10 @@ import gov.nasa.worldwind.layers.CompassLayer;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.ogc.kml.KMLRoot;
+import gov.nasa.worldwind.ogc.kml.impl.KMLController;
+import gov.nasa.worldwind.ogc.kml.io.KMLInputStream;
+import gov.nasa.worldwind.ogc.kml.io.KMZInputStream;
 import gov.nasa.worldwind.render.AnnotationAttributes;
 import gov.nasa.worldwind.render.FrameFactory;
 import gov.nasa.worldwind.render.GlobeAnnotation;
@@ -45,8 +49,11 @@ import java.awt.Panel;
 import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.swing.SwingUtilities;
 
@@ -75,6 +82,7 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
     private WWVectorLayer measuredVectorLayer = new WWVectorLayer();
     private RenderableLayer sourcesLayer = new RenderableLayer();
     private WWVectorLayer modeledVectorLayer = new WWVectorLayer();
+    private RenderableLayer KMLLayer = new RenderableLayer();
 
     final private View wwView;
 
@@ -135,6 +143,7 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
         measuredVectorLayer.initLayer(wwd);
         insertBeforeCompass(this.wwd, sourcesLayer);
         modeledVectorLayer.initLayer(wwd);
+        insertBeforeCompass(this.wwd, this.KMLLayer);
 
         // setting the map at the default location, and default zoom level
         initCenter(displaySettings);
@@ -273,13 +282,111 @@ public class GeoPanel extends Panel implements ZoomEventFirer, ZoomEventListener
             addVectorScaleBar();
             addSources();
             addModeledDisp();
-
+            updateKML();
+            
             // Draw them all out
             wwd.redraw();
 
         }
 
     };
+    
+    private boolean isKMLnew(){
+	UUID loadedKMLUUID = displaySettings.getLoadedKMLUUID();
+	UUID dispedKMLUUID = displaySettings.getDispedKMLUUID();
+	
+	if (loadedKMLUUID  == null){
+	    return false;
+	} else if (dispedKMLUUID == null) {
+	    return true;
+	} else if (dispedKMLUUID.equals(loadedKMLUUID)){
+	    return false;
+	} else {
+	    return true;
+	}
+	
+    }
+    
+    private void updateKML(){
+	if (isKMLnew()){
+	    displaySettings.setDispedKMLUUID( displaySettings.getLoadedKMLUUID() );
+	    KMLLayer.removeAllRenderables();
+	    byte[] kmlString = displaySettings.getLoadedKML();
+            try {
+        	KMLInputStream kmlStream = new KMLInputStream( new ByteArrayInputStream(kmlString));
+	        KMLRoot root = new KMLRoot(kmlStream);
+	        root.parse();
+	        KMLController kmlController = new KMLController(root);
+	        KMLLayer.addRenderable(kmlController);
+	        
+            } catch (Exception e) {
+        	try{
+                   	KMZInputStream kmlStream = new KMZInputStream( new ByteArrayInputStream(kmlString));
+                   	KMLRoot root = new KMLRoot(kmlStream);
+                   	root.parse();
+                   	KMLController kmlController = new KMLController(root);
+                   	KMLLayer.addRenderable(kmlController);
+	        } catch (Exception e2) {
+	            e2.printStackTrace();
+	        }
+            }
+	    
+	    
+	}
+	// KMLRoot root;
+	// try {
+	// root = new KMLRoot(file);
+	// root.parse();
+	// System.out.println("Parsing complete, adding to WW layer");
+	// try {
+	// KMLController kmlController = new KMLController(root);
+	// final RenderableLayer layer = new RenderableLayer();
+	// layer.addRenderable(kmlController);
+	// layer.setName("KML Layer");
+	// WWPanel.insertBeforePlacenames(wwjPanel.wwd, layer);
+	// } catch (Exception e) {
+	// System.err.print(e);
+	// }
+	//
+	// System.out.println("Adding KML to Cartesian map");
+	//
+	// KMLDocument doc = null;
+	// AVList fieldsAV = root.getFields();
+	// if (fieldsAV == null) {
+	// throw new
+	// IOException("Document unreadable. Is the document KML 2.2?");
+	// }
+	// Collection<Object> fields = fieldsAV.getValues();
+	// for (Object object : fields) {
+	// if (object instanceof KMLDocument) {
+	// doc = (KMLDocument) object;
+	// }
+	// }
+	// // Obtain its Feature element if it has one.
+	// KMLAbstractFeature feature = root.getFeature();
+	//
+	// if (doc == null && feature == null) {
+	// throw new IOException("Unable to parse file");
+	// }
+	// if (doc != null) {
+	//
+	// List<KMLAbstractFeature> features = doc.getFeatures();
+	// for (KMLAbstractFeature kmlAbstractFeature : features) {
+	// parseFeature(kmlAbstractFeature, enu);
+	// }
+	// } else {
+	// parseFeature(feature, enu);
+	// }
+	// } catch (Exception e) {
+	// JOptionPane.showMessageDialog(owner,
+	// e.getMessage(),
+	// "Load error", JOptionPane.ERROR_MESSAGE);
+	// e.printStackTrace();
+	// }
+	// }
+
+	
+    }
 
     private void addStations() {
         stationLayer.removeAllRenderables();

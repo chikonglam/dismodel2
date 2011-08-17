@@ -19,6 +19,7 @@ import gov.usgs.dismodel.gui.menubar.source.MogiMenuItem;
 import gov.usgs.dismodel.gui.menubar.source.SphericalMenuItem;
 import gov.usgs.dismodel.gui.menubar.view.AdjMeasVectorsMenuItem;
 import gov.usgs.dismodel.gui.menubar.view.AdjSimVectorsMenuItem;
+import gov.usgs.dismodel.gui.menubar.view.LoadKMLMenuItem;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -65,6 +66,7 @@ public class MainMenu extends JMenuBar {
             this.setMnemonic('V');
 
             this.add(new View_AdjAppearanceMenu("Adjust Apperance"));
+            this.add(new LoadKMLMenuItem("Load KML overlay", allGuiVars));
         }
     }    
 

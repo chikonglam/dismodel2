@@ -408,7 +408,7 @@ public class DistributedSlipSolver {
                             curVarIter++;
                         }
                     }
-                } 
+                }//TODO: find a way to track unused slips and simplify solver call or roll back to ver 75 
 
             }
 

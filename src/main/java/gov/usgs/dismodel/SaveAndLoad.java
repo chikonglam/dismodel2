@@ -151,64 +151,64 @@ public class SaveAndLoad {
 /* commented now to make the code compile, will update in a bit
     
 //    
-//    public static void loadKMLFile(JFrame owner, MapView enu, WWPanel wwjPanel) {
-//        javax.swing.filechooser.FileFilter filter = 
-//            new FileNameExtensionFilter("KML/KMZ File", "kml", "kmz");
-//        File file = chooseFile(owner, filter);
-//        if (file != null) {
-//            // Construct a KMLRoot and call its parse method.
-//            System.out.println("Parsing file " + file);
-//            KMLRoot root;
-//            try {
-//                root = new KMLRoot(file);
-//                root.parse();
-//                System.out.println("Parsing complete, adding to WW layer");
-//                try {
-//                    KMLController kmlController = new KMLController(root);
-//                    final RenderableLayer layer = new RenderableLayer();
-//                    layer.addRenderable(kmlController);
-//                    layer.setName("KML Layer");
-//                    WWPanel.insertBeforePlacenames(wwjPanel.wwd, layer);
-//                } catch (Exception e) {
-//                    System.err.print(e);
-//                }
-//                
-//                System.out.println("Adding KML to Cartesian map");
-//                
-//                KMLDocument doc = null;
-//                AVList fieldsAV = root.getFields();
-//                if (fieldsAV == null) {
-//                    throw new IOException("Document unreadable. Is the document KML 2.2?");
-//                }
-//                Collection<Object> fields = fieldsAV.getValues();
-//                for (Object object : fields) {
-//                    if (object instanceof KMLDocument) {
-//                        doc = (KMLDocument) object;
-//                    }
-//                }
-//                // Obtain its Feature element if it has one.
-//                KMLAbstractFeature feature = root.getFeature();
-//                
-//                if (doc == null && feature == null) {
-//                    throw new IOException("Unable to parse file");
-//                }
-//                if (doc != null) {
-//                	
-//                    List<KMLAbstractFeature> features = doc.getFeatures();
-//                    for (KMLAbstractFeature kmlAbstractFeature : features) {
-//                        parseFeature(kmlAbstractFeature, enu);
-//                    }
-//                } else {
-//                    parseFeature(feature, enu);
-//                }
-//            } catch (Exception e) {
-//                JOptionPane.showMessageDialog(owner, 
-//                        e.getMessage(),
-//                        "Load error", JOptionPane.ERROR_MESSAGE);
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    public static void loadKMLFile(JFrame owner, MapView enu, WWPanel wwjPanel) {
+        javax.swing.filechooser.FileFilter filter = 
+            new FileNameExtensionFilter("KML/KMZ File", "kml", "kmz");
+        File file = chooseFile(owner, filter);
+        if (file != null) {
+            // Construct a KMLRoot and call its parse method.
+            System.out.println("Parsing file " + file);
+            KMLRoot root;
+            try {
+                root = new KMLRoot(file);
+                root.parse();
+                System.out.println("Parsing complete, adding to WW layer");
+                try {
+                    KMLController kmlController = new KMLController(root);
+                    final RenderableLayer layer = new RenderableLayer();
+                    layer.addRenderable(kmlController);
+                    layer.setName("KML Layer");
+                    WWPanel.insertBeforePlacenames(wwjPanel.wwd, layer);
+                } catch (Exception e) {
+                    System.err.print(e);
+                }
+                
+                System.out.println("Adding KML to Cartesian map");
+                
+                KMLDocument doc = null;
+                AVList fieldsAV = root.getFields();
+                if (fieldsAV == null) {
+                    throw new IOException("Document unreadable. Is the document KML 2.2?");
+                }
+                Collection<Object> fields = fieldsAV.getValues();
+                for (Object object : fields) {
+                    if (object instanceof KMLDocument) {
+                        doc = (KMLDocument) object;
+                    }
+                }
+                // Obtain its Feature element if it has one.
+                KMLAbstractFeature feature = root.getFeature();
+                
+                if (doc == null && feature == null) {
+                    throw new IOException("Unable to parse file");
+                }
+                if (doc != null) {
+                	
+                    List<KMLAbstractFeature> features = doc.getFeatures();
+                    for (KMLAbstractFeature kmlAbstractFeature : features) {
+                        parseFeature(kmlAbstractFeature, enu);
+                    }
+                } else {
+                    parseFeature(feature, enu);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(owner, 
+                        e.getMessage(),
+                        "Load error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
+    }
 //    
 //    public static void parseFeature(KMLAbstractFeature feature, MapView enu) {
 //        String name = feature.getName();
@@ -269,7 +269,7 @@ public class SaveAndLoad {
 // 
  * 
  * */
-    protected static File chooseFile(JFrame owner, javax.swing.filechooser.FileFilter filter) {
+    public static File chooseFile(JFrame owner, javax.swing.filechooser.FileFilter filter) {
         JFileChooser fc = new JFileChooser(lastDirectory);
         fc.setFileFilter(filter);
         int returnVal = fc.showOpenDialog(owner);

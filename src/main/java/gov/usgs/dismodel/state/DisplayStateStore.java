@@ -5,6 +5,7 @@ import gov.nasa.worldwind.geom.LatLon;
 
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,7 +20,7 @@ import org.apache.commons.beanutils.BeanUtils;
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = { "stationColor", "centerOfMap", "xCenter", "yCenter", "chartSpan", "realDisplacementVectorColor",
-		"modeledDisplacementVectorColor", "displacementVectorScale", "sourceColor"})
+		"modeledDisplacementVectorColor", "displacementVectorScale", "sourceColor", "loadedKML", "loadedKMLUUID"})
 public class DisplayStateStore {
     // constants
     public static final double DEFAULT_ZOOM_FACTOR = 1.2d;
@@ -43,6 +44,11 @@ public class DisplayStateStore {
     
     //source color
     private Color sourceColor = new Color(255, 0, 0, 128);
+    
+    //KML stuff
+    private byte[] loadedKML = null;
+    private UUID loadedKMLUUID = null;
+    private UUID dispedKMLUUID = null;
 
     // getters and setters
     @XmlJavaTypeAdapter(ColorAdapter.class)
@@ -53,6 +59,32 @@ public class DisplayStateStore {
 
     public void setRealDisplacementVectorColor(Color realDisplacementVectorColor) {
         this.realDisplacementVectorColor = realDisplacementVectorColor;
+    }
+
+    @XmlElement
+    public byte[] getLoadedKML() {
+        return loadedKML;
+    }
+
+    public void setLoadedKML(byte[] loadedKML) {
+        this.loadedKML = loadedKML;
+    }
+
+    @XmlElement
+    public UUID getLoadedKMLUUID() {
+        return loadedKMLUUID;
+    }
+
+    public void setLoadedKMLUUID(UUID loadedKMLUUID) {
+        this.loadedKMLUUID = loadedKMLUUID;
+    }
+
+    public UUID getDispedKMLUUID() {
+        return dispedKMLUUID;
+    }
+
+    public void setDispedKMLUUID(UUID dispedKMLUUID) {
+        this.dispedKMLUUID = dispedKMLUUID;
     }
 
     @XmlJavaTypeAdapter(ColorAdapter.class)

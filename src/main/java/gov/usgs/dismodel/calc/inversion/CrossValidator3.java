@@ -40,6 +40,8 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	SmoothingDialog.Params smoothParams = simModel.getSmoothingParams();
 	numGam = smoothParams.numGammaValues;
 	gammas = linearSpace(smoothParams.minGamma, smoothParams.maxGamma, numGam);
+	//gammas = new double[]{0.001000000000000,   0.002210265497971,   0.004885273571519,   0.010797751623277,   0.023865897868586,   0.052749970637026,   0.116591440117983, 0.257698037451488,   0.569581081073769,   1.258925411794167};
+	
 	cvss = new double[numGam];
 
     }

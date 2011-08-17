@@ -241,7 +241,12 @@ public class CovarianceWeighter {
     @XmlElementWrapper(name = "covarianceMatrix")
     @XmlElement(name = "covRow")
     public double[][] getCovarianceMatrix() {
-        return JamaUtil.toRawCopy(origCovar);
+	if (origCovar != null){
+	    return JamaUtil.toRawCopy(origCovar);
+	} else {
+	    return null;
+	}
+        
     }
 
     protected void calcInverse(JamaMatrix in) throws SolverException {
