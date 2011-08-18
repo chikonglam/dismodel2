@@ -9,3 +9,5 @@ syntax: regexp
 ^lib/libjogl\.so$
 syntax: regexp
 \.dll$
+syntax: regexp
+^lib/libdocs$

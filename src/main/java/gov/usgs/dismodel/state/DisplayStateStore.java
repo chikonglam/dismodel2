@@ -16,11 +16,12 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.codec.binary.Base64;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = { "stationColor", "centerOfMap", "xCenter", "yCenter", "chartSpan", "realDisplacementVectorColor",
-		"modeledDisplacementVectorColor", "displacementVectorScale", "sourceColor", "loadedKML", "loadedKMLUUID"})
+		"modeledDisplacementVectorColor", "displacementVectorScale", "sourceColor",  "loadedKMLUUID", "loadedKML"})
 public class DisplayStateStore {
     // constants
     public static final double DEFAULT_ZOOM_FACTOR = 1.2d;
@@ -61,6 +62,7 @@ public class DisplayStateStore {
         this.realDisplacementVectorColor = realDisplacementVectorColor;
     }
 
+    @XmlJavaTypeAdapter(loadedKMLAdapter.class)
     @XmlElement
     public byte[] getLoadedKML() {
         return loadedKML;
@@ -198,6 +200,21 @@ public class DisplayStateStore {
 			return String.format("%.13f,%.13f" ,latDeg, lonDeg);
 		}
     	
+    }
+    
+    public static class loadedKMLAdapter extends XmlAdapter<String, byte[]>{
+	private final static Base64 b64conv = new Base64(256, "\n".getBytes());
+	
+	@Override
+        public String marshal(byte[] binIn) throws Exception {
+	    return b64conv.encodeAsString(binIn);
+	}
+
+	@Override
+        public byte[] unmarshal(String b64In) throws Exception {
+	    return b64conv.decode(b64In);
+        }
+	
     }
     
     public void replaceWith(DisplayStateStore that){
