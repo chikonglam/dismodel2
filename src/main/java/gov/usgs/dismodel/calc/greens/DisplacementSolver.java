@@ -1,6 +1,7 @@
 package gov.usgs.dismodel.calc.greens;
 
 import gov.nasa.worldwind.render.Renderable;
+import gov.usgs.dismodel.export.kml.KMLExportable;
 import gov.usgs.dismodel.geom.LocalENU;
 import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.state.DisplayStateStore;
@@ -44,7 +45,7 @@ import org.ojalgo.matrix.jama.JamaMatrix;
 @XmlRootElement
 @XmlType(propOrder = {"name", "msp", "poissonRatio" })
 @XmlSeeAlso({ MogiPoint.class, McTigueSphere.class, OkadaFault3.class, DistributedFault.class })
-public abstract class DisplacementSolver implements Cloneable, IndexableParameters {
+public abstract class DisplacementSolver implements Cloneable, IndexableParameters, KMLExportable {
 
     // class variable
     protected static int classCount = 0;

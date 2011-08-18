@@ -1,11 +1,7 @@
 package gov.usgs.dismodel.calc.greens;
 
 import gov.nasa.worldwind.geom.LatLon;
-import gov.nasa.worldwind.render.BasicShapeAttributes;
-import gov.nasa.worldwind.render.Material;
 import gov.nasa.worldwind.render.Renderable;
-import gov.nasa.worldwind.render.ShapeAttributes;
-import gov.nasa.worldwind.render.SurfaceCircle;
 import gov.nasa.worldwind.render.SurfaceIcon;
 import gov.usgs.dismodel.calc.greens.dialogs.MogiSourceDialog2;
 import gov.usgs.dismodel.geom.LLH;
@@ -27,10 +23,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.jzy3d.colors.Color;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.AbstractDrawable;
 import org.ojalgo.matrix.jama.JamaMatrix;
+
+import de.micromata.opengis.kml.v_2_2_0.Feature;
+import de.micromata.opengis.kml.v_2_2_0.Placemark;
 
 
 /** Calculates displacements from a Mogi source which is a point-source 
@@ -216,6 +214,23 @@ public class MogiPoint extends DisplacementSolver {
     public JDialog toJDialog(Window owner, String title,  int modelIndex, AllGUIVars allGuiVars) {
         JDialog dialog = new MogiSourceDialog2(owner, title, modelIndex, allGuiVars);
 	return dialog;
+    }
+
+
+    @Override
+    public Feature toKMLElement(SimulationDataModel simModel, DisplayStateStore displaySettings) {
+	final Placemark output = new Placemark();
+	output.setName( getName() );
+        final double east = msp[MODEL_EASTING_IDX];
+        final double north = msp[MODEL_NORTHING_IDX];
+        final double up = msp[MODEL_ELEVATION_IDX];
+        
+        final LLH origin = simModel.getOrigin();
+        
+        final LLH centerLLH = new LocalENU(east, north, up, origin).toLLH();
+	output.createAndSetPoint().addToCoordinates(centerLLH.getLongitude().toDeg(), centerLLH.getLatitude().toDeg());
+	
+	return output;
     }
 
 

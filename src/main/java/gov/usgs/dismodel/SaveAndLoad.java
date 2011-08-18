@@ -1,12 +1,18 @@
 package gov.usgs.dismodel;
 
+import gov.nasa.worldwind.ogc.kml.impl.KMLExportUtil;
 import gov.usgs.dismodel.calc.greens.XyzDisplacement;
+import gov.usgs.dismodel.export.kml.KMLExportable;
+import gov.usgs.dismodel.export.kml.KmlExporter;
 import gov.usgs.dismodel.geom.overlays.Label;
+import gov.usgs.dismodel.gui.components.AllGUIVars;
 import gov.usgs.dismodel.sourcemodels.Quake;
+import gov.usgs.dismodel.state.DisplayStateStore;
 import gov.usgs.dismodel.state.SavedState;
 import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -56,6 +62,18 @@ public class SaveAndLoad {
         } else {
         	return null;
         }
+    }
+    
+    public static void exportToKML(AllGUIVars allGuiVars) throws FileNotFoundException {
+        javax.swing.filechooser.FileFilter filter = new FileNameExtensionFilter("Save KML File", "KML");
+        JFrame owner = allGuiVars.getMainFrame();
+        SimulationDataModel simModel = allGuiVars.getSimModel();
+        DisplayStateStore displaySettings = allGuiVars.getDisplaySettings();
+        File saveFile = chooseSaveFile(owner, filter);
+        if (saveFile != null){
+            KmlExporter.toKMLFile(saveFile, simModel, displaySettings);
+        }
+
     }
     
     
@@ -282,7 +300,7 @@ public class SaveAndLoad {
         }
     }
     
-    protected static File chooseSaveFile(JFrame owner, javax.swing.filechooser.FileFilter filter) {
+    public static File chooseSaveFile(JFrame owner, javax.swing.filechooser.FileFilter filter) {
         JFileChooser fc = new JFileChooser(lastDirectory);
         fc.setFileFilter(filter);
         int returnVal = fc.showSaveDialog(owner);

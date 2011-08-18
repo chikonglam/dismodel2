@@ -32,6 +32,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.AbstractDrawable;
 
+import de.micromata.opengis.kml.v_2_2_0.Feature;
+import de.micromata.opengis.kml.v_2_2_0.Placemark;
+
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 @XmlType(propOrder = { "isTopCoords", "shearModulus", "group" })
@@ -965,5 +968,27 @@ public class OkadaFault3 extends DisplacementSolver implements Fault {
     @Override
     public JDialog toJDialog(Window owner, String title, int modelIndex, AllGUIVars allGuiVars) {
         return new DislocationDialogRestorable(owner, title, modelIndex, allGuiVars);
+    }
+
+    @Override
+    public Feature toKMLElement(SimulationDataModel simModel, DisplayStateStore displaySettings) {
+        OkadaFault3 tempUpper = new OkadaFault3(this);
+        tempUpper.toUpperEdgeCoords();
+        double x1 = tempUpper.getX1();
+        double y1 = tempUpper.getY1();
+        double x2 = tempUpper.getX2();
+        double y2 = tempUpper.getY2();
+
+        LLH origin = simModel.getOrigin();
+
+        final LLH end1 = new LocalENU(x1, y1, 0, origin).toLLH();
+        final LLH end2 = new LocalENU(x2, y2, 0, origin).toLLH();
+        
+	final Placemark output = new Placemark();
+	output.setName( getName() );
+	output.createAndSetLineString().withExtrude(true).withTessellate(true)
+		.addToCoordinates(end1.getLongitude().toDeg(), end1.getLatitude().toDeg())
+		.addToCoordinates(end2.getLongitude().toDeg(), end2.getLatitude().toDeg());
+        return output;
     }
 }

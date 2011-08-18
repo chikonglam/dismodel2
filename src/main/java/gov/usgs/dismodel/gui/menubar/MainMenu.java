@@ -6,6 +6,7 @@ import gov.usgs.dismodel.gui.menubar.data.LoadDisplacementMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.LoadStationMenuItem;
 import gov.usgs.dismodel.gui.menubar.data.ProcessGreensFilesMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.ExitMenuItem;
+import gov.usgs.dismodel.gui.menubar.file.ExportKMLMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.LoadProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.SaveProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.DistSlipConsMenuItem;
@@ -55,6 +56,7 @@ public class MainMenu extends JMenuBar {
 
             this.add(new LoadProjectMenuItem("Open Project...", allGuiVars));
             this.add(new SaveProjectMenuItem("Save Project...", allGuiVars));
+            this.add(new ExportKMLMenuItem("Export Results to KML...", allGuiVars));
             this.add(new ExitMenuItem("Exit", allGuiVars));
         }
     }
@@ -66,7 +68,7 @@ public class MainMenu extends JMenuBar {
             this.setMnemonic('V');
 
             this.add(new View_AdjAppearanceMenu("Adjust Apperance"));
-            this.add(new LoadKMLMenuItem("Load KML overlay", allGuiVars));
+            this.add(new LoadKMLMenuItem("Load KML Overlay...", allGuiVars));
         }
     }    
 
