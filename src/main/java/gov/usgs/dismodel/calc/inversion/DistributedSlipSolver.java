@@ -124,6 +124,7 @@ public class DistributedSlipSolver {
 
     private ArrayList<SlipLocation> slipLocation = new ArrayList<SlipLocation>();
     private ArrayList<ArrayList<Integer>> activeSubFaultParams;
+    private SlipPresenceHint slipPres;
 
     // constructors
     // ------------
@@ -244,8 +245,9 @@ public class DistributedSlipSolver {
         this.nonNegative = nonNegative;
         this.targetMonent = targetMonent;
         this.momentConType = momentConType;
-
-        this.gMatrixSlipMajor = makeSlipMajorGMatrix(originalModel, this.slipLocation);
+        
+        this.slipPres = new SlipPresenceHint(originalModel, linVarIndicies.size());
+        this.gMatrixSlipMajor = makeSlipMajorGMatrix(originalModel, this.slipLocation, slipPres);
         this.useSmoothingOverride = smoothingOverride;
         this.smoothingGamma = smoothingGamma;
 
@@ -390,10 +392,10 @@ public class DistributedSlipSolver {
 
 
 
-    private double[][] makeSlipMajorGMatrix(DisplacementSolver[] model, ArrayList<SlipLocation> slipLocation) {
+    private double[][] makeSlipMajorGMatrix(DisplacementSolver[] model, ArrayList<SlipLocation> slipLocation, SlipPresenceHint slipHint) {
 	ArrayList<double[]> gTran = new ArrayList<double[]>(); // can try to avoid new
 
-        int curVarIter = 0;
+//        int curVarIter = 0;
 
         for (int paramIter = 0; paramIter < numParamPerSubFault; paramIter++) {
             int curParam = this.linVarIndicies.get(paramIter);
@@ -405,11 +407,11 @@ public class DistributedSlipSolver {
                             gTran.add( isolateLinDisp((DistributedFault) model[segmentIter], rowIter, colIter,
                                     curParam) );
                             slipLocation.add(new SlipLocation(segmentIter, rowIter, colIter, curParam));
-                            curVarIter++;
+                            slipHint.setPatchSlipPres(segmentIter, rowIter, colIter, paramIter, true);
+//                            curVarIter++;
                         }
                     }
-                }//TODO: find a way to track unused slips and simplify solver call or roll back to ver 75 
-
+                }
             }
 
         }
@@ -609,7 +611,7 @@ public class DistributedSlipSolver {
          */
         
         //double[][] smoothingRows = convert1MotionTo3Motion(oneMotionSmoothingRows);
-        double[][] smoothingRows = convert1MotionToMultiMotion(oneMotionSmoothingRows, numVar / numSubFaults);	//TODO: kick out this magic number when ready
+        double[][] smoothingRows = convert1MotionToMultiMotion(oneMotionSmoothingRows, this.slipPres);	//TODO: kick out this magic number when ready
         /* Allow space for pseudodata at the bottom of the displacement vector */
         double[] smoothableData = new double[rows];
 
@@ -662,19 +664,79 @@ public class DistributedSlipSolver {
         return smoothingRows;
     }
 	
-	protected double[][] convert1MotionToMultiMotion(double[][] smoothingMatrix, int numOfMotion) {
-	        int smoothingRowsRowCt = numSubFaults * numOfMotion;
-	        int smoothingRowsColCt = numSubFaults * numOfMotion;
-	        double[][] smoothingRows = new double[smoothingRowsRowCt][smoothingRowsColCt];
-	        for (int rowIter = 0; rowIter < numSubFaults; rowIter++) {
-	            for (int colIter = 0; colIter < numSubFaults; colIter++) {
-	                for (int diagIter = 0; diagIter < numOfMotion; diagIter++) {
-	                    smoothingRows[diagIter * numSubFaults + rowIter][diagIter * numSubFaults + colIter] = smoothingMatrix[rowIter][colIter];
-	                }
-	            }
-	        }
-	        return smoothingRows;
+	protected double[][] convert1MotionToMultiMotion(double[][] smoothingMatrix, SlipPresenceHint slipPres) {
+	    	Double[][] SSS, DSS, TSS;
+	    	
+	    	SSS = getRelevantSmoothingRowsNCols(smoothingMatrix, 0);
+	    	DSS = getRelevantSmoothingRowsNCols(smoothingMatrix, 1);
+	    	TSS = getRelevantSmoothingRowsNCols(smoothingMatrix, 2);
+	    	
+	    	Double[][][] threeSmoothers = new Double[][][]{SSS, DSS, TSS};
+	    	
+	    	return diagPack(threeSmoothers);
+	 }
+	
+	private double[][] diagPack(Double[][][] threeSmoothers) {
+	    List<Integer> rows = new ArrayList<Integer>();
+	    List<Integer> cols = new ArrayList<Integer>();
+	    int accumRow = 0;
+	    int accumCol = 0;
+	    List<Integer> acumRows = new ArrayList<Integer>();
+	    List<Integer> acumCols = new ArrayList<Integer>();
+	    acumRows.add(0);
+	    acumCols.add(0);
+	    
+	    
+	    for (int gpIter =0; gpIter < threeSmoothers.length ; gpIter++){
+		Double[][] curMat = threeSmoothers[gpIter];
+		int curRow = curMat.length;
+		int curCol;
+		curCol = (curRow > 0) ?   curMat[0].length : 0;
+		
+		rows.add(curRow);
+		cols.add(curCol);
+		accumRow += curRow;
+		accumCol += curCol;
+		acumRows.add(accumRow);
+		acumCols.add(accumCol);
 	    }
+	    
+	    
+	    double[][] output = new double[accumRow][accumCol];
+	    for (int gpIter =0; gpIter < threeSmoothers.length ; gpIter++){
+		int rowOffset = acumRows.get(gpIter);
+		int colOffset = acumCols.get(gpIter);
+		final int row = rows.get(gpIter);
+		final int col = cols.get(gpIter);
+		for (int rowIter=0; rowIter < row; rowIter++){
+		    for (int colIter=0; colIter< col; colIter++){
+			output[rowIter + rowOffset][colIter + colOffset] = threeSmoothers[gpIter][rowIter][colIter];
+		    }
+		}
+	    }
+	    
+	    // TODO Auto-generated method stub
+	    return output;
+        }
+
+	protected Double [][] getRelevantSmoothingRowsNCols(double[][] smoothingMatrix, int paramIdx){
+	    List<Double[]> output = new ArrayList<Double[]>();
+	    final int ttlRow = smoothingMatrix.length;
+	    for (int rowIter = 0; rowIter < ttlRow; rowIter++){
+		if (this.slipPres.isSlipActive(rowIter, paramIdx)){
+		    ArrayList<Double> curRow = new ArrayList<Double>();
+
+		    for (int colIter = 0; colIter < ttlRow; colIter++){
+			if (this.slipPres.isSlipActive(colIter, paramIdx)) curRow.add( smoothingMatrix[rowIter][colIter] );
+		    }
+		    Double[] curRowCasted = curRow.toArray(new Double[0]);
+		    output.add( curRowCasted );
+		}
+		    
+	    }
+	    
+	    return output.toArray(new Double[0][]) ;  
+	}
 
 
 
