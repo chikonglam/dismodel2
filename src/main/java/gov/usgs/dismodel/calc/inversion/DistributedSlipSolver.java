@@ -124,7 +124,7 @@ public class DistributedSlipSolver {
 
     private ArrayList<SlipLocation> slipLocation = new ArrayList<SlipLocation>();
     private ArrayList<ArrayList<Integer>> activeSubFaultParams;
-    private SlipPresenceHint slipPres;
+    protected SlipPresenceHint slipPres;
 
     // constructors
     // ------------
@@ -650,19 +650,19 @@ public class DistributedSlipSolver {
 		return ret;
 	}
 
-	protected double[][] convert1MotionTo3Motion(double[][] smoothingMatrix) {
-        int smoothingRowsRowCt = numSubFaults * numParamPerSubFault;
-        int smoothingRowsColCt = numSubFaults * numParamPerSubFault;
-        double[][] smoothingRows = new double[smoothingRowsRowCt][smoothingRowsColCt];
-        for (int rowIter = 0; rowIter < numSubFaults; rowIter++) {
-            for (int colIter = 0; colIter < numSubFaults; colIter++) {
-                for (int diagIter = 0; diagIter < numParamPerSubFault; diagIter++) {
-                    smoothingRows[diagIter * numSubFaults + rowIter][diagIter * numSubFaults + colIter] = smoothingMatrix[rowIter][colIter];
-                }
-            }
-        }
-        return smoothingRows;
-    }
+//	protected double[][] convert1MotionTo3Motion(double[][] smoothingMatrix) {
+//        int smoothingRowsRowCt = numSubFaults * numParamPerSubFault;
+//        int smoothingRowsColCt = numSubFaults * numParamPerSubFault;
+//        double[][] smoothingRows = new double[smoothingRowsRowCt][smoothingRowsColCt];
+//        for (int rowIter = 0; rowIter < numSubFaults; rowIter++) {
+//            for (int colIter = 0; colIter < numSubFaults; colIter++) {
+//                for (int diagIter = 0; diagIter < numParamPerSubFault; diagIter++) {
+//                    smoothingRows[diagIter * numSubFaults + rowIter][diagIter * numSubFaults + colIter] = smoothingMatrix[rowIter][colIter];
+//                }
+//            }
+//        }
+//        return smoothingRows;
+//    }
 	
 	protected double[][] convert1MotionToMultiMotion(double[][] smoothingMatrix, SlipPresenceHint slipPres) {
 	    	Double[][] SSS, DSS, TSS;

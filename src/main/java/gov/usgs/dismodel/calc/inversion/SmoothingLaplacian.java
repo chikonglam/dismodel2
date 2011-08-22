@@ -14,6 +14,7 @@ import gov.usgs.dismodel.calc.greens.OkadaFault3;
 public class SmoothingLaplacian {
     
 	 private static final double BREAK_SURFACE_DEPTH = -1e-3d;
+	 private static final double MATLAB_SCALE = 1e6d;	//using this to match MATLAB scale
 
     /**
 	  * Batch laplacian Matrix generator
@@ -88,10 +89,31 @@ public class SmoothingLaplacian {
 	    	
 		}
 		
-		return combinedMatrix;
-	} 
+		return multiplyBy(combinedMatrix, MATLAB_SCALE);	//multiply by 1e6 to match matlab
+	}
+	
+	
 
 	
+	private static double[][] multiplyBy(double[][] matrix, double factor) {
+	    int numRow = matrix.length;
+	    int numCol = matrix[0].length;
+	    
+	    double[][] output = new double[numRow][numCol];
+	    for (int rowIter=0; rowIter < numRow; rowIter++){
+		double [] curInRow = matrix[rowIter];
+		double [] curOutRow = output[rowIter];
+		for (int colIter=0; colIter<numCol; colIter++){
+		    curOutRow[colIter] = curInRow[colIter] * factor;
+		}
+	    }
+	    
+	    return output;
+    }
+
+
+
+
 	/**
      * Laplacian Matrix generator
      * @param faultIn
