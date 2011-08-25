@@ -451,13 +451,29 @@ DataChangeEventFrier {
 
     @Override
     public void latLonClicked(LLH location) {
-        // TODO Auto-generated method stub
-        
+        if (unitsAreXY)
+            return;
+        String x = String.format("%.6f", location.getLongitude());
+        String y = String.format("%.6f", location.getLatitude());
+
+        if (filledXBox != null && filledXBox.isEnabled())
+            filledXBox.setText(x);
+        if (filledYBox != null && filledYBox.isEnabled())
+            filledYBox.setText(y);
     }
 
     @Override
     public void LocalENUClicked(LocalENU location) {
-        // TODO Auto-generated method stub
+        if (!unitsAreXY)
+            return;
+
+        String x = String.format("%.2f", location.getEasting());
+        String y = String.format("%.2f", location.getNorthing());
+
+        if (filledXBox != null && filledXBox.isEnabled())
+            filledXBox.setText(x);
+        if (filledYBox != null && filledYBox.isEnabled())
+            filledYBox.setText(y);
         
     }
     
