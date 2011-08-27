@@ -362,60 +362,52 @@ public class CovarianceWeighter {
      */
     public static void checkSymmetryFillTriangle(JamaMatrix in_out) throws SolverException {
         JamaMatrix t = in_out.transpose();
-        if (in_out.equals((BasicMatrix) (t), nc14))
+        if (in_out.equals((BasicMatrix) (t), nc14))		//already transpose-Symmetric
             return;
-        if (in_out.doubleValue(in_out.getRowDim() - 1, 0) == 0.0)
-            verifyFillLowerZerosFromUpperTriangular(in_out);
-        else if (in_out.doubleValue(0, in_out.getColDim() - 1) == 0.0)
-            verifyFillUpperZerosFromLowerTriangular(in_out);
+        if ( isUpperTriangularZeros(in_out))			//lower triangular => fill upper triangular
+            fillUpperTriangularFromLower(in_out);		
+        else if (isLowerTriangularZeros(in_out))		//upper triangular => fill lower triangular
+            fillLowerTriangularFromUpper(in_out);
         else if (!in_out.isSymmetric())
             throw new SolverException("Tried to set a covariance matrix " + "that was neither symmetric nor triangular");
     }
-
-    /**
-     * Throws an exception if the lower (left) half (below diagonal) of the
-     * matrix is not all zeros. Otherwise, copies the upper triangular part down
-     * to the lower, left.
-     * 
-     * @param in_out
-     *            An variable matrix which is the input and also receives any
-     *            required modification.
-     * @throws SolverException
-     */
-    private static void verifyFillLowerZerosFromUpperTriangular(JamaMatrix in_out) throws SolverException {
-        /**
-         * Note the almost identical implementation of
-         * verifyFillZerosFromLowerTriangular()
-         */
+    
+    private static boolean isLowerTriangularZeros(JamaMatrix in_out) {
         for (int row = 0; row < in_out.getRowDim(); row++) {
             for (int col = 0; col < row; col++) {
                 if (in_out.doubleValue(row, col) != 0.0)
-                    throw new SolverException("Covariance matrix was " + "imperfectly lower-triangular.");
-                in_out.set(row, col, in_out.doubleValue(col, row));
+                    return false;
+            }
+        }
+        return true;
+    }
+    
+    private static void fillLowerTriangularFromUpper(JamaMatrix in_out){
+        for (int row = 0; row < in_out.getRowDim(); row++) {
+            for (int col = 0; col < row; col++) {
+        	in_out.set(row, col, in_out.doubleValue(col, row));
             }
         }
     }
-
-    /**
-     * Throws an exception if the upper (right) half (above diagonal) of the
-     * matrix is not all zeros. Otherwise, copies the lower triangular part up
-     * to the upper, right.
-     * 
-     * @throws SolverException
-     */
-    private static void verifyFillUpperZerosFromLowerTriangular(JamaMatrix in_out) throws SolverException {
-        /**
-         * Note the almost identical implementation of
-         * verifyFillZerosFromUpperTriangular()
-         */
+    
+    private static boolean isUpperTriangularZeros(JamaMatrix in_out) {
         for (int row = 0; row < in_out.getRowDim(); row++) {
             for (int col = row + 1; col < in_out.getColDim(); col++) {
                 if (in_out.doubleValue(row, col) != 0.0)
-                    throw new SolverException("Covariance matrix was " + "imperfectly upper-triangular.");
+                    return false;
+            }
+        }
+        return true;
+    }
+    
+    private static void fillUpperTriangularFromLower(JamaMatrix in_out){
+        for (int row = 0; row < in_out.getRowDim(); row++) {
+            for (int col = row + 1; col < in_out.getColDim(); col++) {
                 in_out.set(row, col, in_out.doubleValue(col, row));
             }
         }
     }
+    
 
     /*
      * The covariance weighter keeps its own copy of measured data because after
