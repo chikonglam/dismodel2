@@ -138,7 +138,7 @@ public class ENUToolBar extends JToolBar {
             // TODO multithread this
             CVResult result = cvSolver.crossValidate();
             JOptionPane.showMessageDialog(allGuiVars.getMainFrame(), "CVSS is min when Gamma is: " + result.getGam() + "\n  (CVSS=" + result.getCvss() + ")",
-                    "Cross Validation Result", JOptionPane.ERROR_MESSAGE);
+                    "Cross Validation Result", JOptionPane.INFORMATION_MESSAGE);
             return;
 
         }

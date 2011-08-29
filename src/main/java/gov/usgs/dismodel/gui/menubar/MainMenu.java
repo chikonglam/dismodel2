@@ -10,6 +10,7 @@ import gov.usgs.dismodel.gui.menubar.file.ExportKMLMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.LoadProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.NewProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.SaveProjectMenuItem;
+import gov.usgs.dismodel.gui.menubar.inversion.CrossValMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.DistSlipConsMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.FaultSegConMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.ForwardModelMenuItem;
@@ -82,7 +83,7 @@ public class MainMenu extends JMenuBar {
             this.setMnemonic('D');
 
             this.add(new Data_GpsMenu("GPS"));
-            this.add(new Data_BatchMenu("Batch Process"));
+            //this.add(new Data_BatchMenu("Batch Process"));
         }
 
         private static final long serialVersionUID = -7955614673694946018L;
@@ -114,6 +115,7 @@ public class MainMenu extends JMenuBar {
             this.add(new FaultSegConMenuItem("Fault Segment Connection...", allGuiVars));
             this.add(new ForwardModelMenuItem("Forward Model", allGuiVars));
             this.add(new SolveMenuItem("Solve", allGuiVars));
+            this.add(new CrossValMenuItem("Cross Validate", allGuiVars));
         }
 
     }
