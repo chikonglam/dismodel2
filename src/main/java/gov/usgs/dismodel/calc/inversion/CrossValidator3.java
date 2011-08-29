@@ -36,7 +36,9 @@ public class CrossValidator3 extends DistributedSlipSolver {
 	        .getCovarWeighter(), simModel, simModel.getSourceLowerbound().toArray(new DisplacementSolver[0]),
 	        simModel.getSourceUpperbound().toArray(new DisplacementSolver[0]), simModel.getNonNeg(), simModel
 	                .getMonentConstraint(), simModel.getMonentConType(), true, simModel.getSmoothingGamma());
-
+	
+	simModel.getCovarWeighter().setCovarToIdentMatrixIfUnset(simModel);
+	
 	SmoothingDialog.Params smoothParams = simModel.getSmoothingParams();
 	numGam = smoothParams.numGammaValues;
 	gammas = linearSpace(smoothParams.minGamma, smoothParams.maxGamma, numGam);

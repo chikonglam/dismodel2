@@ -49,6 +49,7 @@ public class SASolveWorker extends SwingWorker<InversionResults, InversionProgre
         DisplacementSolver[] lowerbound = simModel.getSourceLowerbound().toArray(new DisplacementSolver[0]);
         DisplacementSolver[] upperbound = simModel.getSourceUpperbound().toArray(new DisplacementSolver[0]);
 
+        simModel.getCovarWeighter().setCovarToIdentMatrixIfUnset(simModel);
         /*
          * Solving for many nonlinear params can take a long
          * time, so we use a worker thread and real-time graph
@@ -57,6 +58,7 @@ public class SASolveWorker extends SwingWorker<InversionResults, InversionProgre
         p = new InversionProgress(allGuiVars.getMainFrame(), false);
         p.setSolverWorker(SASolveWorker.this);
         p.setVisible(true);
+        
 
         sa = new SimuAnnealCervelli(modelArray, stationLocArray, realDispArray,
                 simModel.getCovarWeighter(), lowerbound, upperbound, simModel.getRefH(), p);

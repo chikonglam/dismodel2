@@ -17,4 +17,13 @@ public class JamaUtil {
 	
 	return out;
     }
+    
+    public static double[][] genIdentMatrix(final int dim){
+	double [][] diagArray = new double[dim][dim];
+	
+	for (int iter=0; iter < dim; iter++){
+	    diagArray[iter][iter] = 1d;
+	}
+	return diagArray;
+    }
 }

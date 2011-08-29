@@ -37,6 +37,8 @@ public class DistSlipSolveWorker extends SwingWorker<InversionResults, Inversion
 
     @Override
     protected InversionResults doInBackground() throws Exception {
+	simModel.getCovarWeighter().setCovarToIdentMatrixIfUnset(simModel);
+	
         final DistributedSlipSolver solver = DistributedSlipSolver.make(simModel);
         return solver.calculate();
 

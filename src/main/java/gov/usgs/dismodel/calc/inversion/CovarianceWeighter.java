@@ -3,6 +3,7 @@ package gov.usgs.dismodel.calc.inversion;
 import gov.usgs.dismodel.calc.SolverException;
 import gov.usgs.dismodel.calc.overlays.ojalgo.JamaUtil;
 import gov.usgs.dismodel.geom.overlays.VectorXyz;
+import gov.usgs.dismodel.state.SimulationDataModel;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.ojalgo.matrix.BasicMatrix;
+import org.ojalgo.matrix.MatrixUtils;
 import org.ojalgo.matrix.jama.JamaMatrix;
 import org.ojalgo.type.context.NumberContext;
 
@@ -872,6 +874,16 @@ public class CovarianceWeighter {
         }
         return derefedDisp;
     }
+    
+    public void setCovarToIdentMatrixIfUnset(SimulationDataModel simModel){
+	double[][] cov = getCovarianceMatrix();
+	if (cov==null){
+	    int dim = simModel.getMeasuredDispVectors().size() * STATION_AXES;
+	    cov = JamaUtil.genIdentMatrix(dim);
+	    setCovarianceMatrix(cov);
+	}
+    }
+    
 
     // setters and getters for jaxb
     // -----------------------------

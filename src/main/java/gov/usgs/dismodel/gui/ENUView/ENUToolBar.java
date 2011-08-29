@@ -132,6 +132,7 @@ public class ENUToolBar extends JToolBar {
 
         @Override
         protected void buttonClicked() {
+            
             CrossValidator3 cvSolver = new CrossValidator3(simModel, simModel.getOrigin());
 
             // TODO multithread this
