@@ -8,6 +8,7 @@ import gov.usgs.dismodel.gui.menubar.data.ProcessGreensFilesMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.ExitMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.ExportKMLMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.LoadProjectMenuItem;
+import gov.usgs.dismodel.gui.menubar.file.NewProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.SaveProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.DistSlipConsMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.FaultSegConMenuItem;
@@ -54,6 +55,7 @@ public class MainMenu extends JMenuBar {
             super(title);
             this.setMnemonic('F');
 
+            this.add(new NewProjectMenuItem("New Project", allGuiVars));
             this.add(new LoadProjectMenuItem("Open Project...", allGuiVars));
             this.add(new SaveProjectMenuItem("Save Project...", allGuiVars));
             this.add(new ExportKMLMenuItem("Export Results to KML...", allGuiVars));
