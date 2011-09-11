@@ -10,6 +10,7 @@ import gov.usgs.dismodel.gui.menubar.file.ExportKMLMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.LoadProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.NewProjectMenuItem;
 import gov.usgs.dismodel.gui.menubar.file.SaveProjectMenuItem;
+import gov.usgs.dismodel.gui.menubar.help.AboutMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.CrossValMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.DistSlipConsMenuItem;
 import gov.usgs.dismodel.gui.menubar.inversion.FaultSegConMenuItem;
@@ -45,7 +46,7 @@ public class MainMenu extends JMenuBar {
         this.add(new DataMenu("Data"));
         this.add(new SourceMenu("Source"));
         this.add(new InversionMenu("Inversion"));
-        this.add(new JMenu("Help"));
+        this.add(new HelpMenu("Help"));
     }
 
     // level 1 menu items
@@ -119,6 +120,17 @@ public class MainMenu extends JMenuBar {
         }
 
     }
+    
+    // Help
+    private class HelpMenu extends JMenu {
+        public HelpMenu(String title) {
+            super(title);
+
+            this.add(new AboutMenuItem("About", allGuiVars));
+        }
+
+    }
+    
 
     // Level 2 menu items
     // -------------------
